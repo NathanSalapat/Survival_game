@@ -1,0 +1,42 @@
+5-11-15:
+Removed the drinking parts of code, the thirsty mod does a great job, just use that if you want drinking.
+Updated the readme and cleaned up stray print code from debugging.
+
+4-29-15:
+Kabobs are here, craft with three mussels, three oysters, and a stick, once crafted enjoy raw, or cook for more health.
+
+4-25-15:
+Wells added, they require a hole in the ground three nodes deep to be placed on top. Just click on the inside of the hole, in the top node. They need to be placed in dirt. Right click on a well top and put in a bucket or canteen to get some water. The bucket will act exactly as any other bucket with water, the canteen with water can be cooked to purify and then be drank. Drinking dirty water can result in a loss of health.
+
+4-11-15:
+Spigots are working!!! They can only be placed on tree trunks, and need a bucket to collect sap. Right now you just have the infotexts to give you statuses. Placing a bucket in the spigot will trigger a timer that will replace the empty bucket with a sap filled bucket. Cook the sap filled bucket to get sugar. Collection and cooking times will probably be tweaked yet. I want to add a graphic to the spigot that shows whether the bucket is placed and is empty or full, but I don't know if I can do that without creating three nodes. Updated the spigot model and texture.
+Crafting recipe is 
+c
+cs
+c s where c is clay and s is group stick
+
+4-9-15:
+Spigots now only place on tree trunks, though they have to be on the ground, not one node above the ground, not sure why...
+added the bucket with sap and recipe for making sugar and the energy bar.
+
+3-29-15:
+Started working on the system for creating tree sap, and coding the options that only allow the spigot to be placed on a tree.
+
+3-28-15:
+Added an ABM that changes some sand near water to survival:sand_with_food, which, as the name suggests, can contain some oysters or mussels. Added the oyster and mussels, along with their craft recipes. I'm debating over whether I should allow eating them raw in shell, or if they should have to be crafted out of the shell to eat raw, but left in shell to cook.
+
+3-25-15:
+Started work on the two new "beds". Added beds as a dependency and am using that code for the time being to handle sleeping.
+
+3-18-15:
+Added a couple more machetes. Created the forum topic. Added five bugs, some are poisonous, so be careful.
+
+3-17-15:
+Added a few machetes and start working on the drinking part of the mod.
+
+
+3-11-15:
+Added Barrels.
+
+3-4-15:
+Started mod, added cotton recipe. Uploaded to GitHub

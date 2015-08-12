@@ -1,0 +1,84 @@
+Hiking signs are common where I come from (not glowing ones, but neither are
+torches.) Missing them in minetest. Not any more! :-)
+
+Signs are applied to rocks, tree trunks, walls. And where there are no objects
+to apply them to, often poles are used to mark the path. (Very useful in
+winter.) There are four common colours used: red, blue, yellow and green. Red
+and blue are mostly used for longer tracks, while yellow and green for local
+ones or to connect blues and reds.
+
+
+Signs:
+
+To craft a sign apply this simple recipe:
+
+    white dye
+    colour dye
+    white dye
+
+To craft 6 arrows add more of the same colour dye as in:
+
+    sign  sign
+    sign  sign  more dye
+    sign  sign
+
+and:
+
+              sign  sign
+    more dye  sign  sign
+              sign  sign
+
+
+Poles:
+
+To craft a pole put two sticks above each other:
+
+    stick
+    stick
+
+To craft a pole with sign put either a sign above a pole or above two sticks:
+
+    sign
+    pole
+
+or:
+
+    sign
+    stick
+    stick
+
+
+Illuminated:
+
+Add a torch and you will get a glowing sign. :-)
+
+
+Describe:
+
+Oh, and by the way, right clicking the sign one can add a path id. Yes, hiking
+trails have an id here.
+
+
+-- Martian
+
+
+License:
+Sourcecode: WTFPL (see below)
+Graphics: WTFPL (see below)
+
+See also:
+http://minetest.net/
+
+         DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+                    Version 2, December 2004
+
+ Copyright (C) 2004 Sam Hocevar <sam@hocevar.net>
+
+ Everyone is permitted to copy and distribute verbatim or modified
+ copies of this license document, and changing it is allowed as long
+ as the name is changed.
+
+            DO WHAT THE FUCK YOU WANT TO PUBLIC LICENSE
+   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  0. You just DO WHAT THE FUCK YOU WANT TO. 

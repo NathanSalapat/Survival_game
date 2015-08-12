@@ -1,0 +1,5 @@
+farming
+default
+wool
+beds
+thirsty?

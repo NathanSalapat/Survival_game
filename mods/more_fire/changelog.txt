@@ -1,0 +1,72 @@
+6-3-15:
+Campfires and embers now have particles, smoke for the embers, and little sparks for the fires. Also lava now spawns little lava particles, the particles do nothing other than add a little visual effect.
+
+5-30-15:
+Napiophelios put together some nice smoke bombs and molotov cocktails for this mod, I(Nathan) did a few tweaks, changed some alignment and took care of some depreciated functions to stop debug spamming.
+
+5-12-15:
+Lanterns are here, both wall mounted a table top. Craft with a piece of glass above a string above a lump of iron. Yields one lantern, craft the lantern to change between wall mounted and table top.
+Lanterns burn oil, twelve minutes of light for one bottle of oil. Put six leaves above a glass vessel to create lantern oil.
+
+4-15-15:
+All fires now die after time. When you create embers either by lighting kindling or crafting directly you have about three minutes to add wood. After the wood all burns up you have three minutes to add more wood or the embers turn back into kindling and need to be activated with a lighter again.
+
+4-13-15:
+Changed some how I add the drops to gravel, no longer do I replace the entire node, just add the new drop info to it. This should keep it from breaking anything that does the same to gravel.
+
+4-12-15:
+Some major overhauling, not of code, but layout, no longer is everything stored in the init.lua, it's all broken down into neat files.
+I added finite torches, change the settings in the config, right now you can only turn them on or off, settings are not retro-active, only torches placed after the update will burn out. When a torch burns out it turns into a torch stub which can be picked up and burnt as fuel.
+I changed a couple textures down to 16x16, they had been 32x32. Renamed textures to follow proper naming methods, this won't change any placed nodes.
+
+11-22-14:
+Changed a couple textures.
+Currently using nodeboxes for torches, so they are no longer invisible.
+
+11-19-14:
+Campfires are working altogether now. Craft kindling and add some fuel to it, and then click on it with the lighter until it starts on fire.
+
+11-12-14:
+Removed the ABM for torches, and replaced the two nodes with just one.
+Tweaked the lighter, it should last longer and light fires faster. Added a sparking sound effect as well.
+The lighter takes damage every time it is used, regardless of if it starts a fire, or is used on kindling.
+
+11-11-14:
+Charcoal blocks are now flammable.
+
+11-08-14:
+Added a kindling that will created contained fire.
+Updated the lighter to turn the two different kindling into the two different fires.
+
+11-05-14:
+Corrected the texture for the Charcoal Block.
+Added recipe to turn charcoal block back into charcoal lumps.
+
+11-04-14:
+Added recipe for fire that uses torch and kindling.
+
+10-27-14:
+Made the torches a tad bit smaller.
+Removed all the formspec stuff from the campfires. I couldn't get them to work, so I'll come back to that when I learn more of the coding needed.
+Removed the .mlt files from the models folder as I discovered they aren't needed and just give errors in the debug.
+
+10-26-14:
+Added kindling, craft it from a stick, wood, and two other flammable grouped items. Light it with the lighter, which is made with flint and steel.
+
+10-25-14:
+Torches stick to the wall or the floor according as they should. Copied code from the 3d_torch mod.
+
+10-24-14:
+Campfires now have animated fire. Turns out that I was exporting the file wrong. :S
+
+10-22-14:
+Added 3d models for the torch and campfires. Textures aren't perfect on the campfire yet.
+
+10-19-14:
+Added the 'more_fire = {}' line and now the mod runs again, though the fire doesn't do anything when you right click on it.
+
+10-17-14:
+Renamed and relocated the git repository to match the forum topic
+Updated the fire so it can only be placed on the ground.
+Added flint that drops from gravel. Will be used for fire starters.
+Campfire now drops charcoal.

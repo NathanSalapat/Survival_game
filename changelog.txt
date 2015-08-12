@@ -1,0 +1,14 @@
+2015-08-12:
+Well bottoms are now placable on any nodes that belong to the soil group, code also got a huge cleanup from that change.
+Smokers are still very hacky, use at your own risk, they don't smoke anything yet, so there really is no point to use them.
+
+2015-08-10:
+Put code on github.
+
+2015-08-01:
+Added inventory image for smoker.
+Created active smoker node, started working on coding.
+
+2015-07-31:
+Fixed bug in trail code, it now functions properly for grasses and soils.
+Added mesh and texture for the smoker, no coding yet.
