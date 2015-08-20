@@ -56,7 +56,7 @@ minetest.register_node('food:smoker', { --This will allow for smoking meats
 --]]
 		if inv:contains_item('fuel', 'default:tree') or inv:contains_item('fuel', 'default:jungletree') then
 			minetest.swap_node(pos, {name = 'food:smoker_on', param2=node.param2})
-			timer:start(8*60) --eight minutes to smoke meat
+			timer:start(10) --eight minutes to smoke meat
 			meta:set_string('infotext', 'Burning Smoker')
 			meta:set_string('formspec',
 			'size[8,7]'..
@@ -66,6 +66,16 @@ minetest.register_node('food:smoker', { --This will allow for smoking meats
 			'list[current_player;main;0,3;8,4;]')
 		end
 	end,
+--[[	allow_metadata_inventory_put = function(pos, listname, index, stack, player)
+		if listname == 'meat' then
+			if stack:get_name() == ('food:steak_raw') then
+				return 1
+			else
+				return 0
+			end
+		end
+	end,
+	--]]
 })
 
 minetest.register_node('food:smoker_on', { --Just a change in textures.
@@ -84,6 +94,17 @@ minetest.register_node('food:smoker_on', { --Just a change in textures.
 		type = 'fixed',
 		fixed = {-.5, -.5, -.4, .5, .5, .4},
 		},
+	on_timer = function(pos, elapsed)
+		local meta = minetest.env:get_meta(pos)
+		local inv = meta:get_inventory()
+		local timer = minetest.get_node_timer(pos)
+		if inv:contains_item('meat', 'food:steak_raw') then --make sure the bucket is still there
+			inv:set_stack('meat', 6 ,'food:steak_smoked')
+			meta:set_string('infotext', 'bucket filled with sap, please replace.')
+			timer:stop()
+			return
+		end
+	end,
 })
 
 --Craft Recipes
