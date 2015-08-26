@@ -18,6 +18,10 @@ local function active_formspec(fuel_percent, item_percent)
 		"list[current_name;dst;4.75,0.96;2,2;]"..
 		"list[current_player;main;0,4.25;8,1;]"..
 		"list[current_player;main;0,5.5;8,3;8]"..
+		"listring[current_name;dst]"..
+		"listring[current_player;main]"..
+		"listring[current_name;src]"..
+		"listring[current_player;main]"..
 		default.get_hotbar_bg(0, 4.25)
 	return formspec
 end
@@ -34,6 +38,10 @@ local inactive_formspec =
 	"list[current_name;dst;4.75,0.96;2,2;]"..
 	"list[current_player;main;0,4.25;8,1;]"..
 	"list[current_player;main;0,5.5;8,3;8]"..
+	"listring[current_name;dst]"..
+	"listring[current_player;main]"..
+	"listring[current_name;src]"..
+	"listring[current_player;main]"..
 	default.get_hotbar_bg(0, 4.25)
 
 --
@@ -97,7 +105,6 @@ minetest.register_node("default:furnace", {
 	groups = {cracky=2},
 	legacy_facedir_simple = true,
 	is_ground_content = false,
-	drop = "default:cobble 3",
 	sounds = default.node_sound_stone_defaults(),
 	
 	can_dig = can_dig,
@@ -126,7 +133,7 @@ minetest.register_node("default:furnace_active", {
 	},
 	paramtype2 = "facedir",
 	light_source = 8,
-	drop = "default:cobble 3",
+	drop = "default:furnace",
 	groups = {cracky=2, not_in_creative_inventory=1},
 	legacy_facedir_simple = true,
 	is_ground_content = false,

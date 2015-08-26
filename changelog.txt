@@ -1,3 +1,8 @@
+2015-08-26:
+Updated Valley_Mapgen.
+Added intersecting mod from paramat. Should be easier to find Goblins in underground caves with this.
+Updated Default.
+
 2015-08-12:
 Well bottoms are now placable on any nodes that belong to the soil group, code also got a huge cleanup from that change.
 Smokers are still very hacky, use at your own risk, they don't smoke anything yet, so there really is no point to use them.

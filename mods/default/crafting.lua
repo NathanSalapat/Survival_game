@@ -15,9 +15,16 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:pinewood 4',
+	output = 'default:pine_wood 4',
 	recipe = {
-		{'default:pinetree'},
+		{'default:pine_tree'},
+	}
+})
+
+minetest.register_craft({
+	output = 'default:acacia_wood 4',
+	recipe = {
+		{'default:acacia_tree'},
 	}
 })
 
@@ -796,7 +803,7 @@ minetest.register_craft({
 
 minetest.register_craft({
 	type = "fuel",
-	recipe = "default:sapling",
+	recipe = "group:sapling",
 	burntime = 10,
 })
 
@@ -820,19 +827,13 @@ minetest.register_craft({
 
 minetest.register_craft({
 	type = "fuel",
-	recipe = "default:junglesapling",
-	burntime = 10,
-})
-
-minetest.register_craft({
-	type = "fuel",
 	recipe = "default:grass_1",
 	burntime = 2,
 })
 
 minetest.register_craft({
 	type = "fuel",
-	recipe = "default:pine_sapling",
-	burntime = 10,
+	recipe = "default:dry_grass_1",
+	burntime = 2,
 })
 
