@@ -1,7 +1,7 @@
 minetest.register_craftitem('more_fire:charcoal', {
 	description = 'Charcoal',
 	inventory_image = 'more_fire_charcoal_lump.png',
-	groups = {coal=1}
+	groups = {coal = 1}
 })
 
 minetest.register_craftitem('more_fire:flintstone', {

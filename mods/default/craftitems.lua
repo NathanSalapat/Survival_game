@@ -3,12 +3,13 @@
 minetest.register_craftitem("default:stick", {
 	description = "Stick",
 	inventory_image = "default_stick.png",
-	groups = {stick=1},
+	groups = {stick=1, kindling=1},
 })
 
 minetest.register_craftitem("default:paper", {
 	description = "Paper",
 	inventory_image = "default_paper.png",
+	groups = {kindling=1}
 })
 
 local function book_on_use(itemstack, user, pointed_thing)

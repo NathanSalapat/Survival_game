@@ -150,7 +150,6 @@ minetest.register_node('more_fire:kindling', {
 	is_ground_content = true,
 	groups = {dig_immediate=2, flammable=1,},
 	paramtype = 'light',
-	drop = 'more_fire:kindle 4',
 	selection_box = {
 		type = 'fixed',
 		fixed = { -0.48, -0.5, -0.48, 0.48, 0.0, 0.48 },  
@@ -158,7 +157,9 @@ minetest.register_node('more_fire:kindling', {
 	on_construct = function(pos)
 	 		local meta = minetest.env:get_meta(pos)
 	 		local inv = meta:get_inventory()
-			inv:set_size('fuel', 4)
+			inv:set_size('fuel', 1)
+			inv:set_size("src", 1)
+			inv:set_size("dst", 2)
 		end,
 })
 
@@ -186,12 +187,18 @@ minetest.register_node('more_fire:embers', {
 			meta:set_string('infotext', 'Campfire');
 			local inv = meta:get_inventory()
 			inv:set_size('fuel', 1)
+			inv:set_size("src", 1)
+			inv:set_size("dst", 2)
 			timer:start(180)
 		end,
 	can_dig = function(pos, player)
 			local meta = minetest.get_meta(pos);
 			local inv = meta:get_inventory()
-			if not inv:is_empty('fuel') then
+			if not inv:is_empty("fuel") then
+				return false
+			elseif not inv:is_empty("dst") then
+				return false
+			elseif not inv:is_empty("src") then
 				return false
 			end
 			return true
@@ -231,19 +238,24 @@ minetest.register_node('more_fire:campfire', {
 	damage_per_second = 1,
 	light_source = 14,
 	is_ground_content = true,
+	drop = 'more_fire:charcoal',
 	groups = {cracky=2,hot=2,attached_node=1,igniter=1,not_in_creative_inventory=1},
 	selection_box = {
 		type = 'fixed',
 		fixed = { -0.48, -0.5, -0.48, 0.48, 0.0, 0.48 },
 		},
-	can_dig = function(pos,player)
-			local meta = minetest.env:get_meta(pos);
+	can_dig = function(pos, player)
+			local meta = minetest.get_meta(pos);
 			local inv = meta:get_inventory()
-			if not inv:is_empty('fuel') then
+			if not inv:is_empty("fuel") then
 				return false
-				end
+			elseif not inv:is_empty("dst") then
+				return false
+			elseif not inv:is_empty("src") then
+				return false
+			end
 			return true
-			end,
+		end,
 			get_staticdata = function(self)
 end,
 })
@@ -267,11 +279,17 @@ minetest.register_node('more_fire:kindling_contained', {
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
 		inv:set_size('fuel', 4)
+		inv:set_size("src", 1)
+		inv:set_size("dst", 2)
 	end,
 	can_dig = function(pos, player)
 			local meta = minetest.get_meta(pos);
 			local inv = meta:get_inventory()
-			if not inv:is_empty('fuel') then
+			if not inv:is_empty("fuel") then
+				return false
+			elseif not inv:is_empty("dst") then
+				return false
+			elseif not inv:is_empty("src") then
 				return false
 			end
 			return true
@@ -302,13 +320,18 @@ minetest.register_node('more_fire:embers_contained', {
 			meta:set_string('infotext', 'Campfire');
 			local inv = meta:get_inventory()
 			inv:set_size('fuel', 4)
+			inv:set_size("src", 1)
+			inv:set_size("dst", 2)
 			timer:start(190)
-			print 'called the on_construct function.'
 		end,
 	can_dig = function(pos, player)
 			local meta = minetest.get_meta(pos);
 			local inv = meta:get_inventory()
-			if not inv:is_empty('fuel') then
+			if not inv:is_empty("fuel") then
+				return false
+			elseif not inv:is_empty("dst") then
+				return false
+			elseif not inv:is_empty("src") then
 				return false
 			end
 			return true
@@ -354,14 +377,18 @@ minetest.register_node('more_fire:campfire_contained', {
 		type = 'fixed',
 		fixed = { -0.48, -0.5, -0.48, 0.48, 0.0, 0.48 },
 		},
-	can_dig = function(pos,player)
-			local meta = minetest.env:get_meta(pos);
+	can_dig = function(pos, player)
+			local meta = minetest.get_meta(pos);
 			local inv = meta:get_inventory()
-			if not inv:is_empty('fuel') then
+			if not inv:is_empty("fuel") then
 				return false
-				end
+			elseif not inv:is_empty("dst") then
+				return false
+			elseif not inv:is_empty("src") then
+				return false
+			end
 			return true
-			end,
+		end,
 			get_staticdata = function(self)
 	end,
 })
@@ -553,3 +580,4 @@ minetest.register_node('more_fire:oil_lamp_table_off', {
 			return true
 		end,
 })
+
