@@ -26,8 +26,8 @@ minetest.register_node('food:smoker', { --This will allow for smoking meats
 			'size[8,7]'..
 			'label[0,0;Smoke meat to preserve it.]' ..
 			'list[current_name;meat;1,.5;3,2;]'..
-            'list[current_name;fuel;5,1.5;1,1]'..
-            'list[current_player;main;0,3;8,4;]')
+            		'list[current_name;fuel;5,1.5;1,1]'..
+            		'list[current_player;main;0,3;8,4;]')
 		meta:set_string('infotext', 'Smoker')
 	end,
 	on_metadata_inventory_put = function(pos, listname, index, stack, player)

@@ -7,7 +7,10 @@ local grass_table = {-- mature, child
 }
 
 minetest.register_abm({ --grass spreading
-	nodenames = {'group:soil'},
+	nodenames = {'default:dirt_with_grass',
+		'woodsoils:grass_with_leaves_1',
+		'valleys_mapgen:dirt_sandy_with_grass',
+		'valleys_mapgen:dirty_clayey_with_grass'},
 	neighbors = {'group:grass'},
 	interval = 20,
 	chance = 40,

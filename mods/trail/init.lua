@@ -278,11 +278,14 @@ if EROSION then
 			local nodename = node.name
 			for i in ipairs (dirt_table) do
 				local original = dirt_table[i][2]
-				local replacement = dirt_table[i][1]	
+				local replacement = dirt_table[i][1]
+				local node_above = minetest.get_node({x=pos.x,y=pos.y+1,z=pos.z})	
 				if nodename == original then
+					if node_above.name == 'air' then
 					env:add_node(pos,{name=replacement})
 					end
 				end
+			end
 		end
 	})
 end

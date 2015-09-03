@@ -1,3 +1,10 @@
+2015-09-02:
+Updated More_fire to fix a few missing textures.
+Tweaked around grass growth and spread ABMs. Grass will now just grow on soils that have full grass texture on top, which should help with the disparity in looks.
+Tweaked the ABM for the trail erosion, dirt nodes only change back into grass if they have air on top of them. This fixes the issue of default:dirt_with_grass showing up under water.
+Added model and start of code for a simple snare.
+Started working on food poisoning, currently there is some problem with the pathogen actually kicking in, but other coding is all set to go.
+
 2015-08-27:
 Updated More_fire and Survival
 Added a couple ABMs for grass spreading and growth.
