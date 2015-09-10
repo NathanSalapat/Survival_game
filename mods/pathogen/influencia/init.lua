@@ -1,11 +1,12 @@
 pathogen.register_pathogen("influencia", {
   description = "Highly contagious and possibly deadly for those with low health.",
   symptoms = 12,
-  latent_period = 240,
-  infection_period = 740,
+  latent_period = 10,
+  infection_period = 10,
   on_infect = function( infection )
     local _player = minetest.get_player_by_name( infection.player )
     local _pos = _player:getpos()
+    print 'got sick'
     minetest.sound_play( "pathogen_cough", { pos = _pos, gain = 0.3 } )
   end,
   on_symptom = function( infection )

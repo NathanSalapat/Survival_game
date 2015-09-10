@@ -1,9 +1,10 @@
 pathogen.register_pathogen("food_poisoning", {
   description = "Symptoms include vomiting and loss of health.",
   symptoms = 10,
-  latent_period = 120,
-  infection_period = 420,
+  latent_period = 10,
+  infection_period = 600,
   on_infect = function( infection )
+    print "gah, I've been poisoned."
     local _player = minetest.get_player_by_name( infection.player )
     local _pos = _player:getpos()
     minetest.sound_play( "pathogen_cough", { pos = _pos, gain = 0.3 } )

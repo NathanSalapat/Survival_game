@@ -98,9 +98,9 @@ minetest.register_node('food:smoker_on', { --Just a change in textures.
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
 		local timer = minetest.get_node_timer(pos)
-		if inv:contains_item('meat', 'food:steak_raw') then --make sure the bucket is still there
+		if inv:contains_item('meat', 'food:steak_raw') then
 			inv:set_stack('meat', 6 ,'food:steak_smoked')
-			meta:set_string('infotext', 'bucket filled with sap, please replace.')
+			meta:set_string('infotext', 'Done smoking.')
 			timer:stop()
 			return
 		end

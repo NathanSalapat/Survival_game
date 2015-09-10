@@ -10,7 +10,7 @@ minetest.register_abm({ --grass spreading
 	nodenames = {'default:dirt_with_grass',
 		'woodsoils:grass_with_leaves_1',
 		'valleys_mapgen:dirt_sandy_with_grass',
-		'valleys_mapgen:dirty_clayey_with_grass'},
+		'valleys_mapgen:dirt_clayey_with_grass'},
 	neighbors = {'group:grass'},
 	interval = 20,
 	chance = 40,
@@ -39,8 +39,8 @@ minetest.register_abm({ --grass growing
 
 minetest.register_abm({ --Jungle grass growing
 	nodenames = {'default:grass_5'},
-	interval = 60,
-	chance = 60,
+	interval = 240,
+	chance = 100,
 	action = function(pos, node)
 		minetest.set_node(pos, {name='default:junglegrass'})
 	end

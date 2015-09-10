@@ -37,7 +37,8 @@ minetest.register_craftitem('food:'..craft, {
 		print ('chance is '..chance_level)
 		if chance_level < chance then
 			print ('should get sick')
-			pathogen.infect = function(Influencia, singleplayer)
+			local influencia = pathogen.get_pathogen('influencia')
+			pathogen.infect = function(influencia, singleplayer)
 		end
 		thirsty.drink(user, hydration, 20) --controls the hydration gain
 		return eat_func(itemstack, user, pointed_thing) --controls the fullness gain

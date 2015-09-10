@@ -21,7 +21,7 @@ for i in ipairs (food_table) do
 	local desc = food_table[i][2]
 	local health = food_table[i][3]
 	local hydration = food_table[i][4]
-	local seclection = food_table[i][5]
+	local selection = food_table[i][5]
 	local group = food_table[i][6]
 
 --Actual Node registration
