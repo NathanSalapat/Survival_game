@@ -35,7 +35,7 @@ minetest.register_node('food:snare_baited', { --baited trap
 	drawtype = 'mesh',
 	mesh = 'food_snare.obj',
 	tiles = {name='default_wood.png'},
-	groups = {choppy=2, dig_immediate=2,},
+	groups = {choppy=2, dig_immediate=2, not_in_creative_inventory=1},
 	paramtype = 'light',
 	paramtype2 = 'facedir',
 	sunlight_propagates = true,
@@ -60,7 +60,7 @@ minetest.register_node('food:snare_game', { --trap with game
 	drawtype = 'mesh',
 	mesh = 'food_snare.obj',
 	tiles = {name='default_wood.png'},
-	groups = {choppy=2, dig_immediate=2,},
+	groups = {choppy=2, dig_immediate=2, not_in_creative_inventory=1},
 	paramtype = 'light',
 	paramtype2 = 'facedir',
 	sunlight_propagates = true,
@@ -69,54 +69,46 @@ minetest.register_node('food:snare_game', { --trap with game
 		type = 'fixed',
 		fixed = {-.4, -.5, -.4, .4, .0, .4},
 		},
-	on_construct = function(pos) --This can be removed once testing is complete.
-		local meta = minetest.env:get_meta(pos)
-		local inv = meta:get_inventory()
-		inv:set_size('main', 8*4)
-		inv:set_size('bait', 1)
-		inv:set_size('game', 1)
-		meta:set_string('formspec', trap_game)
-		meta:set_string('infotext', 'Simple Snare with Game')
-	end,
 	allow_metadata_inventory_take = function(pos, listname, index, stack, player)
 		return 0
 	end,
---[[	can_dig = function(pos,player)
+	can_dig = function(pos,player)
 		return false
 	end,
-	--]]
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
-		local captured_item = meta:get_name('game', 1)
-		print ('this is what was captured')
-		print (captured_item.name)
-		if fields ['butcher'] then
-			meta:set_string('formspec', trap_empty)
-			meta:set_string('infotext', 'Simple Snare')
-			minetest.swap_node(pos, {name = 'food:snare'})
-			inv:set_stack('bait', 1,'')
-			inv:set_stack('game', 1,'')
-			sender:get_inventory():add_item('main', 'default:apple') --just testing right now, will add meat and hide later.
+		for i=1, inv:get_size('game') do
+			local stack = inv:get_stack('game', i)
+			local captured_item = stack:get_name()
+			print ('this is what was captured')
+			print (captured_item)
+			if fields ['butcher'] then
+				meta:set_string('formspec', trap_empty)
+				meta:set_string('infotext', 'Simple Snare')
+				minetest.swap_node(pos, {name = 'food:snare'})
+				inv:set_stack('bait', 1,'')
+				inv:set_stack('game', 1,'')
+				sender:get_inventory():add_item('main', captured_item) --just testing right now, will add meat and hide later.
+			end
+			if fields ['free_catch'] then
+				meta:set_string('formspec', trap_empty)
+				meta:set_string('infotext', 'Simple Snare')
+				minetest.swap_node(pos, {name = 'food:snare'})
+				inv:set_stack('bait', 1,'')
+				inv:set_stack('game', 1,'')
+				minetest.add_item(pos, captured_item)
+			end
 		end
-		if fields ['free_catch'] then
-			meta:set_string('formspec', trap_empty)
-			meta:set_string('infotext', 'Simple Snare')
-			minetest.swap_node(pos, {name = 'food:snare'})
-			inv:set_stack('bait', 1,'')
-			inv:set_stack('game', 1,'')
-			minetest.add_item(pos, 'default:apple') --this will be changed to spawn whatever animal was caught
-		end
-		
 	end,
 })
 
 minetest.register_node('food:snare_raided', { --trap with game
 	description = 'Raided Simple Snare',
 	drawtype = 'mesh',
-	mesh = 'food_snare.obj',
+	mesh = 'food_snare_raided.obj',
 	tiles = {name='default_wood.png'},
-	groups = {choppy=2, dig_immediate=2,},
+	groups = {choppy=2, dig_immediate=2, not_in_creative_inventory=1},
 	paramtype = 'light',
 	paramtype2 = 'facedir',
 	sunlight_propagates = true,
@@ -125,15 +117,6 @@ minetest.register_node('food:snare_raided', { --trap with game
 		type = 'fixed',
 		fixed = {-.4, -.5, -.4, .4, .0, .4},
 		},
-	on_construct = function(pos) --This can be removed when testing is done.
-		local meta = minetest.env:get_meta(pos)
-		local inv = meta:get_inventory()
-		inv:set_size('main', 8*4)
-		inv:set_size('bait', 1)
-		inv:set_size('game', 1)
-		meta:set_string('formspec', trap_raided)
-		meta:set_string('infotext', 'Raided Snare')
-	end,
 	on_receive_fields = function(pos, formname, fields, sender)
 		local meta = minetest.env:get_meta(pos)
 		if fields ['reset'] then

@@ -23,7 +23,6 @@ for i in ipairs (spoil_table) do
 	local replacement = spoil_table[i][2]
 	local delay = spoil_table[i][3]
 	local chance = spoil_table[i][4]
-	local var = spoil_table[i][5]
 
 ----CONFIG OPTIONS:
 local ROT_IN_WATER_CHANCE = chance/2 --things twice as likely to rot in water.

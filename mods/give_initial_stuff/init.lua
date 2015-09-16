@@ -5,7 +5,6 @@ minetest.register_on_newplayer(function(player)
 		player:get_inventory():add_item('main', 'default:torch 10')
 		player:get_inventory():add_item('main', 'survival:machete_steel')
 		player:get_inventory():add_item('main', {name="thirsty:bronze_canteen", count=1, wear=60, metadata=""})
-		player:get_inventory():add_item('main', 'craft_guide:sign_wall')
 	end
 end)
 

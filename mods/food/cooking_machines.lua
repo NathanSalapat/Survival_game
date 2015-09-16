@@ -1,3 +1,17 @@
+function intable(tbl, item)
+    for key, value in pairs(tbl) do
+        if value == item then return key end
+    end
+    return false
+end
+
+cooking_machines_smoke = { --fuels that can be used in smoker. IRL you wouldn't want to use fir or pine.
+'default:tree',
+'valleys_mapgen:fir_tree',
+'default:pine_tree',
+'default:jungletree',
+}
+
 --Node Definitions
 minetest.register_node('food:smoker', { --This will allow for smoking meats
 	description = 'Smoker',
@@ -35,6 +49,8 @@ minetest.register_node('food:smoker', { --This will allow for smoking meats
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
 		local timer = minetest.get_node_timer(pos)
+		local stack = inv:get_stack('fuel', 1)
+		local fuel_smoke = stack:get_name()
 		--[[
 --------------- Thanks to Kaeza for this code
 		local function is_item_in_group(itemname, group)
@@ -54,7 +70,8 @@ minetest.register_node('food:smoker', { --This will allow for smoking meats
 		end
 ---------------
 --]]
-		if inv:contains_item('fuel', 'default:tree') or inv:contains_item('fuel', 'default:jungletree') then
+--		if inv:contains_item('fuel', 'default:tree') or inv:contains_item('fuel', 'default:jungletree') then
+		if intable(cooking_machines_smoke, fuel_smoke) then
 			minetest.swap_node(pos, {name = 'food:smoker_on', param2=node.param2})
 			timer:start(10) --eight minutes to smoke meat
 			meta:set_string('infotext', 'Burning Smoker')
