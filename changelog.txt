@@ -1,9 +1,14 @@
+2015-10-7:
+Added in a few mobs, have yet to tweak the spawn rates to make them much rarer. Also want to make them run away from the player, though I don't seem to notice an option for that.
+
+2015-09-22:
+Added the ambience mod, to create more immersive gameplay.
+
 2015-09-10:
 Major updates on traps. Currently you can only use raw meat to bait them. all buttons should be working in the formspecs.
 
 2015-09-09:
 Started work on ABMs for traps and did some minor coding changes in the nodes and formspecs
-
 
 2015-09-07:
 Updated Goblins Mod again.
@@ -12,7 +17,6 @@ Added Pathv6 as a new mod.
 2015-09-04:
 Updated Goblins Mod again.
 Snare now has several states with different formspecs for each.
-
 
 2015-09-02:
 Updated More_fire to fix a few missing textures.
