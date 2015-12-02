@@ -41,6 +41,8 @@
 #    if not any of noises 13, 14 and 15 is above this value, make normal dirt. Else make special dirt.
 #river_depth = 3
 #river_size = 5
+#caves = true
+# Set to false to turn caves off. This saves significant processing time.
 #caves_size = 7
 #lava_depth = 2000
 #    to manage lava amount increasing by going deep underground : lower values = bigger increasing.
@@ -54,8 +56,20 @@
 #    If false, no trees, of course !
 #plants = true
 #tree_density = 5
-#    Percent of the lawn nodes that are covered by trees.
+#    DEPRECATED since mapgen 2.3. Percent of the lawn nodes that are covered by trees.
 #plant_density = 32
+#    DEPRECATED since mapgen 2.3. Percent of the lawn nodes that are covered by plants.
+#leaves_colors = true
+#    5 different colors for apple trees
+#simple_caves = false
+# Use a faster, sparser cave algorithm
+#cave_stuff = false
+# Add mushrooms and water features to caves.
+
+#ores = true
+#    Spawn ores from minetest.register_ore() and from darkage mod by CraigyDavi
+#stone_ores = true
+#    Enable sandstone and desert stone layers
 
 #    NOISES : offset, scale, (spread), seed, octaves, persist, lacunarity
 #    (see mapgen.lua to see what is the role of each noise)

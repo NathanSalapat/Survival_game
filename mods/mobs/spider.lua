@@ -2,6 +2,7 @@
 -- Spider by AspireMint (fishyWET (CC-BY-SA 3.0 license for texture)
 
 mobs:register_mob("mobs:spider", {
+	docile_by_day = true,
 	type = "monster",
 	passive = false,
 	attack_type = "dogfight",
@@ -29,7 +30,7 @@ mobs:register_mob("mobs:spider", {
 	floats = 0,
 	drops = {
 		{name = "farming:string",
-		chance = 1, min = 1, max = 5},
+		chance = 1, min = 1, max = 2},
 		{name = "ethereal:crystal_spike",
 		chance = 15, min = 1, max = 2},
 	},
@@ -50,7 +51,7 @@ mobs:register_mob("mobs:spider", {
 	},
 })
 
-mobs:register_spawn("mobs:spider", {"default:desert_stone", "ethereal:crystal_dirt"}, 5, 0, 7000, 1, 71)
+mobs:register_spawn("mobs:spider", {"default:desert_stone", "ethereal:crystal_dirt"}, 13, 0, 7000, 1, 71)
 
 mobs:register_egg("mobs:spider", "Spider", "mobs_cobweb.png", 1)
 

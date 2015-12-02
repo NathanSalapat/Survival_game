@@ -1,3 +1,6 @@
+2015-12-02:
+Added the Bees mod, fixed the leaves to be in the kindling group again.
+
 2015-10-7:
 Added in a few mobs, have yet to tweak the spawn rates to make them much rarer. Also want to make them run away from the player, though I don't seem to notice an option for that.
 

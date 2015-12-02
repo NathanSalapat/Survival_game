@@ -1,4 +1,4 @@
--- Mobs Api (5th October 2015)
+-- Mobs Api (9th November 2015)
 mobs = {}
 mobs.mod = "redo"
 
@@ -9,9 +9,568 @@ local disable_blood = minetest.setting_getbool("mobs_disable_blood")
 mobs.protected = tonumber(minetest.setting_get("mobs_spawn_protected")) or 1
 mobs.remove = minetest.setting_getbool("remove_far_mobs")
 
+-- internal functions
+
+local pi = math.pi
+
+do_attack = function(self, player)
+
+	if self.state ~= "attack" then
+
+		if math.random(0,100) < 90
+		and self.sounds.war_cry then
+			minetest.sound_play(self.sounds.war_cry,{
+				object = self.object,
+				max_hear_distance = self.sounds.distance
+			})
+		end
+
+		self.state = "attack"
+		self.attack = player
+	end
+end
+
+set_velocity = function(self, v)
+
+	v = (v or 0)
+
+	if self.drawtype
+	and self.drawtype == "side" then
+		self.rotate = math.rad(90)
+	end
+
+	local yaw = self.object:getyaw() + self.rotate
+	local x = math.sin(yaw) * -v
+	local z = math.cos(yaw) * v
+
+	self.object:setvelocity({
+		x = x,
+		y = self.object:getvelocity().y,
+		z = z
+	})
+end
+
+get_velocity = function(self)
+
+	local v = self.object:getvelocity()
+	return (v.x ^ 2 + v.z ^ 2) ^ (0.5)
+end
+
+set_animation = function(self, type)
+
+	if not self.animation then
+		return
+	end
+
+	self.animation.current = self.animation.current or ""
+
+	if type == "stand"
+	and self.animation.current ~= "stand" then
+		if self.animation.stand_start
+		and self.animation.stand_end
+		and self.animation.speed_normal then
+			self.object:set_animation({
+				x = self.animation.stand_start,
+				y = self.animation.stand_end},
+				self.animation.speed_normal, 0)
+			self.animation.current = "stand"
+		end
+
+	elseif type == "walk"
+	and self.animation.current ~= "walk"  then
+		if self.animation.walk_start
+		and self.animation.walk_end
+		and self.animation.speed_normal then
+			self.object:set_animation({
+				x = self.animation.walk_start,
+				y = self.animation.walk_end},
+				self.animation.speed_normal, 0)
+			self.animation.current = "walk"
+		end
+
+	elseif type == "run"
+	and self.animation.current ~= "run"  then
+		if self.animation.run_start
+		and self.animation.run_end
+		and self.animation.speed_run then
+			self.object:set_animation({
+				x = self.animation.run_start,
+				y = self.animation.run_end},
+				self.animation.speed_run, 0)
+			self.animation.current = "run"
+		end
+
+	elseif type == "punch"
+	and self.animation.current ~= "punch"  then
+		if self.animation.punch_start
+		and self.animation.punch_end
+		and self.animation.speed_normal then
+			self.object:set_animation({
+				x = self.animation.punch_start,
+				y = self.animation.punch_end},
+				self.animation.speed_normal, 0)
+			self.animation.current = "punch"
+		end
+	end
+end
+
+-- particle effects
+function effect(pos, amount, texture, max_size)
+
+	minetest.add_particlespawner({
+		amount = amount,
+		time = 0.25,
+		minpos = pos,
+		maxpos = pos,
+		minvel = {x = -0, y = -2, z = -0},
+		maxvel = {x = 2,  y = 2,  z = 2},
+		minacc = {x = -4, y = -4, z = -4},
+		maxacc = {x = 4, y = 4, z = 4},
+		minexptime = 0.1,
+		maxexptime = 1,
+		minsize = 0.5,
+		maxsize = (max_size or 1),
+		texture = texture,
+	})
+end
+
+function check_for_death(self)
+
+	-- return if no change
+	local hp = self.object:get_hp()
+	if hp == self.health then
+		return false
+	end
+
+	local pos = self.object:getpos()
+
+	-- still got some health? play hurt sound
+	if hp > 0 then
+
+		self.health = hp
+
+		if self.sounds.damage then
+			minetest.sound_play(self.sounds.damage,{
+				pos = pos,
+				gain = 1.0,
+				max_hear_distance = self.sounds.distance
+			})
+		end
+		return false
+	end
+
+	-- drop items when dead
+	local obj
+	for _,drop in ipairs(self.drops) do
+
+		if math.random(1, drop.chance) == 1 then
+			obj = minetest.add_item(pos,
+				ItemStack(drop.name .. " "
+					.. math.random(drop.min, drop.max)))
+
+			if obj then
+				obj:setvelocity({
+					x = math.random(-1, 1),
+					y = 6,
+					z = math.random(-1, 1)
+				})
+			end
+		end
+	end
+
+	-- play death sound
+	if self.sounds.death then
+		minetest.sound_play(self.sounds.death,{
+			pos = pos,
+			gain = 1.0,
+			max_hear_distance = self.sounds.distance
+		})
+	end
+
+	-- execute custom death function
+	if self.on_die then
+		self.on_die(self, pos)
+	end
+
+	self.object:remove()
+	return true
+end
+
+-- check if within map limits (-30911 to 30927)
+function within_limits(pos, radius)
+
+	if  (pos.x - radius) > -30913
+	and (pos.x + radius) <  30928
+	and (pos.y - radius) > -30913
+	and (pos.y + radius) <  30928
+	and (pos.z - radius) > -30913
+	and (pos.z + radius) <  30928 then
+		return true -- within limits
+	end
+
+	return false -- beyond limits
+end
+
+-- environmental damage (water, lava, fire, light)
+do_env_damage = function(self)
+
+	-- feed/tame text timer (so mob full messages dont spam chat)
+	if self.htimer > 0 then
+		self.htimer = self.htimer - 1
+	end
+
+	local pos = self.object:getpos()
+
+	self.time_of_day = minetest.get_timeofday()
+
+	-- remove mob if beyond map limits
+	if not within_limits(pos, 0) then
+		self.object:remove()
+		return
+	end
+
+	-- daylight above ground
+	if self.light_damage ~= 0
+	and pos.y > 0
+	and self.time_of_day > 0.2
+	and self.time_of_day < 0.8
+	and (minetest.get_node_light(pos) or 0) > 12 then
+
+		self.object:set_hp(self.object:get_hp() - self.light_damage)
+		effect(pos, 5, "tnt_smoke.png")
+	end
+
+	if self.water_damage ~= 0 or self.lava_damage ~= 0 then
+
+		pos.y = (pos.y + self.collisionbox[2]) + 0.1 -- foot level
+
+		local nod = node_ok(pos, "air") ;  -- print ("standing in "..nod.name)
+		local nodef = minetest.registered_nodes[nod.name]
+
+		pos.y = pos.y + 1
+
+		-- water
+		if self.water_damage ~= 0
+		and nodef.groups.water then
+			self.object:set_hp(self.object:get_hp() - self.water_damage)
+			effect(pos, 5, "bubble.png")
+		end
+
+		-- lava or fire
+		if self.lava_damage ~= 0
+		and (nodef.groups.lava
+		or nod.name == "fire:basic_flame"
+		or nod.name == "fire:eternal_flame"
+		or nod.name == "fire:permanent_flame") then
+			self.object:set_hp(self.object:get_hp() - self.lava_damage)
+			effect(pos, 5, "fire_basic_flame.png")
+		end
+	end
+
+	check_for_death(self)
+end
+
+-- jump if facing a solid node (not fences)
+do_jump = function(self)
+	if self.fly
+	or self.child then
+		return
+	end
+
+	local pos = self.object:getpos()
+
+	-- what is mob standing on?
+	pos.y = (pos.y + self.collisionbox[2]) - 0.2
+	local nod = node_ok(pos)
+
+--print ("standing on:", nod.name, pos.y)
+
+	if minetest.registered_nodes[nod.name].walkable == false
+	or not self.direction then
+		return
+	end
+
+	-- what is in front of mob?
+	local nod = node_ok({
+		x = pos.x + self.direction.x,
+		y = pos.y + 0.5,
+		z = pos.z + self.direction.z
+	})
+
+	-- thin blocks that do not need to be jumped
+	if nod.name == "default:snow" then
+		return
+	end
+
+--print ("in front:", nod.name, pos.y + 0.5)
+
+	if minetest.registered_items[nod.name].walkable
+	and not nod.name:find("fence")
+	or self.walk_chance == 0 then
+
+		local v = self.object:getvelocity()
+		v.y = self.jump_height + 1
+		v.x = v.x * 2.2
+		v.z = v.z * 2.2
+
+		self.object:setvelocity(v)
+
+		if self.sounds.jump then
+			minetest.sound_play(self.sounds.jump, {
+				pos = pos,
+				gain = 1.0,
+				max_hear_distance = self.sounds.distance
+			})
+		end
+	end
+end
+
+-- check if POS is in mobs field of view
+in_fov = function(self, pos)
+
+	local yaw = self.object:getyaw() + self.rotate
+	local vx = math.sin(yaw)
+	local vz = math.cos(yaw)
+	local ds = math.sqrt(vx ^ 2 + vz ^ 2)
+	local ps = math.sqrt(pos.x ^ 2 + pos.z ^ 2)
+	local d = {x = vx / ds, z = vz / ds}
+	local p = {x = pos.x / ps, z = pos.z / ps}
+	local an = (d.x * p.x) + (d.z * p.z)
+
+	if math.deg(math.acos(an)) > (self.fov / 2) then
+		return false
+	end
+
+	return true
+end
+
+-- blast damage to entities nearby (modified from TNT mod)
+function entity_physics(pos, radius)
+
+	radius = radius * 2
+
+	local objs = minetest.get_objects_inside_radius(pos, radius)
+	local obj_pos, dist
+
+	for _, obj in pairs(objs) do
+
+		obj_pos = obj:getpos()
+		dist = math.max(1, vector.distance(pos, obj_pos))
+
+		local damage = math.floor((4 / dist) * radius)
+		obj:set_hp(obj:get_hp() - damage)
+	end
+end
+
+-- get node but use fallback for nil or unknown
+function node_ok(pos, fallback)
+
+	fallback = fallback or "default:dirt"
+
+	local node = minetest.get_node_or_nil(pos)
+
+	if not node then
+		return minetest.registered_nodes[fallback]
+	end
+
+	local nodef = minetest.registered_nodes[node.name]
+
+	if nodef then
+		return node
+	end
+
+	return minetest.registered_nodes[fallback]
+end
+
+-- should mob follow what I'm holding ?
+function follow_holding(self, clicker)
+
+	local item = clicker:get_wielded_item()
+	local t = type(self.follow)
+
+	-- single item
+	if t == "string"
+	and item:get_name() == self.follow then
+		return true
+
+	-- multiple items
+	elseif t == "table" then
+		for no = 1, #self.follow do
+			if self.follow[no] == item:get_name() then
+				return true
+			end
+		end
+	end
+
+	return false
+end
+
+local function breed(self)
+
+	-- horny animal can mate for 40 seconds,
+	-- afterwards horny animal cannot mate again for 200 seconds
+	if self.horny == true
+	and self.hornytimer < 240
+	and self.child == false then
+
+		self.hornytimer = self.hornytimer + 1
+
+		if self.hornytimer >= 240 then
+			self.hornytimer = 0
+			self.horny = false
+		end
+	end
+
+	-- child take 240 seconds before growing into adult
+	if self.child == true then
+
+		self.hornytimer = self.hornytimer + 1
+
+		if self.hornytimer > 240 then
+
+			self.child = false
+			self.hornytimer = 0
+
+			self.object:set_properties({
+				textures = self.base_texture,
+				mesh = self.base_mesh,
+				visual_size = self.base_size,
+				collisionbox = self.base_colbox,
+			})
+
+			-- jump when fully grown so not to fall into ground
+			self.object:setvelocity({
+				x = 0,
+				y = self.jump_height,
+				z = 0
+			})
+		end
+	end
+
+	-- find another same animal who is also horny and mate if close enough
+	if self.horny == true
+	and self.hornytimer <= 40 then
+
+		local pos = self.object:getpos()
+		effect({x = pos.x, y = pos.y + 1, z = pos.z}, 4, "heart.png")
+
+		local ents = minetest.get_objects_inside_radius(pos, 3)
+		local num = 0
+		local ent = nil
+
+		for i, obj in ipairs(ents) do
+
+			ent = obj:get_luaentity()
+
+			-- check for same animal with different colour
+			local canmate = false
+
+			if ent then
+
+				if ent.name == self.name then
+					canmate = true
+				else
+					local entname = string.split(ent.name,":")
+					local selfname = string.split(self.name,":")
+
+					if entname[1] == selfname[1] then
+						entname = string.split(entname[2],"_")
+						selfname = string.split(selfname[2],"_")
+
+						if entname[1] == selfname[1] then
+							canmate = true
+						end
+					end
+				end
+			end
+
+			if ent
+			and canmate == true
+			and ent.horny == true
+			and ent.hornytimer <= 40 then
+				num = num + 1
+			end
+
+			-- found your mate? then have a baby
+			if num > 1 then
+
+				self.hornytimer = 41
+				ent.hornytimer = 41
+
+				-- spawn baby
+				minetest.after(7, function(dtime)
+
+					local mob = minetest.add_entity(pos, self.name)
+					local ent2 = mob:get_luaentity()
+					local textures = self.base_texture
+
+					if self.child_texture then
+						textures = self.child_texture[1]
+					end
+
+					mob:set_properties({
+						textures = textures,
+						visual_size = {
+							x = self.base_size.x / 2,
+							y = self.base_size.y / 2
+						},
+						collisionbox = {
+							self.base_colbox[1] / 2,
+							self.base_colbox[2] / 2,
+							self.base_colbox[3] / 2,
+							self.base_colbox[4] / 2,
+							self.base_colbox[5] / 2,
+							self.base_colbox[6] / 2
+						},
+					})
+					ent2.child = true
+					ent2.tamed = true
+					ent2.owner = self.owner
+				end)
+				num = 0
+				break
+			end
+		end
+	end
+end
+
+function replace(self, pos)
+
+	if self.replace_rate
+	and self.child == false
+	and math.random(1, self.replace_rate) == 1 then
+
+		local pos = self.object:getpos()
+		pos.y = pos.y + self.replace_offset
+
+-- print ("replace node = ".. minetest.get_node(pos).name, pos.y)
+
+		if self.replace_what
+		and self.object:getvelocity().y == 0
+		and #minetest.find_nodes_in_area(pos, pos, self.replace_what) > 0 then
+			minetest.set_node(pos, {name = self.replace_with})
+		end
+	end
+end
+
+-- chceck if daytime and if mob is docile during daylight hours
+function day_docile(self)
+
+	if self.docile_by_day == false then
+		return false
+	elseif self.docile_by_day == true
+	and self.time_of_day > 0.2
+	and self.time_of_day < 0.8 then
+		return true
+	end
+end
+
+-- register mob function
+
 function mobs:register_mob(name, def)
 
 minetest.register_entity(name, {
+
 	stepheight = def.stepheight or 0.6,
 	name = name,
 	fly = def.fly,
@@ -22,6 +581,7 @@ minetest.register_entity(name, {
 	do_custom = def.do_custom,
 	jump_height = def.jump_height or 6,
 	jump_chance = def.jump_chance or 0,
+	drawtype = def.drawtype, -- DEPRECATED, use rotate instead
 	rotate = math.rad(def.rotate or 0), --  0=front, 90=side, 180=back, 270=side2
 	lifetimer = def.lifetimer or 180, -- 3 minutes
 	hp_min = def.hp_min or 5,
@@ -80,154 +640,36 @@ minetest.register_entity(name, {
 	health = 0,
 	reach = def.reach or 3,
 	htimer = 0,
-
-	do_attack = function(self, player)
-		if self.state ~= "attack" then
-			if math.random(0,100) < 90
-			and self.sounds.war_cry then
-				minetest.sound_play(self.sounds.war_cry,{
-					object = self.object,
-					max_hear_distance = self.sounds.distance
-				})
-			end
-			self.state = "attack"
-			self.attack = player
-		end
-	end,
-
-	set_velocity = function(self, v)
-		v = (v or 0)
-		if def.drawtype
-		and def.drawtype == "side" then
-			self.rotate = math.rad(90)
-		end
-		local yaw = self.object:getyaw() + self.rotate
-		local x = math.sin(yaw) * -v
-		local z = math.cos(yaw) * v
-		self.object:setvelocity({
-			x = x,
-			y = self.object:getvelocity().y,
-			z = z}
-		)
-	end,
-
-	get_velocity = function(self)
-		local v = self.object:getvelocity()
-		return (v.x ^ 2 + v.z ^ 2) ^ (0.5)
-	end,
---[[
-	in_fov = function(self, pos)
-		-- checks if POS is in self's FOV
-		local yaw = self.object:getyaw() + self.rotate
-		local vx = math.sin(yaw)
-		local vz = math.cos(yaw)
-		local ds = math.sqrt(vx ^ 2 + vz ^ 2)
-		local ps = math.sqrt(pos.x ^ 2 + pos.z ^ 2)
-		local d = {x = vx / ds, z = vz / ds}
-		local p = {x = pos.x / ps, z = pos.z / ps}
-		local an = (d.x * p.x) + (d.z * p.z)
-		if math.deg(math.acos(an)) > (self.fov / 2) then
-			return false
-		end
-		return true
-	end,
-]]
-	set_animation = function(self, type)
-		if not self.animation then
-			return
-		end
-		if not self.animation.current then
-			self.animation.current = ""
-		end
-		if type == "stand"
-		and self.animation.current ~= "stand" then
-			if self.animation.stand_start
-			and self.animation.stand_end
-			and self.animation.speed_normal then
-				self.object:set_animation({
-					x = self.animation.stand_start,
-					y = self.animation.stand_end},
-					self.animation.speed_normal, 0)
-				self.animation.current = "stand"
-			end
-		elseif type == "walk"
-		and self.animation.current ~= "walk"  then
-			if self.animation.walk_start
-			and self.animation.walk_end
-			and self.animation.speed_normal then
-				self.object:set_animation({
-					x = self.animation.walk_start,
-					y = self.animation.walk_end},
-					self.animation.speed_normal, 0)
-				self.animation.current = "walk"
-			end
-		elseif type == "run"
-		and self.animation.current ~= "run"  then
-			if self.animation.run_start
-			and self.animation.run_end
-			and self.animation.speed_run then
-				self.object:set_animation({
-					x = self.animation.run_start,
-					y = self.animation.run_end},
-					self.animation.speed_run, 0)
-				self.animation.current = "run"
-			end
-		elseif type == "punch"
-		and self.animation.current ~= "punch"  then
-			if self.animation.punch_start
-			and self.animation.punch_end
-			and self.animation.speed_normal then
-				self.object:set_animation({
-					x = self.animation.punch_start,
-					y = self.animation.punch_end},
-					self.animation.speed_normal, 0)
-				self.animation.current = "punch"
-			end
-		end
-	end,
+	child_texture = def.child_texture,
+	docile_by_day = def.docile_by_day or false,
+	time_of_day = 0.5,
 
 	on_step = function(self, dtime)
 
-		-- remove monsters if playing on peaceful
-		if (self.type == "monster" and peaceful_only)
-		or not within_limits(self.object:getpos(), 0) then
-			self.object:remove()
-			return
-		end
+		local pos = self.object:getpos()
+		local yaw = 0
 
 		-- when lifetimer expires remove mob (except npc and tamed)
 		if self.type ~= "npc"
-		and not self.tamed then
+		and not self.tamed
+		and self.state ~= "attack" then
+
 			self.lifetimer = self.lifetimer - dtime
-			if self.lifetimer <= 0
-			and self.state ~= "attack" then
+
+			if self.lifetimer <= 0 then
 				minetest.log("action",
-					"lifetimer expired, removed "..self.name)
-				effect(self.object:getpos(), 15, "tnt_smoke.png")
+					"lifetimer expired, removed " .. self.name)
+				effect(pos, 15, "tnt_smoke.png")
 				self.object:remove()
 				return
 			end
 		end
 
-		-- node replace check (chicken lays egg, cow eats grass etc)
-		if self.replace_rate
-		and self.child == false
-		and math.random(1, self.replace_rate) == 1 then
-			local pos = self.object:getpos()
-			pos.y = pos.y + self.replace_offset
-			-- print ("replace node = ".. minetest.get_node(pos).name, pos.y)
-			if self.replace_what
-			and self.object:getvelocity().y == 0
-			and #minetest.find_nodes_in_area(pos, pos, self.replace_what) > 0 then
-				minetest.set_node(pos, {name = self.replace_with})
-			end
-		end
-
-		local yaw = 0
+		-- node replace check (chicken lays egg, cow eats grass etc.)
+		replace(self, pos)
 
 		if not self.fly then
 			-- floating in water (or falling)
-			local pos = self.object:getpos()
 			local v = self.object:getvelocity()
 
 			-- going up then apply gravity
@@ -259,10 +701,12 @@ minetest.register_entity(name, {
 				-- fall damage
 				if self.fall_damage == 1
 				and self.object:getvelocity().y == 0 then
-					local d = (self.old_y or 0) - self.object:getpos().y
+
+					local d = self.old_y - self.object:getpos().y
+
 					if d > 5 then
 						self.object:set_hp(self.object:get_hp() - math.floor(d - 5))
-						effect(self.object:getpos(), 5, "tnt_smoke.png")
+						effect(pos, 5, "tnt_smoke.png")
 						if check_for_death(self) then
 							return
 						end
@@ -274,20 +718,30 @@ minetest.register_entity(name, {
 
 		-- knockback timer
 		if self.pause_timer > 0 then
+
 			self.pause_timer = self.pause_timer - dtime
+
 			if self.pause_timer < 1 then
 				self.pause_timer = 0
 			end
+
 			return
 		end
 
 		-- attack timer
 		self.timer = self.timer + dtime
+
 		if self.state ~= "attack" then
+
 			if self.timer < 1 then
 				return
 			end
+
 			self.timer = 0
+		end
+		-- never go over 100
+		if self.timer > 100 then
+			self.timer = 1
 		end
 
 		-- mob plays random sound at times
@@ -299,92 +753,9 @@ minetest.register_entity(name, {
 			})
 		end
 
-		local do_env_damage = function(self)
-if self.htimer > 0 then
-	self.htimer = self.htimer - 1
-end
-			local pos = self.object:getpos()
-			local tod = minetest.get_timeofday()
-
-			-- daylight above ground
-			if self.light_damage ~= 0
-			and pos.y > 0
-			and tod > 0.2
-			and tod < 0.8
-			and (minetest.get_node_light(pos) or 0) > 12 then
-				self.object:set_hp(self.object:get_hp() - self.light_damage)
-				effect(pos, 5, "tnt_smoke.png")
-				if check_for_death(self) then return end
-			end
-
-if self.water_damage ~= 0 or self.lava_damage ~= 0 then
-			pos.y = (pos.y + self.collisionbox[2]) + 0.1 -- foot level
-			local nod = node_ok(pos, "air") ;  -- print ("standing in "..nod.name)
-			local nodef = minetest.registered_nodes[nod.name]
-			pos.y = pos.y + 1
-
-			-- water
-			if self.water_damage ~= 0
-			and nodef.groups.water then
-				self.object:set_hp(self.object:get_hp() - self.water_damage)
-				effect(pos, 5, "bubble.png")
-				if check_for_death(self) then return end
-			end
-
-			-- lava or fire
-			if self.lava_damage ~= 0
-			and (nodef.groups.lava
-				or nod.name == "fire:basic_flame"
-				or nod.name == "xanadu:safe_fire"
-				or nod.name == "fire:eternal_flame") then
-				self.object:set_hp(self.object:get_hp() - self.lava_damage)
-				effect(pos, 5, "fire_basic_flame.png")
-				if check_for_death(self) then return end
-			end
-end
-		end
-
-		local do_jump = function(self)
-			if self.fly then
-				return
-			end
-
-			local pos = self.object:getpos()
-			pos.y = (pos.y + self.collisionbox[2]) - 0.2
-			local nod = node_ok(pos)
---print ("standing on:", nod.name, pos.y)
-			if minetest.registered_nodes[nod.name].walkable == false then
-				return
-			end
-			if self.direction then
-				pos.y = pos.y + 0.5
-				local nod = node_ok({
-					x = pos.x + self.direction.x,
-					y = pos.y,
-					z = pos.z + self.direction.z
-				})
---print ("in front:", nod.name, pos.y)
-				if nod.name ~= "air"
-				and minetest.registered_items[nod.name].walkable
-				and not nod.name:find("fence")
-				or self.walk_chance == 0 then
-				local v = self.object:getvelocity()
-					v.y = self.jump_height + 1
-					v.x = v.x * 2.2
-					v.z = v.z * 2.2
-					self.object:setvelocity(v)
-					if self.sounds.jump then
-						minetest.sound_play(self.sounds.jump, {
-							object = self.object,
-							max_hear_distance = self.sounds.distance
-						})
-					end
-				end
-			end
-		end
-
 		-- environmental damage timer (every 1 second)
 		self.env_damage_timer = self.env_damage_timer + dtime
+
 		if self.state == "attack"
 		and self.env_damage_timer > 1 then
 			self.env_damage_timer = 0
@@ -393,7 +764,9 @@ end
 			if self.do_custom then
 				self.do_custom(self)
 			end
+
 		elseif self.state ~= "attack" then
+			self.env_damage_timer = 0
 			do_env_damage(self)
 			-- custom function
 			if self.do_custom then
@@ -404,7 +777,8 @@ end
 		-- find someone to attack
 		if self.type == "monster"
 		and damage_enabled
-		and self.state ~= "attack" then
+		and self.state ~= "attack"
+		and not day_docile(self) then
 
 			local s = self.object:getpos()
 			local p, sp, dist
@@ -435,6 +809,7 @@ end
 					p.y = p.y + 1
 					sp.y = sp.y + 1 -- aim higher to make looking up hills more realistic
 					dist = ((p.x - s.x) ^ 2 + (p.y - s.y) ^ 2 + (p.z - s.z) ^ 2) ^ 0.5
+
 					if dist < self.view_range then
 					-- and self.in_fov(self,p) then
 						-- choose closest player to attack
@@ -448,7 +823,7 @@ end
 			end
 			-- attack player
 			if min_player then
-				self.do_attack(self, min_player)
+				do_attack(self, min_player)
 			end
 		end
 
@@ -459,10 +834,14 @@ end
 		if self.type == "npc"
 		and self.attacks_monsters
 		and self.state ~= "attack" then
+
 			local s = self.object:getpos()
 			local obj = nil
+
 			for _, oir in pairs(minetest.get_objects_inside_radius(s,self.view_range)) do
+
 				obj = oir:get_luaentity()
+
 				if obj
 				and obj.type == "monster" then
 					-- attack monster
@@ -474,114 +853,14 @@ end
 					end
 				end
 			end
+
 			if min_player then
-				self.do_attack(self, min_player)
+				do_attack(self, min_player)
 			end
 		end
 
-		-- horny animal can mate for 40 seconds,
-		-- afterwards horny animal cannot mate again for 200 seconds
-		if self.horny == true
-		and self.hornytimer < 240
-		and self.child == false then
-			self.hornytimer = self.hornytimer + 1
-			if self.hornytimer >= 240 then
-				self.hornytimer = 0
-				self.horny = false
-			end
-		end
-
-		-- child take 240 seconds before growing into adult
-		if self.child == true then
-			self.hornytimer = self.hornytimer + 1
-			if self.hornytimer > 240 then
-				self.child = false
-				self.hornytimer = 0
-				self.object:set_properties({
-					textures = self.base_texture,
-					mesh = self.base_mesh,
-					visual_size = self.base_size,
-					collisionbox = self.base_colbox,
-				})
-				-- jump when grown so not to fall into ground
-				local v = self.object:getvelocity()
-				v.y = self.jump_height
-				v.x = 0 ; v.z = 0
-				self.object:setvelocity(v)
-			end
-		end
-
-		-- find another same animal who is also horny and mate
-		if self.horny == true
-		and self.hornytimer <= 40 then
-			local pos = self.object:getpos()
-			effect({x = pos.x, y = pos.y + 1, z = pos.z}, 4, "heart.png")
-			local ents = minetest.get_objects_inside_radius(pos, self.view_range)
-			local num = 0
-			local ent = nil
-			for i,obj in ipairs(ents) do
-				ent = obj:get_luaentity()
-
-				-- check for same animal with different colour
-				local canmate = false
-				if ent then
-					if ent.name == self.name then
-						canmate = true
-					else
-						local entname = string.split(ent.name,":")
-						local selfname = string.split(self.name,":")
-						if entname[1] == selfname[1] then
-							entname = string.split(entname[2],"_")
-							selfname = string.split(selfname[2],"_")
-							if entname[1] == selfname[1] then
-								canmate = true
-							end
-						end
-					end
-				end
-
-				if ent
-				and canmate == true
-				and ent.horny == true
-				and ent.hornytimer <= 40 then
-					num = num + 1
-				end
-
-				-- found your mate? then have a baby
-				if num > 1 then
-					self.hornytimer = 41
-					ent.hornytimer = 41
-					minetest.after(7, function(dtime)
-						local mob = minetest.add_entity(pos, self.name)
-						local ent2 = mob:get_luaentity()
-						local textures = self.base_texture
-						if def.child_texture then
-							textures = def.child_texture[1]
-						end
-						mob:set_properties({
-							textures = textures,
-							visual_size = {
-								x = self.base_size.x / 2,
-								y = self.base_size.y / 2
-							},
-							collisionbox = {
-								self.base_colbox[1] / 2,
-								self.base_colbox[2] / 2,
-								self.base_colbox[3] / 2,
-								self.base_colbox[4] / 2,
-								self.base_colbox[5] / 2,
-								self.base_colbox[6] / 2
-							},
-						})
-						ent2.child = true
-						ent2.tamed = true
-						ent2.owner = self.owner
-					end)
-					num = 0
-					break
-				end
-			end
-		end
+		-- breed mobs and grow children
+		breed(self)
 
 		-- find player to follow
 		if (self.follow ~= ""
@@ -613,7 +892,7 @@ end
 		else
 			-- stop following player if not holding specific item
 			if self.following
-			and self.following.is_player
+			and self.following:is_player()
 			and follow_holding(self, self.following) == false then
 				self.following = nil
 			end
@@ -624,14 +903,14 @@ end
 			local s = self.object:getpos()
 			local p
 
-			if self.following.is_player
-			and self.following:is_player() then
+			if self.following:is_player() then
 				p = self.following:getpos()
 			elseif self.following.object then
 				p = self.following.object:getpos()
 			end
 
 			if p then
+
 				local dist = ((p.x - s.x) ^ 2 + (p.y - s.y) ^ 2 + (p.z - s.z) ^ 2) ^ 0.5
 
 				-- dont follow if out of range
@@ -639,9 +918,9 @@ end
 					self.following = nil
 				else
 					local vec = {x = p.x - s.x, y = p.y - s.y, z = p.z - s.z}
-					yaw = (math.atan(vec.z / vec.x) + math.pi / 2) - self.rotate
+					yaw = (math.atan(vec.z / vec.x) + pi / 2) - self.rotate
 					if p.x > s.x then
-						yaw = yaw + math.pi
+						yaw = yaw + pi
 					end
 					self.object:setyaw(yaw)
 
@@ -649,7 +928,7 @@ end
 					if dist > self.reach
 					and self.order ~= "stand" then
 						if (self.jump
-						and self.get_velocity(self) <= 0.5
+						and get_velocity(self) <= 0.5
 						and self.object:getvelocity().y == 0)
 						or (self.object:getvelocity().y == 0
 						and self.jump_chance > 0) then
@@ -660,13 +939,13 @@ end
 							}
 							do_jump(self)
 						end
-						self.set_velocity(self, self.walk_velocity)
+						set_velocity(self, self.walk_velocity)
 						if self.walk_chance ~= 0 then
-							self:set_animation("walk")
+							set_animation(self, "walk")
 						end
 					else
-						self.set_velocity(self, 0)
-						self:set_animation("stand")
+						set_velocity(self, 0)
+						set_animation(self, "stand")
 					end
 					return
 				end
@@ -676,12 +955,12 @@ end
 		if self.state == "stand" then
 
 			if math.random(1, 4) == 1 then
+
 				local lp = nil
 				local s = self.object:getpos()
 
 				if self.type == "npc" then
 					local o = minetest.get_objects_inside_radius(self.object:getpos(), 3)
-					local yaw = 0
 					for _,o in ipairs(o) do
 						if o:is_player() then
 							lp = o:getpos()
@@ -691,37 +970,38 @@ end
 				end
 
 				-- look at any players nearby, otherwise turn randomly
-				if lp ~= nil then
+				if lp then
 					local vec = {x = lp.x - s.x, y = lp.y - s.y, z = lp.z - s.z}
-					yaw = (math.atan(vec.z / vec.x) + math.pi / 2) - self.rotate
+					yaw = (math.atan(vec.z / vec.x) + pi / 2) - self.rotate
 					if lp.x > s.x then
-						yaw = yaw + math.pi
+						yaw = yaw + pi
 					end
 				else
-					yaw = self.object:getyaw() + ((math.random(0, 360) - 180) / 180 * math.pi)
+					yaw = self.object:getyaw() + ((math.random(0, 360) - 180) / 180 * pi)
 				end
 				self.object:setyaw(yaw)
 			end
 
-			self.set_velocity(self, 0)
-			self.set_animation(self, "stand")
+			set_velocity(self, 0)
+			set_animation(self, "stand")
 
 			-- npc's ordered to stand stay standing
 			if self.type == "npc"
 			and self.order == "stand" then
-				self.set_velocity(self, 0)
+				set_velocity(self, 0)
 				self.state = "stand"
-				self:set_animation("stand")
+				set_animation(self, "stand")
 			else
 				if self.walk_chance ~= 0
 				and math.random(1, 100) <= self.walk_chance then
-					self.set_velocity(self, self.walk_velocity)
+					set_velocity(self, self.walk_velocity)
 					self.state = "walk"
-					self.set_animation(self, "walk")
+					set_animation(self, "walk")
 				end
 			end
 
 		elseif self.state == "walk" then
+
 			local s = self.object:getpos()
 			local lp = minetest.find_node_near(s, 1, {"group:water"})
 
@@ -730,28 +1010,28 @@ end
 			and self.fly_in == "default:water_source"
 			and not lp then
 				print ("out of water")
-				self.set_velocity(self, 0)
+				set_velocity(self, 0)
 				-- change to undefined state so nothing more happens
 				self.state = "flop"
-				self:set_animation("stand")
+				set_animation(self, "stand")
 				return
 			end
 
 			-- if water nearby then turn away
 			if lp then
 				local vec = {x = lp.x - s.x, y = lp.y - s.y, z = lp.z - s.z}
-				yaw = math.atan(vec.z / vec.x) + 3 * math.pi / 2 - self.rotate
+				yaw = math.atan(vec.z / vec.x) + 3 * pi / 2 - self.rotate
 				if lp.x > s.x then
-					yaw = yaw + math.pi
+					yaw = yaw + pi
 				end
 				self.object:setyaw(yaw)
 			-- otherwise randomly turn
 			elseif math.random(1, 100) <= 30 then
-				self.object:setyaw(self.object:getyaw() + ((math.random(0, 360) - 180) / 180 * math.pi))
+				self.object:setyaw(self.object:getyaw() + ((math.random(0, 360) - 180) / 180 * pi))
 			end
 
 			-- jump when walking comes to a halt
-			if self.jump and self.get_velocity(self) <= 0.5
+			if self.jump and get_velocity(self) <= 0.5
 			and self.object:getvelocity().y == 0 then
 				self.direction = {
 					x = math.sin(yaw) * -1,
@@ -761,12 +1041,13 @@ end
 				do_jump(self)
 			end
 
-			self:set_animation("walk")
-			self.set_velocity(self, self.walk_velocity)
+			set_velocity(self, self.walk_velocity)
+			set_animation(self, "walk")
+
 			if math.random(1, 100) <= 30 then
-				self.set_velocity(self, 0)
+				set_velocity(self, 0)
 				self.state = "stand"
-				self:set_animation("stand")
+				set_animation(self, "stand")
 			end
 
 		-- attack routines (explode, dogfight, shoot, dogshoot)
@@ -784,8 +1065,8 @@ end
 		or self.attack:get_hp() <= 0 then
 			--print(" ** stop attacking **", dist, self.view_range)
 			self.state = "stand"
-			self.set_velocity(self, 0)
-			self:set_animation("stand")
+			set_velocity(self, 0)
+			set_animation(self, "stand")
 			self.attack = nil
 			self.v_start = false
 			self.timer = 0
@@ -796,32 +1077,32 @@ end
 		if self.attack_type == "explode" then
 
 			local vec = {x = p.x - s.x, y = p.y - s.y, z = p.z - s.z}
-			yaw = math.atan(vec.z / vec.x) + math.pi / 2 - self.rotate
+			yaw = math.atan(vec.z / vec.x) + pi / 2 - self.rotate
 			if p.x > s.x then
-				yaw = yaw + math.pi
+				yaw = yaw + pi
 			end
 			self.object:setyaw(yaw)
 
 			if dist > self.reach then
 				if not self.v_start then
 					self.v_start = true
-					self.set_velocity(self, self.run_velocity)
+					set_velocity(self, self.run_velocity)
 					self.timer = 0
 					self.blinktimer = 0
 				else
 					self.timer = 0
 					self.blinktimer = 0
-					if self.get_velocity(self) <= 0.5
+					if get_velocity(self) <= 0.5
 					and self.object:getvelocity().y == 0 then
 						local v = self.object:getvelocity()
 						v.y = 5
 						self.object:setvelocity(v)
 					end
-					self.set_velocity(self, self.run_velocity)
+					set_velocity(self, self.run_velocity)
 				end
-				self:set_animation("run")
+				set_animation(self, "run")
 			else
-				self.set_velocity(self, 0)
+				set_velocity(self, 0)
 				self.timer = self.timer + dtime
 				self.blinktimer = (self.blinktimer or 0) + dtime
 				if self.blinktimer > 0.2 then
@@ -839,7 +1120,7 @@ end
 					entity_physics(pos, 3)
 					if minetest.find_node_near(pos, 1, {"group:water"})
 					or minetest.is_protected(pos, "") then
-						if self.sounds.explode ~= "" then
+						if self.sounds.explode then
 							minetest.sound_play(self.sounds.explode, {
 								pos = pos,
 								gain = 1.0,
@@ -853,6 +1134,7 @@ end
 					pos.y = pos.y - 1
 					mobs:explosion(pos, 2, 0, 1, self.sounds.explode)
 					self.object:remove()
+					return
 				end
 			end
 
@@ -869,8 +1151,9 @@ end
 				local p2 = p
 				local p_y = math.floor(p2.y + 1)
 				local v = self.object:getvelocity()
-				if nod
-				and nod.name == self.fly_in then
+
+				if nod.name == self.fly_in then
+
 					if me_y < p_y then
 						self.object:setvelocity({
 							x = v.x,
@@ -904,9 +1187,9 @@ end
 			-- end fly bit
 
 			local vec = {x = p.x - s.x, y = p.y - s.y, z = p.z - s.z}
-			yaw = (math.atan(vec.z / vec.x) + math.pi / 2) - self.rotate
+			yaw = (math.atan(vec.z / vec.x) + pi / 2) - self.rotate
 			if p.x > s.x then
-				yaw = yaw + math.pi
+				yaw = yaw + pi
 			end
 			self.object:setyaw(yaw)
 
@@ -915,7 +1198,7 @@ end
 			if dist > self.reach then
 				-- jump attack
 				if (self.jump
-				and self.get_velocity(self) <= 0.5
+				and get_velocity(self) <= 0.5
 				and self.object:getvelocity().y == 0)
 				or (self.object:getvelocity().y == 0
 				and self.jump_chance > 0) then
@@ -926,11 +1209,11 @@ end
 					}
 					do_jump(self)
 				end
-				self.set_velocity(self, self.run_velocity)
-				self:set_animation("run")
+				set_velocity(self, self.run_velocity)
+				set_animation(self, "run")
 			else
-				self.set_velocity(self, 0)
-				self:set_animation("punch")
+				set_velocity(self, 0)
+				set_animation(self, "punch")
 				if self.timer > 1 then
 					self.timer = 0
 					local p2 = p
@@ -947,8 +1230,8 @@ end
 						end
 						-- punch player
 						self.attack:punch(self.object, 1.0,  {
-							full_punch_interval=1.0,
-							damage_groups = {fleshy=self.damage}
+							full_punch_interval = 1.0,
+							damage_groups = {fleshy = self.damage}
 						}, nil)
 					end
 				end
@@ -960,20 +1243,19 @@ end
 			p.y = p.y - .5
 			s.y = s.y + .5
 			local dist = ((p.x - s.x) ^ 2 + (p.y - s.y) ^ 2 + (p.z - s.z) ^ 2) ^ 0.5
-
 			local vec = {x = p.x - s.x, y = p.y - s.y, z = p.z - s.z}
-			yaw = (math.atan(vec.z / vec.x) + math.pi / 2) - self.rotate
+			yaw = (math.atan(vec.z / vec.x) + pi / 2) - self.rotate
 			if p.x > s.x then
-				yaw = yaw + math.pi
+				yaw = yaw + pi
 			end
 			self.object:setyaw(yaw)
-			self.set_velocity(self, 0)
+			set_velocity(self, 0)
 
 			if self.shoot_interval
 			and self.timer > self.shoot_interval
 			and math.random(1, 100) <= 60 then
 				self.timer = 0
-				self:set_animation("punch")
+				set_animation(self, "punch")
 
 				-- play shoot attack sound
 				if self.sounds.shoot_attack then
@@ -990,9 +1272,9 @@ end
 				local v = obj:get_luaentity().velocity
 				 -- offset makes shoot aim accurate
 				vec.y = vec.y + self.shoot_offset
-				vec.x = vec.x *v / amount
-				vec.y = vec.y *v / amount
-				vec.z = vec.z *v / amount
+				vec.x = vec.x * v / amount
+				vec.y = vec.y * v / amount
+				vec.z = vec.z * v / amount
 				obj:setvelocity(vec)
 			end
 		end
@@ -1002,6 +1284,7 @@ end
 
 	on_activate = function(self, staticdata, dtime_s)
 
+		-- remove monsters if playing on peaceful
 		if self.type == "monster"
 		and peaceful_only then
 			self.object:remove()
@@ -1010,7 +1293,9 @@ end
 
 		-- load entity variables
 		if staticdata then
+
 			local tmp = minetest.deserialize(staticdata)
+
 			if tmp then
 				for _,stat in pairs(tmp) do
 					self[_] = stat
@@ -1048,13 +1333,16 @@ end
 
 		-- set child objects to half size
 		if self.child == true then
+
 			vis_size = {
 				x = self.base_size.x / 2,
 				y = self.base_size.y / 2
 			}
+
 			if def.child_texture then
 				textures = def.child_texture[1]
 			end
+
 			colbox = {
 				self.base_colbox[1] / 2,
 				self.base_colbox[2] / 2,
@@ -1071,10 +1359,8 @@ end
 
 		self.object:set_hp(self.health)
 		self.object:set_armor_groups({fleshy = self.armor})
-		self.state = "stand"
-		self.following = nil
 		self.old_y = self.object:getpos().y
-		self.object:setyaw(math.random(1, 360) / 180 * math.pi)
+		self.object:setyaw(math.random(1, 360) / 180 * pi)
 		self.sounds.distance = (self.sounds.distance or 10)
 		self.textures = textures
 		self.mesh = mesh
@@ -1088,16 +1374,18 @@ end
 
 		-- remove mob when out of range unless tamed
 		if mobs.remove and self.remove_ok and not self.tamed then
-			print ("REMOVED", self.remove_ok, self.name)
+			--print ("REMOVED", self.remove_ok, self.name)
 			self.object:remove()
 			return nil
 		end
+
 		self.remove_ok = true
 		self.attack = nil
 		self.following = nil
 		self.state = "stand"
 
 		local tmp = {}
+
 		for _,stat in pairs(self) do
 			local t = type(stat)
 			if  t ~= 'function'
@@ -1111,20 +1399,33 @@ end
 	end,
 
 	on_punch = function(self, hitter, tflp, tool_capabilities, dir)
+
+		-- cannot punch spamming
+		if tflp < 0.45 then
+			return
+		end
+
 		-- weapon wear
 		local weapon = hitter:get_wielded_item()
-		local punch_interval = tool_capabilities.full_punch_interval or 1.4
-		if weapon:get_definition().tool_capabilities ~= nil then
-			local wear = (punch_interval / 75) * 9000
-			weapon:add_wear(wear)
+		local punch_interval = 1.4
+
+		if tool_capabilities then
+			punch_interval = tool_capabilities.full_punch_interval or 1.4
+		end
+
+		if weapon:get_definition()
+		and weapon:get_definition().tool_capabilities then
+			weapon:add_wear(math.floor((punch_interval / 75) * 9000))
 			hitter:set_wielded_item(weapon)
 		end
 
 		-- weapon sounds
 		if weapon:get_definition().sounds ~= nil then
+
 			local s = math.random(0, #weapon:get_definition().sounds)
+
 			minetest.sound_play(weapon:get_definition().sounds[s], {
-				object=hitter,
+				object = hitter,
 				max_hear_distance = 8
 			})
 		else
@@ -1149,33 +1450,48 @@ end
 
 		-- knock back effect
 		if self.knock_back > 0 then
-			local kb = self.knock_back
-			local r = self.recovery_time
+
 			local v = self.object:getvelocity()
-			if tflp < tool_capabilities.full_punch_interval then
-				if kb > 0 then
-					kb = kb * ( tflp / tool_capabilities.full_punch_interval )
-				end
-				r = r * ( tflp / tool_capabilities.full_punch_interval )
-			end
-			self.object:setvelocity({x = dir.x * kb,y = 0,z = dir.z * kb})
+			local r = 1.4 - math.min(punch_interval, 1.4)
+			--local r = self.recovery_time
+			local kb = r * 5
+			--local kb = self.knock_back
+
+			self.object:setvelocity({
+				x = dir.x * kb,
+				y = 2,
+				z = dir.z * kb
+			})
+
 			self.pause_timer = r
+			--set_animation(self, "stand")
+			--self.state = "nada" -- temporary state
+
+			--minetest.after(r, function()
+				--self.state = "stand"
+			--end)
 		end
 
 		-- attack puncher and call other mobs for help
 		if self.passive == false
 		and not self.tamed then
+
 			if self.state ~= "attack" then
-				self.do_attack(self, hitter)
+				do_attack(self, hitter)
 			end
+
 			-- alert others to the attack
 			local obj = nil
+
 			for _, oir in pairs(minetest.get_objects_inside_radius(hitter:getpos(), 5)) do
+
 				obj = oir:get_luaentity()
+
 				if obj then
+
 					if obj.group_attack == true
 					and obj.state ~= "attack" then
-						obj.do_attack(obj, hitter)
+						do_attack(obj, hitter)
 					end
 				end
 			end
@@ -1185,16 +1501,31 @@ end
 
 end -- END mobs:register_mob function
 
+-- global functions
+
 mobs.spawning_mobs = {}
 
-function mobs:spawn_specific(name, nodes, neighbors, min_light, max_light, interval, chance, active_object_count, min_height, max_height)
+function mobs:spawn_specific(name, nodes, neighbors, min_light, max_light,
+	interval, chance, active_object_count, min_height, max_height)
+
 	mobs.spawning_mobs[name] = true
+
+	-- chance override in minetest.conf for registered mob
+	local new_chance = tonumber(minetest.setting_get(name .. "_chance"))
+	if new_chance ~= nil then
+		chance = new_chance
+		print ("[Mobs Redo] Chance setting for " .. name .. " is now " .. chance)
+	end
+
 	minetest.register_abm({
 		nodenames = nodes,
 		neighbors = neighbors,
 		interval = interval,
 		chance = chance,
+		catch_up = false,
+
 		action = function(pos, node, _, active_object_count_wider)
+
 			-- do not spawn if too many active entities in area
 			if active_object_count_wider > active_object_count
 			or not mobs.spawning_mobs[name] then
@@ -1204,7 +1535,7 @@ function mobs:spawn_specific(name, nodes, neighbors, min_light, max_light, inter
 			-- spawn above node
 			pos.y = pos.y + 1
 
-			-- mobs cannot spawn inside protected areas if enabled
+			-- mobs cannot spawn in protected areas when enabled
 			if mobs.protected == 1
 			and minetest.is_protected(pos, "") then
 				return
@@ -1220,20 +1551,18 @@ function mobs:spawn_specific(name, nodes, neighbors, min_light, max_light, inter
 				return
 			end
 
-			-- are we spawning inside a solid node?
+			-- are we spawning inside solid nodes?
 			if minetest.registered_nodes[node_ok(pos).name].walkable == true then
 				return
 			end
+
 			pos.y = pos.y + 1
+
 			if minetest.registered_nodes[node_ok(pos).name].walkable == true then
 				return
 			end
 
-			if minetest.setting_getbool("display_mob_spawn") then
-				minetest.chat_send_all("[mobs] Add "..name.." at "..minetest.pos_to_string(pos))
-			end
-
-			-- spawn mob half block higher
+			-- spawn mob half block higher then ground
 			pos.y = pos.y - 0.5
 			minetest.add_entity(pos, name)
 			--print ("Spawned "..name.." at "..minetest.pos_to_string(pos).." on "..node.name.." near "..neighbors[1])
@@ -1244,44 +1573,32 @@ end
 
 -- compatibility with older mob registration
 function mobs:register_spawn(name, nodes, max_light, min_light, chance, active_object_count, max_height)
-	mobs:spawn_specific(name, nodes, {"air"}, min_light, max_light, 30, chance, active_object_count, -31000, max_height)
+
+	mobs:spawn_specific(name, nodes, {"air"}, min_light, max_light, 30,
+		chance, active_object_count, -31000, max_height)
 end
 
--- particle effects
-function effect(pos, amount, texture, max_size)
-	minetest.add_particlespawner({
-		amount = amount,
-		time = 0.25,
-		minpos = pos,
-		maxpos = pos,
-		minvel = {x = -0, y = -2, z = -0},
-		maxvel = {x = 2,  y = 2,  z = 2},
-		minacc = {x = -4, y = -4, z = -4},
-		maxacc = {x = 4, y = 4, z = 4},
-		minexptime = 0.1,
-		maxexptime = 1,
-		minsize = 0.5,
-		maxsize = (max_size or 1),
-		texture = texture,
-	})
-end
+-- set content id's
+local c_air = minetest.get_content_id("air")
+local c_ignore = minetest.get_content_id("ignore")
+local c_obsidian = minetest.get_content_id("default:obsidian")
+local c_brick = minetest.get_content_id("default:obsidianbrick")
+local c_chest = minetest.get_content_id("default:chest_locked")
 
--- explosion
+-- explosion (cannot break protected or unbreakable nodes)
 function mobs:explosion(pos, radius, fire, smoke, sound)
-	-- node hit, bursts into flame (cannot blast through unbreakable/specific nodes)
-	if not fire then fire = 0 end
-	if not smoke then smoke = 0 end
-	local pos = vector.round(pos)
-	local vm = VoxelManip()
-	local minp, maxp = vm:read_from_map(vector.subtract(pos, radius), vector.add(pos, radius))
-	local a = VoxelArea:new({MinEdge = minp, MaxEdge = maxp})
-	local data = vm:get_data()
-	local p = {}
-	local c_air = minetest.get_content_id("air")
-	local c_ignore = minetest.get_content_id("ignore")
-	local c_obsidian = minetest.get_content_id("default:obsidian")
-	local c_brick = minetest.get_content_id("default:obsidianbrick")
-	local c_chest = minetest.get_content_id("default:chest_locked")
+
+	radius = radius or 0
+	fire = fire or 0
+	smoke = smoke or 0
+
+	-- if area protected or near map limits then no blast damage
+	if minetest.is_protected(pos, "")
+	or not within_limits(pos, radius) then
+		return
+	end
+
+	-- explosion sound
 	if sound
 	and sound ~= "" then
 		minetest.sound_play(sound, {
@@ -1290,33 +1607,46 @@ function mobs:explosion(pos, radius, fire, smoke, sound)
 			max_hear_distance = 16
 		})
 	end
-	-- if area protected or at map limits then no blast damage
-	if minetest.is_protected(pos, "")
-	or not within_limits(pos, radius) then
-		return
-	end
+
+	--local pos = vector.round(pos)
+	local vm = VoxelManip()
+	local minp, maxp = vm:read_from_map(vector.subtract(pos, radius), vector.add(pos, radius))
+	local a = VoxelArea:new({MinEdge = minp, MaxEdge = maxp})
+	local data = vm:get_data()
+	local p = {}
+
 	for z = -radius, radius do
 	for y = -radius, radius do
 	local vi = a:index(pos.x + (-radius), pos.y + y, pos.z + z)
 	for x = -radius, radius do
+
 		p.x = pos.x + x
 		p.y = pos.y + y
 		p.z = pos.z + z
+
 		if data[vi] ~= c_air
 		and data[vi] ~= c_ignore
 		and data[vi] ~= c_obsidian
 		and data[vi] ~= c_brick
 		and data[vi] ~= c_chest then
+
 			local n = node_ok(p).name
+
 			if minetest.get_item_group(n, "unbreakable") ~= 1 then
+
 				-- if chest then drop items inside
 				if n == "default:chest"
-				or n == "3dchest:chest" then
+				or n == "3dchest:chest"
+				or n == "bones:bones" then
+
 					local meta = minetest.get_meta(p)
 					local inv  = meta:get_inventory()
-					for i = 1,32 do
+
+					for i = 1, inv:get_size("main") do
+
 						local m_stack = inv:get_stack("main", i)
 						local obj = minetest.add_item(p, m_stack)
+
 						if obj then
 							obj:setvelocity({
 								x = math.random(-2, 2),
@@ -1326,13 +1656,16 @@ function mobs:explosion(pos, radius, fire, smoke, sound)
 						end
 					end
 				end
+
+				-- after effects
 				if fire > 0
 				and (minetest.registered_nodes[n].groups.flammable
 				or math.random(1, 100) <= 30) then
 					minetest.set_node(p, {name = "fire:basic_flame"})
 				else
-					minetest.remove_node(p)
+					minetest.set_node(p, {name = "air"})
 				end
+
 				if smoke > 0 then
 					effect(p, 2, "tnt_smoke.png", 5)
 				end
@@ -1344,79 +1677,11 @@ function mobs:explosion(pos, radius, fire, smoke, sound)
 	end
 end
 
--- on mob death drop items
-function check_for_death(self)
-	local hp = self.object:get_hp()
-	if hp > 0 then
-		self.health = hp
-		if self.sounds.damage ~= nil then
-			minetest.sound_play(self.sounds.damage,{
-				object = self.object,
-				max_hear_distance = self.sounds.distance
-			})
-		end
-		return false
-	end
-	local pos = self.object:getpos()
-	local obj = nil
-	for _,drop in ipairs(self.drops) do
-		if math.random(1, drop.chance) == 1 then
-			obj = minetest.add_item(pos,
-				ItemStack(drop.name.." "..math.random(drop.min, drop.max)))
-			if obj then
-				obj:setvelocity({
-					x = math.random(-1, 1),
-					y = 6,
-					z = math.random(-1, 1)
-				})
-			end
-		end
-	end
-	if self.sounds.death ~= nil then
-		minetest.sound_play(self.sounds.death,{
-			object = self.object,
-			max_hear_distance = self.sounds.distance
-		})
-	end
-	if self.on_die then
-		self.on_die(self, pos)
-	end
-	self.object:remove()
-	return true
-end
-
--- from TNT mod
-function calc_velocity(pos1, pos2, old_vel, power)
-	local vel = vector.direction(pos1, pos2)
-	vel = vector.normalize(vel)
-	vel = vector.multiply(vel, power)
-	local dist = vector.distance(pos1, pos2)
-	dist = math.max(dist, 1)
-	vel = vector.divide(vel, dist)
-	vel = vector.add(vel, old_vel)
-	return vel
-end
-
--- modified from TNT mod
-function entity_physics(pos, radius)
-	radius = radius * 2
-	local objs = minetest.get_objects_inside_radius(pos, radius)
-	local obj_pos, obj_vel, dist
-	for _, obj in pairs(objs) do
-		obj_pos = obj:getpos()
-		obj_vel = obj:getvelocity()
-		dist = math.max(1, vector.distance(pos, obj_pos))
-		if obj_vel ~= nil then
-			obj:setvelocity(calc_velocity(pos, obj_pos, obj_vel, radius * 10))
-		end
-		local damage = (4 / dist) * radius
-		obj:set_hp(obj:get_hp() - damage)
-	end
-end
-
 -- register arrow for shoot attack
 function mobs:register_arrow(name, def)
+
 	if not name or not def then return end -- errorcheck
+
 	minetest.register_entity(name, {
 		physical = false,
 		visual = def.visual,
@@ -1428,45 +1693,61 @@ function mobs:register_arrow(name, def)
 		hit_mob = def.hit_mob,
 		drop = def.drop or false,
 		collisionbox = {0, 0, 0, 0, 0, 0}, -- remove box around arrows
+		timer = 0,
 
 		on_step = function(self, dtime)
-			self.timer = (self.timer or 0) + 1
+
+			self.timer = self.timer + 1
+
 			local pos = self.object:getpos()
+
 			if self.timer > 150
 			or not within_limits(pos, 0) then
-				self.object:remove()
+				self.object:remove() ; -- print ("removed arrow")
 				return
 			end
 
 			if self.hit_node then
+
 				local node = node_ok(pos).name
+
 				if minetest.registered_nodes[node].walkable then
+
 					self.hit_node(self, pos, node)
+
 					if self.drop == true then
 						pos.y = pos.y + 1
 						self.lastpos = (self.lastpos or pos)
 						minetest.add_item(self.lastpos, self.object:get_luaentity().name)
 					end
+
 					self.object:remove() ; -- print ("hit node")
+
 					return
 				end
 			end
 
 			if (self.hit_player or self.hit_mob)
-			-- clear entity before arrow becomes active
+			-- clear mob entity before arrow becomes active
 			and self.timer > (10 - (self.velocity / 2)) then
+
 				for _,player in pairs(minetest.get_objects_inside_radius(pos, 1.0)) do
+
 					if self.hit_player
 					and player:is_player() then
+
 						self.hit_player(self, player)
 						self.object:remove() ; -- print ("hit player")
 						return
 					end
+
 					if self.hit_mob
+					and player:get_luaentity()
 					and player:get_luaentity().name ~= self.object:get_luaentity().name
 					and player:get_luaentity().name ~= "__builtin:item"
 					and player:get_luaentity().name ~= "gauges:hp_bar"
 					and player:get_luaentity().name ~= "signs:text" then
+
 						self.hit_mob(self, player)
 						self.object:remove() ; -- print ("hit mob")
 						return
@@ -1480,30 +1761,42 @@ end
 
 -- Spawn Egg
 function mobs:register_egg(mob, desc, background, addegg)
+
 	local invimg = background
+
 	if addegg == 1 then
-		invimg = invimg.."^mobs_chicken_egg.png"
+		invimg = invimg .. "^mobs_chicken_egg.png"
 	end
+
 	minetest.register_craftitem(mob, {
 		description = desc,
 		inventory_image = invimg,
+
 		on_place = function(itemstack, placer, pointed_thing)
+
 			local pos = pointed_thing.above
-			if pos and within_limits(pos, 0)
+
+			if pos
+			and within_limits(pos, 0)
 			and not minetest.is_protected(pos, placer:get_player_name()) then
+
 				pos.y = pos.y + 1
+
 				local mob = minetest.add_entity(pos, mob)
 				local ent = mob:get_luaentity()
+
 				if ent.type ~= "monster" then
-					-- set owner and tame
+					-- set owner and tame if not monster
 					ent.owner = placer:get_player_name()
 					ent.tamed = true
 				end
+
 				-- if not in creative then take item
 				if not minetest.setting_getbool("creative_mode") then
 					itemstack:take_item()
 				end
 			end
+
 			return itemstack
 		end,
 	})
@@ -1511,22 +1804,28 @@ end
 
 -- capture critter (thanks to blert2112 for idea)
 function mobs:capture_mob(self, clicker, chance_hand, chance_net, chance_lasso, force_take, replacewith)
-	if clicker:is_player()
-	and clicker:get_inventory()
-	and not self.child then
+
+	if not self.child
+	and clicker:is_player()
+	and clicker:get_inventory() then
+
 		-- get name of clicked mob
 		local mobname = self.name
+
 		-- if not nil change what will be added to inventory
 		if replacewith then
 			mobname = replacewith
 		end
+
 		local name = clicker:get_player_name()
+
 		-- is mob tamed?
 		if self.tamed == false
 		and force_take == false then
 			minetest.chat_send_player(name, "Not tamed!")
 			return
 		end
+
 		-- cannot pick up if not owner
 		if self.owner ~= name
 		and force_take == false then
@@ -1535,26 +1834,30 @@ function mobs:capture_mob(self, clicker, chance_hand, chance_net, chance_lasso, 
 		end
 
 		if clicker:get_inventory():room_for_item("main", mobname) then
+
 			-- was mob clicked with hand, net, or lasso?
 			local tool = clicker:get_wielded_item()
 			local chance = 0
+
 			if tool:is_empty() then
 				chance = chance_hand
+
 			elseif tool:get_name() == "mobs:net" then
 				chance = chance_net
 				tool:add_wear(4000) -- 17 uses
 				clicker:set_wielded_item(tool)
+
 			elseif tool:get_name() == "mobs:magic_lasso" then
-				-- pick up if owner
 				chance = chance_lasso
 				tool:add_wear(650) -- 100 uses
 				clicker:set_wielded_item(tool)
 			end
+
 			-- return if no chance
 			if chance == 0 then return end
-			-- calculate chance.. was capture successful?
-			if math.random(100) <= chance then
-				-- successful capture.. add to inventory
+
+			-- calculate chance.. add to inventory if successful?
+			if math.random(1, 100) <= chance then
 				clicker:get_inventory():add_item("main", mobname)
 				self.object:remove()
 			else
@@ -1562,28 +1865,6 @@ function mobs:capture_mob(self, clicker, chance_hand, chance_net, chance_lasso, 
 			end
 		end
 	end
-end
-
--- follow what I'm holding ?
-function follow_holding(self, clicker)
-	local item = clicker:get_wielded_item()
-	local t = type(self.follow)
-
-	-- single item
-	if t == "string"
-	and item:get_name() == self.follow then
-		return true
-
-	-- multiple items
-	elseif t == "table" then
-		for no = 1, #self.follow do
-			if self.follow[no] == item:get_name() then
-				return true
-			end
-		end
-	end
-
-	return false
 end
 
 -- feeding, taming and breeding (thanks blert2112)
@@ -1604,13 +1885,14 @@ function mobs:feed_tame(self, clicker, feed_count, breed, tame)
 		-- heal health
 		local hp = self.object:get_hp()
 		hp = hp + 4
-		if hp >= self.hp_max
-		and self.htimer < 1 then
+		if hp >= self.hp_max then
 			hp = self.hp_max
-			minetest.chat_send_player(clicker:get_player_name(),
-				self.name:split(":")[2]
-				.. " at full health (" .. tostring(hp) .. ")")
-			self.htimer = 5
+			if self.htimer < 1 then
+				minetest.chat_send_player(clicker:get_player_name(),
+					self.name:split(":")[2]
+					.. " at full health (" .. tostring(hp) .. ")")
+				self.htimer = 5
+			end
 		end
 		self.object:set_hp(hp)
 		self.health = hp
@@ -1648,30 +1930,4 @@ function mobs:feed_tame(self, clicker, feed_count, breed, tame)
 	else
 		return false
 	end
-end
-
--- check if within map limits (-30911 to 30927)
-function within_limits(pos, radius)
-	if  (pos.x - radius) > -30913
-	and (pos.x + radius) <  30928
-	and (pos.y - radius) > -30913
-	and (pos.y + radius) <  30928
-	and (pos.z - radius) > -30913
-	and (pos.z + radius) <  30928 then
-		return true -- within limits
-	end
-	return false -- beyond limits
-end
-
-function node_ok(pos, fallback)
-	fallback = fallback or "default:dirt"
-	local node = minetest.get_node_or_nil(pos)
-	if not node then
-		return minetest.registered_nodes[fallback]
-	end
-	local nodef = minetest.registered_nodes[node.name]
-	if nodef then
-		return node
-	end
-	return minetest.registered_nodes[fallback]
 end

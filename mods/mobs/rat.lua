@@ -31,7 +31,7 @@ mobs:register_mob("mobs:rat", {
 		local pos = self.object:getpos()
 		print("rat pos", pos.x, pos.y, pos.z)
 	end,
-]]
+--]]
 })
 
 mobs:register_spawn("mobs:rat", {"default:stone"}, 20, 5, 15000, 1, 0)

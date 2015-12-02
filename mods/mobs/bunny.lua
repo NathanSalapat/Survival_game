@@ -24,7 +24,7 @@ mobs:register_mob("mobs:bunny", {
 	jump = true,
 	drops = {
 		{name = "mobs:meat_raw",
-		chance = 1, min = 1, max = 2},
+		chance = 1, min = 1, max = 1},
 	},
 	water_damage = 1,
 	lava_damage = 4,
@@ -39,7 +39,7 @@ mobs:register_mob("mobs:bunny", {
 		punch_end = 24,
 	},
 	follow = {"farming:carrot", "farming_plus:carrot_item"},
-	view_range = 10,
+	view_range = 8,
 	replace_rate = 80,
 	replace_what = {"farming:carrot_7", "farming:carrot_8", "farming_plus:carrot"},
 	replace_with = "air",

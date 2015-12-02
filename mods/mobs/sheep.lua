@@ -30,7 +30,7 @@ for _, col in ipairs(all_colours) do
 		jump = true,
 		drops = {
 			{name = "mobs:meat_raw",
-			chance = 1, min = 2, max = 3},
+			chance = 1, min = 1, max = 2},
 			{name = "wool:"..col,
 			chance = 1, min = 1, max = 1},
 		},
@@ -46,7 +46,7 @@ for _, col in ipairs(all_colours) do
 			walk_end = 100,
 		},
 		follow = {"farming:wheat", "default:grass_5"},
-		view_range = 5,
+		view_range = 8,
 		replace_rate = 50,
 		replace_what = {"default:grass_3", "default:grass_4", "default:grass_5", "farming:wheat_8"},
 		replace_with = "air",
@@ -79,7 +79,7 @@ for _, col in ipairs(all_colours) do
 					if minetest.get_modpath("wool") then
 						local pos = self.object:getpos()
 						pos.y = pos.y + 0.5
-						local obj = minetest.add_item(pos, ItemStack("wool:"..shpcolor.." "..math.random(2,3)))
+						local obj = minetest.add_item(pos, ItemStack("wool:"..shpcolor.." "..math.random(1,3)))
 						if obj then
 							obj:setvelocity({
 								x = math.random(-1,1),
@@ -159,16 +159,15 @@ minetest.register_entity("mobs:sheep", {
 
 	on_step = function(self, dtime)
 
-	self.timer = self.timer + dtime
-	if self.timer >= 1 then
-		self.timer = 0
-		self.object:setacceleration({
-			x = 0,
-			y = -10,
-			z = 0
-		})
-	end
-
+		self.timer = self.timer + dtime
+		if self.timer >= 1 then
+			self.timer = 0
+			self.object:setacceleration({
+				x = 0,
+				y = -10,
+				z = 0
+			})
+		end
 	end,
 
 })

@@ -28,6 +28,8 @@ This mod contains the following additions:
 
 Changelog:
 
+1.19- Chickens now drop egg items instead of placing the egg, also throwing eggs result in 1/8 chance of spawning chick
+1.18- Added docile_by_day flag so that monsters will not attack automatically during daylight hours unless hit first
 1.17- Added 'dogshoot' attack type, shoots when out of reach, melee attack when in reach, also api tweaks and self.reach added
 1.16- Mobs follow multiple items now, Npc's can breed
 1.15- Added Feeding/Taming/Breeding function, right-click to pick up any sheep with X mark on them and replace with new one to fix compatibility.
