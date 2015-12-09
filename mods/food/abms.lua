@@ -9,27 +9,27 @@ minetest.register_abm({ --Brings animals into traps
 		for i=1, inv:get_size('bait') do
 			local stack = inv:get_stack('bait', i)
 			local bait = stack:get_name()
-			if minetest.get_node_group(bait, 'meat') > 0 then
+			if minetest.get_node_group(bait, 'flora') > 0 then
 				meta:set_string('formspec', trap_game)
 				meta:set_string('infotext', 'Simple Snare with Game')
 				minetest.swap_node(pos, {name = 'food:snare_game'})
 				--Randomly select something to populate the trap with.
-				local critter = math.random(0,4)
+				local critter = math.random(0,2)
 					if critter == 0 then
-						inv:set_stack('game', 1, 'default:apple')
+						inv:set_stack('game', 1, 'mobs:bunny')
 					end
 					if critter == 1 then
-						inv:set_stack('game', 1, 'default:dirt')
+						inv:set_stack('game', 1, 'mobs:chicken')
 					end
 					if critter == 2 then
-						inv:set_stack('game', 1, 'default:tree')
+						inv:set_stack('game', 1, 'mobs:rat')
 					end
-					if critter == 3 then
-						inv:set_stack('game', 1, 'default:cobble')
-					end
-					if critter == 4 then
-						inv:set_stack('game', 1, 'food:snare')
-					end
+				return
+			elseif bait == 'default:gold_lump' then
+				meta:set_string('formspec', trap_game)
+				meta:set_string('infotext', 'Simple Snare with Game')
+				minetest.swap_node(pos, {name = 'food:snare_game'})
+				inv:set_stack('game', 1, 'goblins:goblin_king')
 				return
 			end
 		end
@@ -39,8 +39,8 @@ minetest.register_abm({ --Brings animals into traps
 
 minetest.register_abm({ --steals capture game from snares and leaves them needing to be reset.
 	nodenames = {'food:snare_game'},
-	interval = 15,
-	chance = 3,
+	interval = 60,
+	chance = 10,
 	action = function(pos, node)
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()

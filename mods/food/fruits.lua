@@ -5,7 +5,7 @@ local s_fruit = {
 	}
 
 --Group groups
-local g_fruit = {fleshy=3,dig_immediate=3,flammable=2,leafdecay=3,leafdecay_drop=1}
+local g_fruit = {fleshy=3,dig_immediate=3,flammable=2,leafdecay=3,leafdecay_drop=1,flora=1}
 
 --Foods Table
 local food_table = { --craft, desc, health, hydration, selection box, groups

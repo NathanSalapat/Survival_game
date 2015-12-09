@@ -89,7 +89,15 @@ minetest.register_node('food:snare_game', { --trap with game
 				minetest.swap_node(pos, {name = 'food:snare'})
 				inv:set_stack('bait', 1,'')
 				inv:set_stack('game', 1,'')
-				sender:get_inventory():add_item('main', captured_item) --just testing right now, will add meat and hide later.
+				if captured_item == 'mobs:bunny' then
+					sender:get_inventory():add_item('main', 'food:steak_raw 2')
+				elseif captured_item == 'mobs:rat' then
+					sender:get_inventory():add_item('main', 'food:steak_raw 1')
+				elseif captured_item == 'mobs:chicken' then
+					sender:get_inventory():add_item('main', 'mobs:chicken_raw')
+				elseif captured_item == 'goblins:goblin_king' then
+					minetest.add_entity(pos, captured_item)
+				end
 			end
 			if fields ['free_catch'] then
 				meta:set_string('formspec', trap_empty)
@@ -97,7 +105,7 @@ minetest.register_node('food:snare_game', { --trap with game
 				minetest.swap_node(pos, {name = 'food:snare'})
 				inv:set_stack('bait', 1,'')
 				inv:set_stack('game', 1,'')
-				minetest.add_item(pos, captured_item)
+				minetest.add_entity(pos, captured_item)
 			end
 		end
 	end,

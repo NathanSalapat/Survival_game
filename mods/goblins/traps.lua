@@ -2,17 +2,17 @@
 --Super thanks to duane-r for his work: https://github.com/duane-r/mobs_goblins/blob/work/goblin_traps.lua
 
 
-minetest.register_node("mobs_goblins:mossycobble_trap", {
+minetest.register_node("goblins:mossycobble_trap", {
 	description = "Messy Gobblestone",
 	tiles = {"default_mossycobble.png"},
 	is_ground_content = false,
 	groups = {cracky = 2, stone = 1},
 	sounds = default.node_sound_stone_defaults(),
 	paramtype = "light",
-	light_source = 4,
+	light_source = 3,
 })
 
-minetest.register_node("mobs_goblins:stone_with_coal_trap", {
+minetest.register_node("goblins:stone_with_coal_trap", {
 	description = "Coal Trap",
 	tiles = {"default_cobble.png^default_mineral_coal.png"},
 	groups = {cracky = 1, level = 2},
@@ -32,7 +32,7 @@ minetest.register_node("mobs_goblins:stone_with_coal_trap", {
 
 })
 
-minetest.register_node("mobs_goblins:stone_with_iron_trap", {
+minetest.register_node("goblins:stone_with_iron_trap", {
 	description = "Iron Gore",
 	tiles = {"default_cobble.png^default_mineral_iron.png"},
 	groups = {cracky = 1, level = 2},
@@ -51,7 +51,7 @@ minetest.register_node("mobs_goblins:stone_with_iron_trap", {
 		end
 	end,
 })
-minetest.register_node("mobs_goblins:stone_with_copper_trap", {
+minetest.register_node("goblins:stone_with_copper_trap", {
 	description = "Copper Gore",
 	tiles = {"default_cobble.png^default_mineral_copper.png"},
 	groups = {cracky = 1, level = 2},
@@ -69,7 +69,7 @@ minetest.register_node("mobs_goblins:stone_with_copper_trap", {
 		end
 	end,
 })
-minetest.register_node("mobs_goblins:stone_with_gold_trap", {
+minetest.register_node("goblins:stone_with_gold_trap", {
 	description = "Gold Gore",
 	tiles = {"default_cobble.png^default_mineral_gold.png"},
 	groups = {cracky = 1,level = 2},
@@ -87,7 +87,7 @@ minetest.register_node("mobs_goblins:stone_with_gold_trap", {
 		end
 	end,
 })
-minetest.register_node("mobs_goblins:stone_with_diamond_trap", {
+minetest.register_node("goblins:stone_with_diamond_trap", {
 	description = "Diamond Gore",
 	tiles = {"default_cobble.png^default_mineral_diamond.png"},
 	groups = {cracky = 1, level = 3},
@@ -106,7 +106,7 @@ minetest.register_node("mobs_goblins:stone_with_diamond_trap", {
 	end,
 })
 
-minetest.register_node("mobs_goblins:molten_gold_source", {
+minetest.register_node("goblins:molten_gold_source", {
 	description = "Molten Gold Source",
 	inventory_image = minetest.inventorycube("default_lava.png"),
 	drawtype = "liquid",
@@ -144,8 +144,8 @@ minetest.register_node("mobs_goblins:molten_gold_source", {
 	drop = "",
 	drowning = 1,
 	liquidtype = "source",
-	liquid_alternative_flowing = "mobs_goblins:molten_gold_flowing",
-	liquid_alternative_source = "mobs_goblins:molten_gold_source",
+	liquid_alternative_flowing = "goblins:molten_gold_flowing",
+	liquid_alternative_source = "goblins:molten_gold_source",
 	liquid_viscosity = 7,
 	liquid_renewable = false,
 	liquid_range = 3,
@@ -154,7 +154,7 @@ minetest.register_node("mobs_goblins:molten_gold_source", {
 	groups = {lava=3, liquid=2, hot=3, igniter=1},
 })
 
-minetest.register_node("mobs_goblins:molten_gold_flowing", {
+minetest.register_node("goblins:molten_gold_flowing", {
 	description = "Flowing Molten Gold",
 	inventory_image = minetest.inventorycube("default_lava.png"),
 	drawtype = "flowingliquid",
@@ -192,8 +192,8 @@ minetest.register_node("mobs_goblins:molten_gold_flowing", {
 	drop = "",
 	drowning = 1,
 	liquidtype = "flowing",
-	liquid_alternative_flowing = "mobs_goblins:molten_gold_flowing",
-	liquid_alternative_source = "mobs_goblins:molten_gold_source",
+	liquid_alternative_flowing = "goblins:molten_gold_flowing",
+	liquid_alternative_source = "goblins:molten_gold_source",
 	liquid_viscosity = 7,
 	liquid_renewable = false,
 	liquid_range = 3,
@@ -206,7 +206,7 @@ minetest.register_node("mobs_goblins:molten_gold_flowing", {
 
 --[[ too bad we can't keep track of what physics are set too by other mods...]]
 minetest.register_abm({
-	nodenames = {"mobs_goblins:mossycobble_trap"},
+	nodenames = {"goblins:mossycobble_trap"},
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
@@ -221,7 +221,7 @@ minetest.register_abm({
 	end})
 
 minetest.register_abm({
-	nodenames = {"mobs_goblins:stone_with_coal_trap"},
+	nodenames = {"goblins:stone_with_coal_trap"},
 	interval = 1,
 	chance = 1,
 	action = function(pos, node, active_object_count, active_object_count_wider)
@@ -243,7 +243,7 @@ minetest.register_abm({
 -- summon a metallic goblin?
 -- pit of iron razors?
 minetest.register_abm({
-	nodenames = {"mobs_goblins:stone_with_iron_trap"},
+	nodenames = {"goblins:stone_with_iron_trap"},
 	interval = 2,
 	chance = 2, --this may be a dud
 	action = function(pos, node, active_object_count, active_object_count_wider)
@@ -277,7 +277,7 @@ end
 
 --[[ based on dwarves cactus]]
 minetest.register_abm({
-	nodenames = {"mobs_goblins:stone_with_copper_trap"},
+	nodenames = {"goblins:stone_with_copper_trap"},
 	interval = 1,
 	chance = 2,
 	action = function(pos, node, active_object_count, active_object_count_wider)
@@ -294,13 +294,13 @@ minetest.register_abm({
 	end})
 
 minetest.register_abm({
-	nodenames = {"mobs_goblins:stone_with_gold_trap"},
+	nodenames = {"goblins:stone_with_gold_trap"},
 	interval = 1,
 	chance = 2,
 	action = function(pos, node, active_object_count, active_object_count_wider)
 		for _,object in ipairs(minetest.env:get_objects_inside_radius(pos, 2)) do
 			if object:is_player() then
-				minetest.set_node(pos, {name="mobs_goblins:molten_gold_source"})
+				minetest.set_node(pos, {name="goblins:molten_gold_source"})
 				if object:get_hp() > 0 then
 					object:set_hp(object:get_hp()-2)
 					minetest.sound_play("default_dig_crumbly", {pos = pos, gain = 0.5, max_hear_distance = 10})
@@ -321,7 +321,7 @@ end
 if (not singleplayer and setting ~= true) or (singleplayer and setting == false) then
 	-- wimpier trap for non-tnt settings
 	minetest.register_abm({
-		nodenames = {"mobs_goblins:stone_with_diamond_trap"},
+		nodenames = {"goblins:stone_with_diamond_trap"},
 		interval = 1,
 		chance = 1,
 		action = function(pos, node, active_object_count, active_object_count_wider)
@@ -341,7 +341,7 @@ if (not singleplayer and setting ~= true) or (singleplayer and setting == false)
 else
 	-- 5... 4... 3... 2... 1...
 	minetest.register_abm({
-		nodenames = {"mobs_goblins:stone_with_diamond_trap"},
+		nodenames = {"goblins:stone_with_diamond_trap"},
 		interval = 1,
 		chance = 1,
 		action = function(pos, node, active_object_count, active_object_count_wider)
