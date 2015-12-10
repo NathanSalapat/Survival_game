@@ -1,9 +1,11 @@
 minetest.register_abm({ --Brings animals into traps
 	nodenames = {'food:snare_baited'},
-	neighbors = {'group:grass'},
 	interval = 5,
 	chance = 2,
 	action = function(pos, node)
+		local grass = minetest.find_node_near(pos, 2, 'group:flora')
+		if grass == nil then
+		end
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
 		for i=1, inv:get_size('bait') do
@@ -25,15 +27,20 @@ minetest.register_abm({ --Brings animals into traps
 						inv:set_stack('game', 1, 'mobs:rat')
 					end
 				return
-			elseif bait == 'default:gold_lump' then
+			elseif bait == 'default:gold_lump' then --if trap contains gold capture Goblin.
 				meta:set_string('formspec', trap_game)
 				meta:set_string('infotext', 'Simple Snare with Game')
 				minetest.swap_node(pos, {name = 'food:snare_game'})
 				inv:set_stack('game', 1, 'goblins:goblin_king')
 				return
+			elseif minetest.get_node_group(bait, 'meat') > 0 then
+				meta:set_string('formspec', trap_game)
+				meta:set_string('infotext', 'Simple Snare with Game')
+				minetest.swap_node(pos, {name = 'food:snare_game'})
+				inv:set_stack('game', 1, 'mobs:pumba')
+				return
 			end
 		end
---		if trap contains gold capture Goblin. Should be interesting to see how this pans out. Won't mention it in release notes, an easter egg of sorts. :D
 	end,
 })
 

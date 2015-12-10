@@ -49,6 +49,11 @@ local function register_dirts(readname)
 		tiles = {tilestr},
 		is_ground_content = true,
 		groups = {crumbly=3,soil=1},
+		soil = {
+			base = "default:dirt",
+			dry = "farming:soil",
+			wet = "farming:soil_wet"
+		},
 		sounds = default.node_sound_dirt_defaults(),
 	})
 
@@ -57,6 +62,11 @@ local function register_dirts(readname)
 		tiles = {"default_grass.png", tilestr, tilestr .. "^default_grass_side.png"},
 		is_ground_content = true,
 		groups = {crumbly=3,soil=1},
+		soil = {
+			base = "default:dirt_with_grass",
+			dry = "farming:soil",
+			wet = "farming:soil_wet"
+		},
 		drop = itemstr_dirt,
 		sounds = default.node_sound_dirt_defaults({
 			footstep = {name="default_grass_footstep", gain=0.25},

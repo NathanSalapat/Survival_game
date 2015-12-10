@@ -94,9 +94,11 @@ minetest.register_node('food:snare_game', { --trap with game
 				elseif captured_item == 'mobs:rat' then
 					sender:get_inventory():add_item('main', 'food:steak_raw 1')
 				elseif captured_item == 'mobs:chicken' then
-					sender:get_inventory():add_item('main', 'mobs:chicken_raw')
+					sender:get_inventory():add_item('main', 'mobs:chicken_raw 2')
 				elseif captured_item == 'goblins:goblin_king' then
 					minetest.add_entity(pos, captured_item)
+				elseif captured_item == 'mobs:pumba' then
+					sender:get_inventory():add_item('main', 'mobs:pork_raw 6')
 				end
 			end
 			if fields ['free_catch'] then

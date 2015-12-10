@@ -1,3 +1,7 @@
+2015-12-10:
+Updated traps to work correctly for freeing and butchering animals.
+Tweaked some grouping for the traps so more baits will bring in game.
+
 2015-12-02:
 Added the Bees mod, fixed the leaves to be in the kindling group again.
 

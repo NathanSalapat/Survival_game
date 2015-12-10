@@ -14,6 +14,7 @@ mobs:register_mob("mobs:pumba", {
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 	visual = "mesh",
 	mesh = "mobs_pumba.x",
+	drawtype = 'front',
 	textures = {
 		{"mobs_pumba.png"},
 	},
