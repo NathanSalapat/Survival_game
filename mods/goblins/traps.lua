@@ -354,3 +354,12 @@ else
 			end
 		end})
 end
+
+minetest.register_alias('mobs_goblins:mossycobble_trap', 'goblins:mossycobble_trap')
+minetest.register_alias('mobs_goblins:stone_with_coal_trap', 'goblins:stone_with_coal_trap')
+minetest.register_alias('mobs_goblins:stone_with_iron_trap', 'goblins:stone_with_iron_trap')
+minetest.register_alias('mobs_goblins:stone_with_copper_trap', 'goblins:stone_with_copper_trap')
+minetest.register_alias('mobs_goblins:stone_with_gold_trap', 'goblins:stone_with_gold_trap')
+minetest.register_alias('mobs_goblins:stone_with_diamond_trap', 'goblins:stone_with_diamond_trap')
+minetest.register_alias('mobs_goblins:molten_gold_source', 'goblins:molten_gold_source')
+minetest.register_alias('mobs_goblins:molten_gold_flowing', 'goblins:molten_gold_flowing')

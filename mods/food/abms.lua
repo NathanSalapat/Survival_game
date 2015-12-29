@@ -1,7 +1,7 @@
 minetest.register_abm({ --Brings animals into traps
 	nodenames = {'food:snare_baited'},
-	interval = 5,
-	chance = 2,
+	interval = 60,
+	chance = 5,
 	action = function(pos, node)
 		local grass = minetest.find_node_near(pos, 2, 'group:flora')
 		if grass == nil then
@@ -47,7 +47,7 @@ minetest.register_abm({ --Brings animals into traps
 minetest.register_abm({ --steals capture game from snares and leaves them needing to be reset.
 	nodenames = {'food:snare_game'},
 	interval = 60,
-	chance = 10,
+	chance = 20,
 	action = function(pos, node)
 		local meta = minetest.env:get_meta(pos)
 		local inv = meta:get_inventory()
