@@ -59,16 +59,16 @@ end
 
 minetest.register_abm({
 	nodenames = {"group:flora"},
-	neighbors = {"default:dirt_with_grass", "default:desert_sand"},
-	interval = 50,
-	chance = 25,
+	neighbors = {"default:dirt_with_grass", "default:desert_sand", "valleys_mapgen:silty", "valleys_mapgen:dirt_silty_with_grass", "valleys_mapgen:red_clay", "valleys_mapgen:dirt_clayey", "valleys_mapgen:dirt_clayey_with_grass", "valleys_mapgen:dirt_sandy", "valleys_mapgen:dirt_sandy_with_grass"},
+	interval = 5,
+	chance = 5,
 	action = function(pos, node)
 		pos.y = pos.y - 1
 		local under = minetest.get_node(pos)
 		pos.y = pos.y + 1
 		if under.name == "default:desert_sand" then
 			minetest.set_node(pos, {name="default:dry_shrub"})
-		elseif under.name ~= "default:dirt_with_grass" then
+		elseif under.name ~= "group:soil" then
 			return
 		end
 		

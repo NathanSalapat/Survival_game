@@ -89,4 +89,3 @@ minetest.register_on_dieplayer(thirsty.on_dieplayer)
 minetest.register_globalstep(thirsty.main_loop)
 
 dofile(minetest.get_modpath('thirsty')..'/components.lua')
-

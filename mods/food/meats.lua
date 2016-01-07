@@ -33,17 +33,15 @@ minetest.register_craftitem('food:'..craft, {
 	groups = group,
 	on_use = function(itemstack, user, pointed_thing)
 		local eat_func = minetest.item_eat(health)
-		local chance_level = math.random(0,10)
-		print ('chance is '..chance_level)
+--[[		local chance_level = math.random(0,10)
 		if chance_level < chance then
-			print ('should get sick')
 			local influencia = pathogen.get_pathogen('influencia')
 			pathogen.infect = function(influencia, singleplayer)
 		end
+--]]
 		thirsty.drink(user, hydration, 20) --controls the hydration gain
 		return eat_func(itemstack, user, pointed_thing) --controls the fullness gain
 		end
-	end
 })
 end
 

@@ -1,7 +1,7 @@
 local function register_flower(name)
 	minetest.register_decoration({
 		deco_type = "simple",
-		place_on = {"default:dirt_with_grass"},
+		place_on = {"group:soil"},
 		sidelen = 16,
 		noise_params = {
 			offset = 0,
