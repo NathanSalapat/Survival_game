@@ -1,3 +1,10 @@
+2016-01-13:
+Tweaked hunger and thirst speed.
+Added Goat mob.
+Changed around drops for animals.
+Added some new foods to food mod.
+A few tweaks to plants modpack so berry bushes should start appearing in game again.
+
 2015-12-10:
 Updated traps to work correctly for freeing and butchering animals.
 Tweaked some grouping for the traps so more baits will bring in game.

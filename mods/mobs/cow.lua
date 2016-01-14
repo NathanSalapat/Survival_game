@@ -24,10 +24,10 @@ mobs:register_mob("mobs:cow", {
 	run_velocity = 2,
 	jump = true,
 	drops = {
-		{name = "mobs:meat_raw",
-		chance = 1, min = 1, max = 3},
+		{name = "food:steak_raw",
+		chance = 1, min = 3, max = 6},
 		{name = "mobs:leather",
-		chance = 1, min = 1, max = 2},
+		chance = 1, min = 2, max = 4},
 	},
 	water_damage = 1,
 	lava_damage = 5,

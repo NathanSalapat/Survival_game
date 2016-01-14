@@ -23,7 +23,9 @@ mobs:register_mob("mobs:bunny", {
 	run_velocity = 2,
 	jump = true,
 	drops = {
-		{name = "mobs:meat_raw",
+		{name = "food:steak_raw",
+		chance = 1, min = 1, max = 1},
+		{name = "mobs:fur",
 		chance = 1, min = 1, max = 1},
 	},
 	water_damage = 1,

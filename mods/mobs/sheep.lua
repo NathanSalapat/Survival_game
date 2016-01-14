@@ -29,10 +29,10 @@ for _, col in ipairs(all_colours) do
 		walk_velocity = 1,
 		jump = true,
 		drops = {
-			{name = "mobs:meat_raw",
-			chance = 1, min = 1, max = 2},
+			{name = "food:steak_raw",
+			chance = 1, min = 1, max = 4},
 			{name = "wool:"..col,
-			chance = 1, min = 1, max = 1},
+			chance = 1, min = 1, max = 3},
 		},
 		water_damage = 1,
 		lava_damage = 5,
