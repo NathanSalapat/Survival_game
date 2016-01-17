@@ -39,8 +39,7 @@ unified_inventory.register_button("craftguide", {
 	tooltip = S("Crafting Guide")
 })
 
---[[
-unified_inventory.register_button("home_gui_set", {
+--[[unified_inventory.register_button("home_gui_set", {
 	type = "image",
 	image = "ui_sethome_icon.png",
 	tooltip = S("Set home position"),
@@ -142,7 +141,6 @@ unified_inventory.register_button("clear_inv", {
 	end,
 })
 --]]
-
 unified_inventory.register_page("craft", {
 	get_formspec = function(player, perplayer_formspec)
 
@@ -262,16 +260,14 @@ unified_inventory.register_page("craftguide", {
 			formspec = formspec.."image["..no_pos..","..formspecy..";1.1,1.1;ui_no.png]"
 			formspec = formspec..stack_image_button(item_pos, formspecy, 1.1, 1.1, "item_button_"
 			                   ..other_dir[dir].."_", ItemStack(item_name))
---[[			if player_privs.give == true then
-				formspec = formspec.."label[0,"..(formspecy + 2.10)..";" .. S("Give me:") .. "]"
+			if player_privs.give == true then
+--[[				formspec = formspec.."label[0,"..(formspecy + 2.10)..";" .. S("Give me:") .. "]"
 						.."button[0,  "..(formspecy + 2.7)..";0.6,0.5;craftguide_giveme_1;1]"
 						.."button[0.6,"..(formspecy + 2.7)..";0.7,0.5;craftguide_giveme_10;10]"
 						.."button[1.3,"..(formspecy + 2.7)..";0.8,0.5;craftguide_giveme_99;99]"
-			end
+--]]			end
 			return {formspec = formspec}
---]]
 		end
-
 
 		local craft_type = unified_inventory.registered_craft_types[craft.type] or
 				unified_inventory.craft_type_defaults(craft.type, {})
@@ -312,13 +308,14 @@ unified_inventory.register_page("craftguide", {
 					.."button[0.6,"..(formspecy + 1.5)..";0.7,0.5;craftguide_craft_10;10]"
 					.."button[1.3,"..(formspecy + 1.5)..";0.8,0.5;craftguide_craft_max;" .. S("All") .. "]"
 		end
---[[		if player_privs.give then
+		if player_privs.give then
+--[[
 			formspec = formspec.."label[0,"..(formspecy + 2.1)..";" .. S("Give me:") .. "]"
 					.."button[0,  "..(formspecy + 2.7)..";0.6,0.5;craftguide_giveme_1;1]"
 					.."button[0.6,"..(formspecy + 2.7)..";0.7,0.5;craftguide_giveme_10;10]"
 					.."button[1.3,"..(formspecy + 2.7)..";0.8,0.5;craftguide_giveme_99;99]"
-		end
---]]
+--]]		end
+
 		if alternates and alternates > 1 then
 			formspec = formspec.."label[5.5,"..(formspecy + 1.6)..";"..recipe_text[dir].." "
 					..tostring(alternate).." of "

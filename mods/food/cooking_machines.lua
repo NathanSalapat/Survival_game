@@ -10,6 +10,7 @@ cooking_machines_smoke = { --fuels that can be used in smoker. IRL you wouldn't 
 'valleys_mapgen:fir_tree',
 'default:pine_tree',
 'default:jungletree',
+'default:aspen',
 }
 
 --Node Definitions
