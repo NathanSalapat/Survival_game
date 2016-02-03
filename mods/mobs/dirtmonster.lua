@@ -32,6 +32,7 @@ mobs:register_mob("mobs:dirt_monster", {
 	water_damage = 1,
 	lava_damage = 5,
 	light_damage = 2,
+	fear_height = 3,
 	animation = {
 		speed_normal = 15,
 		speed_run = 15,
@@ -46,6 +47,6 @@ mobs:register_mob("mobs:dirt_monster", {
 	},
 })
 
-mobs:register_spawn("mobs:dirt_monster", {"default:dirt_with_grass", "ethereal:gray_dirt"}, 5, 0, 7000, 1, 31000)
+mobs:register_spawn("mobs:dirt_monster", {"default:dirt_with_grass", "ethereal:gray_dirt"}, 7, 0, 7000, 2, 31000)
 
 mobs:register_egg("mobs:dirt_monster", "Dirt Monster", "default_dirt.png", 1)

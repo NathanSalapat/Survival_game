@@ -1,3 +1,11 @@
+--Group groups
+local raw_meat = {meat=1, meat_raw=1}
+local cooked_meat = {meat=1, meat_cooked=1}
+local smoked_meat = {meat=1, meat_smoked=1}
+local spoiled_meat = {meat_spoiled=1}
+local salted_meat = {meat=1, meat_salted=1}
+local dried_meat = {meat=1, meat_cooked=1, meat_dried=1}
+
 --Foods Table
 local food_table = { --craft, desc, health, hydration, groups, chance(of getting food poisoning x/10)
 {'steak_raw', 'Raw Steak', .4, .25, raw_meat, 6},
@@ -23,14 +31,6 @@ for i in ipairs (food_table) do
 	local hydration = food_table[i][4]
 	local grup = food_table[i][5]
 	local chance = food_table[i][6]
-
---Group groups
-local raw_meat = {meat=1, meat_raw=1}
-local cooked_meat = {meat=1, meat_cooked=1}
-local smoked_meat = {meat=1, meat_smoked=1}
-local spoiled_meat = {meat_spoiled=1}
-local salted_meat = {meat=1, meat_salted=1}
-local dried_meat = {meat=1, meat_cooked=1, meat_dried=1}
 
 --Actual craftitem registration
 minetest.register_craftitem('food:'..craft, {

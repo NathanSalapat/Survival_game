@@ -32,6 +32,7 @@ mobs:register_mob("mobs:sand_monster", {
 	water_damage = 3,
 	lava_damage = 4,
 	light_damage = 0,
+	fear_height = 3,
 	animation = {
 		speed_normal = 15,
 		speed_run = 15,
@@ -46,6 +47,6 @@ mobs:register_mob("mobs:sand_monster", {
 	},
 })
 
-mobs:register_spawn("mobs:sand_monster", {"default:desert_sand"}, 20, 0, 7000, 1, 31000)
+mobs:register_spawn("mobs:sand_monster", {"default:desert_sand"}, 20, 0, 7000, 2, 31000)
 
 mobs:register_egg("mobs:sand_monster", "Sand Monster", "default_desert_sand.png", 1)

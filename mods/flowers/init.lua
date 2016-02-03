@@ -58,46 +58,55 @@ for _,item in pairs(flowers.datas) do
 end
 
 minetest.register_abm({
-	nodenames = {"group:flora"},
-	neighbors = {"default:dirt_with_grass", "default:desert_sand", "valleys_mapgen:silty", "valleys_mapgen:dirt_silty_with_grass", "valleys_mapgen:red_clay", "valleys_mapgen:dirt_clayey", "valleys_mapgen:dirt_clayey_with_grass", "valleys_mapgen:dirt_sandy", "valleys_mapgen:dirt_sandy_with_grass"},
-	interval = 5,
-	chance = 5,
+	nodenames = {"group:flower"},
+	neighbors = {"group:soil"},
+	interval = 50,
+	chance = 25,
 	action = function(pos, node)
 		pos.y = pos.y - 1
 		local under = minetest.get_node(pos)
 		pos.y = pos.y + 1
 		if under.name == "default:desert_sand" then
 			minetest.set_node(pos, {name="default:dry_shrub"})
-		elseif under.name ~= "group:soil" then
+		elseif minetest.get_item_group(under.name, 'soil') == 0 then
+			print 'not above group:soil'
 			return
 		end
 		
 		local light = minetest.get_node_light(pos)
-		if not light or light < 13 then
+		if not light or light < 10 then
+			print 'not enough light'
 			return
 		end
 		
 		local pos0 = {x=pos.x-4,y=pos.y-4,z=pos.z-4}
 		local pos1 = {x=pos.x+4,y=pos.y+4,z=pos.z+4}
 		if #minetest.find_nodes_in_area(pos0, pos1, "group:flora_block") > 0 then
+			print 'something is blocking growth'
 			return
 		end
 		
-		local flowers = minetest.find_nodes_in_area(pos0, pos1, "group:flora")
+		local flowers = minetest.find_nodes_in_area(pos0, pos1, "group:flower")
 		if #flowers > 3 then
+			print 'too much of group:flower in area'
 			return
 		end
 		
-		local seedling = minetest.find_nodes_in_area(pos0, pos1, "default:dirt_with_grass")
+		local seedling = minetest.find_nodes_in_area(pos0, pos1, "group:soil")
+		print 'should be checking is there is any group:soil around'
+		print (#seedling)
 		if #seedling > 0 then
 			seedling = seedling[math.random(#seedling)]
 			seedling.y = seedling.y + 1
 			light = minetest.get_node_light(seedling)
-			if not light or light < 13 then
+			if not light or light < 10 then
+				print 'not enough light'
 				return
 			end
 			if minetest.get_node(seedling).name == "air" then
+--			if minetest.get_item_group(seedling.name, 'flora') == 1 then
 				minetest.set_node(seedling, {name=node.name})
+				print 'planting flower.'
 			end
 		end
 	end,

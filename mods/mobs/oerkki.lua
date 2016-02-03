@@ -32,6 +32,7 @@ mobs:register_mob("mobs:oerkki", {
 	water_damage = 2,
 	lava_damage = 4,
 	light_damage = 1,
+	fear_height = 3,
 	animation = {
 		stand_start = 0,
 		stand_end = 23,
@@ -44,12 +45,12 @@ mobs:register_mob("mobs:oerkki", {
 		speed_normal = 15,
 		speed_run = 15,
 	},
-	replace_rate = 40,
+	replace_rate = 5,
 	replace_what = {"default:torch"},
 	replace_with = "air",
 	replace_offset = -1,
 })
 
-mobs:register_spawn("mobs:oerkki", {"default:stone"}, 5, 0, 7000, 1, -10)
+mobs:register_spawn("mobs:oerkki", {"default:stone"}, 7, 0, 7000, 2, -10)
 
 mobs:register_egg("mobs:oerkki", "Oerkki", "default_obsidian.png", 1)

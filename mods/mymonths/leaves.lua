@@ -163,7 +163,7 @@ minetest.register_abm({ --apples grow in fall
 	end
 })
 
-minetest.register_abm({ --apples change to leaves or sticks is not in season
+minetest.register_abm({ --apples change to leaves or sticks if not in season
 	nodenames = {'default:apple'},
 	interval = 1,
 	chance = 1,

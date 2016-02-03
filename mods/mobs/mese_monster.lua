@@ -30,6 +30,7 @@ mobs:register_mob("mobs:mese_monster", {
 	jump_height = 8,
 	fall_damage = 0,
 	fall_speed = -6,
+	stepheight = 2.1,
 	drops = {
 		{name = "default:mese_crystal",
 		chance = 9, min = 1, max = 3},
@@ -53,7 +54,7 @@ mobs:register_mob("mobs:mese_monster", {
 	},
 })
 
-mobs:register_spawn("mobs:mese_monster", {"default:stone"}, 5, 0, 5000, 1, -20)
+mobs:register_spawn("mobs:mese_monster", {"default:stone"}, 7, 0, 5000, 2, -20)
 
 mobs:register_egg("mobs:mese_monster", "Mese Monster", "default_mese_block.png", 1)
 

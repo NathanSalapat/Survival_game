@@ -46,6 +46,7 @@ mobs:register_mob("mobs:npc", {
 	view_range = 15,
 	owner = "",
 	order = "follow",
+	fear_height = 3,
 	animation = {
 		speed_normal = 30,
 		speed_run = 30,
@@ -61,35 +62,43 @@ mobs:register_mob("mobs:npc", {
 	on_rightclick = function(self, clicker)
 
 		-- feed to heal npc
-		if not mobs:feed_tame(self, clicker, 8, true, true) then
-			local item = clicker:get_wielded_item()
-			local name = clicker:get_player_name()
+		if mobs:feed_tame(self, clicker, 8, true, true) then
+			return
+		end
 
-			-- right clicking with gold lump drops random item from mobs.npc_drops
-			if item:get_name() == "default:gold_lump" then
-				if not minetest.setting_getbool("creative_mode") then
-					item:take_item()
-					clicker:set_wielded_item(item)
-				end
-				local pos = self.object:getpos()
-				pos.y = pos.y + 0.5
-				minetest.add_item(pos, {
-					name = mobs.npc_drops[math.random(1, #mobs.npc_drops)]
-				})
-				return
+		local item = clicker:get_wielded_item()
+
+		-- right clicking with gold lump drops random item from mobs.npc_drops
+		if item:get_name() == "default:gold_lump" then
+
+			if not minetest.setting_getbool("creative_mode") then
+				item:take_item()
+				clicker:set_wielded_item(item)
+			end
+
+			local pos = self.object:getpos()
+
+			pos.y = pos.y + 0.5
+
+			minetest.add_item(pos, {
+				name = mobs.npc_drops[math.random(1, #mobs.npc_drops)]
+			})
+
+			return
+		end
+
+		-- capture npc with net or lasso
+		mobs:capture_mob(self, clicker, 0, 5, 80, false, nil)
+
+		-- by right-clicking owner can switch npc between follow and stand
+		if self.owner and self.owner == clicker:get_player_name() then
+			if self.order == "follow" then
+				self.order = "stand"
 			else
-				-- if owner switch between follow and stand
-				if self.owner and self.owner == clicker:get_player_name() then
-					if self.order == "follow" then
-						self.order = "stand"
-					else
-						self.order = "follow"
-					end
-				end
+				self.order = "follow"
 			end
 		end
 
-		mobs:capture_mob(self, clicker, 0, 5, 80, false, nil)
 	end,
 })
 

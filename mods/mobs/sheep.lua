@@ -6,7 +6,7 @@ local all_colours = {
 
 -- Sheep by PilzAdam
 
-for _, col in ipairs(all_colours) do
+for _, col in pairs(all_colours) do
 
 	mobs:register_mob("mobs:sheep_"..col, {
 		type = "animal",
@@ -14,7 +14,8 @@ for _, col in ipairs(all_colours) do
 		hp_min = 8,
 		hp_max = 10,
 		armor = 200,
-		collisionbox = {-0.4, -1, -0.4, 0.4, 0.3, 0.4},
+		--collisionbox = {-0.4, -1, -0.4, 0.4, 0.3, 0.4},
+		collisionbox = {-0.5, -1, -0.5, 0.5, 0.3, 0.5},
 		visual = "mesh",
 		mesh = "mobs_sheep.b3d",
 		textures = {
@@ -27,12 +28,14 @@ for _, col in ipairs(all_colours) do
 			random = "mobs_sheep",
 		},
 		walk_velocity = 1,
+		run_velocity = 2,
+		runaway = true,
 		jump = true,
 		drops = {
-			{name = "food:steak_raw",
-			chance = 1, min = 1, max = 4},
+			{name = "mobs:meat_raw",
+			chance = 1, min = 1, max = 2},
 			{name = "wool:"..col,
-			chance = 1, min = 1, max = 3},
+			chance = 1, min = 1, max = 1},
 		},
 		water_damage = 1,
 		lava_damage = 5,
@@ -47,10 +50,11 @@ for _, col in ipairs(all_colours) do
 		},
 		follow = {"farming:wheat", "default:grass_5"},
 		view_range = 8,
-		replace_rate = 50,
+		replace_rate = 10,
 		replace_what = {"default:grass_3", "default:grass_4", "default:grass_5", "farming:wheat_8"},
 		replace_with = "air",
 		replace_offset = -1,
+		fear_height = 3,
 		on_rightclick = function(self, clicker)
 			local shpcolor = string.split(self.name,"_")[2]
 			if shpcolor =="dark" then
@@ -102,7 +106,10 @@ for _, col in ipairs(all_colours) do
 
 			--are we coloring?
 			if itemname:find("dye:") then
-				if self.gotten == false and self.child == false and self.tamed == true and name == self.owner then
+				if self.gotten == false
+				and self.child == false
+				and self.tamed == true
+				and name == self.owner then
 					local col = string.split(itemname,":")[2]
 					for _,c in pairs(all_colours) do
 						if c == col then
@@ -133,7 +140,7 @@ for _, col in ipairs(all_colours) do
 
 end
 
-mobs:register_spawn("mobs:sheep_white", {"default:dirt_with_grass", "ethereal:green_dirt"}, 20, 10, 15000, 1, 31000)
+mobs:register_spawn("mobs:sheep_white", {"default:dirt_with_grass", "ethereal:green_dirt"}, 20, 10, 15000, 2, 31000)
 
 -- compatibility (item and entity)
 minetest.register_alias("mobs:sheep", "mobs:sheep_white")

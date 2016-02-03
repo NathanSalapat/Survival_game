@@ -14,7 +14,6 @@ mobs:register_mob("mobs:pumba", {
 	collisionbox = {-0.4, -0.01, -0.4, 0.4, 1, 0.4},
 	visual = "mesh",
 	mesh = "mobs_pumba.x",
-	drawtype = 'front',
 	textures = {
 		{"mobs_pumba.png"},
 	},
@@ -29,14 +28,13 @@ mobs:register_mob("mobs:pumba", {
 	follow = {"default:apple", "farming:potato"},
 	view_range = 10,
 	drops = {
-		{name = "food:pork_raw",
+		{name = "mobs:pork_raw",
 		chance = 1, min = 1, max = 3},
-		{name = "mobs:leater",
-		chance = 1, min = 1, max = 2},
 	},
 	water_damage = 1,
 	lava_damage = 5,
 	light_damage = 0,
+	fear_height = 2,
 	animation = {
 		speed_normal = 15,
 		stand_start = 25,
@@ -47,12 +45,14 @@ mobs:register_mob("mobs:pumba", {
 		punch_end = 100,
 	},
 	on_rightclick = function(self, clicker)
-		mobs:feed_tame(self, clicker, 8, true, true)
+		if mobs:feed_tame(self, clicker, 8, true, true) then
+			return
+		end
 		mobs:capture_mob(self, clicker, 0, 5, 50, false, nil)
 	end,
 })
 
-mobs:register_spawn("mobs:pumba", {"ethereal:mushroom_dirt", "default:dirt_with_dry_grass", "valley_mapgen:silt"}, 20, 10, 15000, 1, 31000)
+mobs:register_spawn("mobs:pumba", {"ethereal:mushroom_dirt", "default:dirt_with_dry_grass"}, 20, 10, 15000, 2, 31000)
 
 mobs:register_egg("mobs:pumba", "Warthog", "wool_pink.png", 1)
 

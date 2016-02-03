@@ -1,12 +1,19 @@
+-- nametag
+minetest.register_craftitem("mobs:nametag", {
+	description = "Nametag",
+	inventory_image = "mobs_nametag.png",
+})
+
+core.register_craft({
+	type = "shapeless",
+	output = "mobs:nametag",
+	recipe = {"default:paper", "dye:black", "farming:string"},
+})
+
 -- leather
 minetest.register_craftitem("mobs:leather", {
 	description = "Leather",
 	inventory_image = "mobs_leather.png",
-})
-
-minetest.register_craftitem("mobs:fur", {
-	description = "Fur",
-	inventory_image = "mobs_fur.png",
 })
 
 -- raw meat
