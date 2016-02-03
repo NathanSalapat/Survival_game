@@ -2,14 +2,17 @@
 -- Kitten by Jordach / BFD
 
 mobs:register_mob("mobs:kitten", {
-	type = "animal",
-	passive = true,
+	type = "monster",
+	passive = false,
+	attack_type = "dogfight",
+	reach = 2,
+	damage = 2,
 	hp_min = 5,
 	hp_max = 10,
 	armor = 200,
-	collisionbox = {-0.3, -0.3, -0.3, 0.3, 0.1, 0.3},
+	collisionbox = {-0.5, -0.5, -0.5, 0.5, 0.3, 0.5},
 	visual = "mesh",
-	visual_size = {x = 0.5, y = 0.5},
+	visual_size = {x = 1, y = 1},
 	mesh = "mobs_kitten.b3d",
 	textures = {
 		{"mobs_kitten_striped.png"},
@@ -26,8 +29,10 @@ mobs:register_mob("mobs:kitten", {
 	runaway = true,
 	jump = false,
 	drops = {
-		{name = "farming:string",
-		chance = 1, min = 1, max = 1},
+		{name = "mobs:fur",
+		chance = 1, min = 2, max = 4},
+		{name = "food:steak_raw",
+		chance = 1, min = 2, max = 4},
 	},
 	water_damage = 1,
 	lava_damage = 5,

@@ -14,21 +14,22 @@ dofile(path.."/warthog.lua") -- KrupnoPavel
 dofile(path.."/bee.lua") -- KrupnoPavel
 dofile(path.."/bunny.lua") -- ExeterDad
 dofile(path.."/kitten.lua") -- Jordach/BFD
+dofile(path.."/goat.lua") -- DonBatman/Nathan.S
 
 -- Monsters
 
-dofile(path.."/dirtmonster.lua") -- PilzAdam
-dofile(path.."/dungeonmaster.lua")
-dofile(path.."/oerkki.lua")
-dofile(path.."/sandmonster.lua")
-dofile(path.."/stonemonster.lua")
-dofile(path.."/treemonster.lua")
-dofile(path.."/lava_flan.lua") -- Zeg9
-dofile(path.."/mese_monster.lua")
+--dofile(path.."/dirtmonster.lua") -- PilzAdam
+--dofile(path.."/dungeonmaster.lua")
+--dofile(path.."/oerkki.lua")
+--dofile(path.."/sandmonster.lua")
+--dofile(path.."/stonemonster.lua")
+--dofile(path.."/treemonster.lua")
+--dofile(path.."/lava_flan.lua") -- Zeg9
+--dofile(path.."/mese_monster.lua")
 dofile(path.."/spider.lua") -- AspireMint
 
 -- NPC
-dofile(path.."/npc.lua") -- TenPlus1
+--dofile(path.."/npc.lua") -- TenPlus1
 
 -- Mob Items
 dofile(path.."/crafts.lua")

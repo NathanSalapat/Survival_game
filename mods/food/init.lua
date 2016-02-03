@@ -9,3 +9,5 @@ dofile(minetest.get_modpath('food')..'/recipes.lua') --Multi ingredient foods.
 --dofile(minetest.get_modpath('food')..'/spoils.lua') --Mechanics for food to spoil
 dofile(minetest.get_modpath('food')..'/traps.lua') --capture and eat yummy animals.
 
+
+food = {}

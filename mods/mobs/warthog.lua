@@ -28,8 +28,10 @@ mobs:register_mob("mobs:pumba", {
 	follow = {"default:apple", "farming:potato"},
 	view_range = 10,
 	drops = {
-		{name = "mobs:pork_raw",
+		{name = "food:pork_raw",
 		chance = 1, min = 1, max = 3},
+		{name = "mobs:leather",
+		chance = 1, min = 1, max = 2},
 	},
 	water_damage = 1,
 	lava_damage = 5,
@@ -52,7 +54,7 @@ mobs:register_mob("mobs:pumba", {
 	end,
 })
 
-mobs:register_spawn("mobs:pumba", {"ethereal:mushroom_dirt", "default:dirt_with_dry_grass"}, 20, 10, 15000, 2, 31000)
+mobs:register_spawn("mobs:pumba", {"ethereal:mushroom_dirt", "default:dirt_with_dry_grass", "valley_mapgen:silt"}, 20, 10, 15000, 2, 31000)
 
 mobs:register_egg("mobs:pumba", "Warthog", "wool_pink.png", 1)
 

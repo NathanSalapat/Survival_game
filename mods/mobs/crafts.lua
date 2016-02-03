@@ -16,6 +16,11 @@ minetest.register_craftitem("mobs:leather", {
 	inventory_image = "mobs_leather.png",
 })
 
+minetest.register_craftitem("mobs:fur", {
+	description = "Fur",
+	inventory_image = "mobs_fur.png",
+})
+
 -- raw meat
 minetest.register_craftitem("mobs:meat_raw", {
 	description = "Raw Meat",

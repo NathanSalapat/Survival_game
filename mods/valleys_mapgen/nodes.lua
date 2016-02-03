@@ -262,7 +262,7 @@ for _, tree in ipairs(vmg.treelist) do
 		tiles = { "vmg_"..tree.leaf_tile..".png"},
 		paramtype = "light",
 		is_ground_content = false,
-		groups = {snappy=3, leafdecay=7, flammable=2, leaves=1},
+		groups = {snappy=3, leafdecay=7, flammable=2, leaves=1, flora=1},
 		drop = {
 			max_items = 1,
 			items = {
