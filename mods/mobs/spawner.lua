@@ -50,11 +50,11 @@ minetest.register_node("mobs:spawner", {
 		local num = tonumber(comm[4]) -- total mobs in area
 		local pla = tonumber(comm[5])-- player distance (0 to disable)
 
-		if mob and mob ~= ""
+		if mob and mob ~= "" and mobs.spawning_mobs[mob] == true
 		and num and num >= 0 and num <= 10
 		and mlig and mlig >= 0 and mlig <= 15
 		and xlig and xlig >= 0 and xlig <= 15
-		and pla >=0 and pla <= 20 then
+		and pla and pla >=0 and pla <= 20 then
 
 			meta:set_string("command", fields.text)
 			meta:set_string("infotext", "Spawner Active (" .. mob .. ")")

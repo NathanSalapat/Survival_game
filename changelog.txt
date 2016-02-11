@@ -1,3 +1,8 @@
+2016-02-11:
+Updated mobs again.
+Fixed plantlife modpack so the berry bushes actually spawn in world, I think it was a humidity problem.
+Removed the pathogen mod, as I heard it caused some crashes and it currently wasn't doing anything.
+
 2016-02-03:
 Updated mobs to latest version from TenPlus1
 

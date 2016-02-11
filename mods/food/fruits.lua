@@ -6,12 +6,18 @@ local s_fruit = {
 
 --Group groups
 local g_fruit = {fleshy=3,dig_immediate=3,flammable=2,leafdecay=3,leafdecay_drop=1,flora=1}
+local g_berry = {flora=1, berry=1}
 
 --Foods Table
 local food_table = { --craft, desc, health, hydration, selection box, groups
 {'apple', 'Apple', .25, .3, s_fruit, g_fruit},
 {'pear', 'Pear', .25, .3, s_fruit, g_fruit},
 {'banana', 'Banana', .2, .15, s_fruit, g_fruit},
+{'blackberry', 'Blackberry', .1, .1, s_fruit, g_berry},
+{'blueberry', 'Blueberry', .1, .1, s_fruit, g_berry},
+{'raspberry', 'Raspberry', .1, .1, s_fruit, g_berry},
+{'gooseberry', 'Gooseberry', .1, .1, s_fruit, g_berry},
+
 }
 
 

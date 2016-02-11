@@ -54,7 +54,7 @@ plantlife_bushes.after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		-- only bushes that have grown fruits can actually give fruits
 		if can_harvest then
 			local amount = "4"
-			harvested = "bushes:" .. bush_name .. " " .. amount
+			harvested = "food:" .. bush_name .. " " .. amount
 		end
 
 	-- something like a shovel
@@ -126,17 +126,20 @@ minetest.register_abm({
 	interval = 500,
 	chance = 5,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-
+		
 		local meta = minetest.get_meta(pos)
 		local bush_name = meta:get_string("bush_type")
 
-		if bush_name and bush_name ~= "" then
-			local dirtpos = {x = pos.x, y = pos.y-1, z = pos.z}
-			local dirt = minetest.get_node(dirtpos)
-			local is_soil = minetest.get_item_group(dirt.name, "soil") or minetest.get_item_group(dirt.name, "potting_soil")
+		if mymonths.month == 'June' or mymonths.month == 'July' or mymonths.month == 'August' then
 
-			if is_soil and (dirt.name == "farming:soil_wet" or math.random(1,3) == 1) then
-				minetest.set_node( pos, {name = "bushes:" .. bush_name .. "_bush"})
+			if bush_name and bush_name ~= "" then
+				local dirtpos = {x = pos.x, y = pos.y-1, z = pos.z}
+				local dirt = minetest.get_node(dirtpos)
+				local is_soil = minetest.get_item_group(dirt.name, "soil") or minetest.get_item_group(dirt.name, "potting_soil")
+
+				if is_soil and (dirt.name == "farming:soil_wet" or math.random(1,3) == 1) then
+					minetest.set_node( pos, {name = "bushes:" .. bush_name .. "_bush"})
+				end
 			end
 		end
 	end

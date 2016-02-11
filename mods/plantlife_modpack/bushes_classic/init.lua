@@ -8,21 +8,19 @@ local S = plantslib.intllib
 bushes_classic = {}
 
 bushes_classic.bushes = {
-    "strawberry",
 	"blackberry",
 	"blueberry",
 	"raspberry",
 	"gooseberry",
-	"mixed_berry"
+	"mixed_berry",
 }
 
 bushes_classic.bushes_descriptions = {
-    "Strawberry",
 	"Blackberry",
 	"Blueberry",
 	"Raspberry",
 	"Gooseberry",
-	"Mixed Berry"
+	"Mixed Berry",
 }
 
 bushes_classic.spawn_list = {}
@@ -31,7 +29,7 @@ dofile(minetest.get_modpath('bushes_classic') .. '/cooking.lua')
 dofile(minetest.get_modpath('bushes_classic') .. '/nodes.lua')
 
 plantslib:spawn_on_surfaces({
-	spawn_delay = 3600,
+	spawn_delay = 600,
 	spawn_plants = bushes_classic.spawn_list,
 	avoid_radius = 10,
 	spawn_chance = 100,
@@ -44,6 +42,8 @@ plantslib:spawn_on_surfaces({
 		"farming:soil_wet",
 		"valleys_mapgen:dirt_with_grass",
 		"valleys_mapgen:clayey_with_grass",
+		"valleys_mapgen:dirt_sandy_with_grass",
+		"valleys_mapgen:dirt_silty_with_grass",
 	},
 	avoid_nodes = {"group:bush"},
 	seed_diff = 545342534, -- chosen by a fair mashing of the keyboard - guaranteed to be random :P
@@ -51,10 +51,8 @@ plantslib:spawn_on_surfaces({
 	light_min = 10,
 	temp_min = 0.15, -- approx 20C
 	temp_max = -0.15, -- approx 35C
-	humidity_min = 0, -- 50% RH
-	humidity_max = -1, -- 100% RH
+--	humidity_min = 0, -- 50% RH
+--	humidity_max = -1, -- 100% RH
 })
-
-minetest.register_alias("bushes:basket_pies", "bushes:basket_strawberry")
 
 print(S("[Bushes] Loaded."))
