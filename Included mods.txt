@@ -28,7 +28,6 @@ hunger
 intersecting
 item_drop
 mobs
-mods.txt
 more_fire
 mymonths
 mytreasure

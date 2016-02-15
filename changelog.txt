@@ -1,3 +1,6 @@
+2016-02-15:
+Updated the HUD/Hunger mod.
+
 2016-02-11:
 Updated mobs again.
 Fixed plantlife modpack so the berry bushes actually spawn in world, I think it was a humidity problem.
