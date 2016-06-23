@@ -12,7 +12,7 @@ minetest.register_abm({ --grass spreading
 		'valleys_mapgen:dirt_sandy_with_grass',
 		'valleys_mapgen:dirt_clayey_with_grass'},
 	neighbors = {'group:grass'},
-	interval = 20,
+	interval = 30,
 	chance = 40,
 	action = function(pos, node)
 		local node_above = minetest.get_node({x=pos.x,y=pos.y+1,z=pos.z})
@@ -24,7 +24,7 @@ minetest.register_abm({ --grass spreading
 
 minetest.register_abm({ --grass growing
 	nodenames = {'group:grass'},
-	interval = 40,
+	interval = 60,
 	chance = 20,
 	action = function(pos, node)
 		for i in ipairs (grass_table) do

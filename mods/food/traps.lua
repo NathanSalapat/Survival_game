@@ -141,8 +141,10 @@ minetest.register_node('food:snare_raided', { --trap with game
 minetest.register_craft({
 		output = 'food:snare',
 		recipe = {
-			{'more_fire:flintstone', 'more_fire:flintstone', 'more_fire:flintstone'},
+			{'default:flint', 'default:flint', 'default:flint'},
 			{'group:stick', 'farming:cotton', 'group:stick'},
 			{'group:stick', 'group:stick', 'default:stick'},
 			}
 })
+
+minetest.register_alias("more_fire:flintstone", "default:flint")

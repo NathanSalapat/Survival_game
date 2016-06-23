@@ -130,7 +130,7 @@ minetest.register_abm({
 		local meta = minetest.get_meta(pos)
 		local bush_name = meta:get_string("bush_type")
 
-		if mymonths.month == 'June' or mymonths.month == 'July' or mymonths.month == 'August' then
+		if mymonths.month_counter == 6 or mymonths.month_counter == 7 or mymonths.month_counter == 8 then
 
 			if bush_name and bush_name ~= "" then
 				local dirtpos = {x = pos.x, y = pos.y-1, z = pos.z}

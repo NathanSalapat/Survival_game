@@ -1,6 +1,6 @@
 Mod is by Don and Nathan
 
-Mymonths is licenced as WTFPL
+Mymonths is licenced as DWYWPL
 
 Fall leaf textures are modified from original default textures by Cisoun (WTFPL) and Paramat. (CC BY-SA 3.0)
 The rain and snow code comes from the weather mod
@@ -11,6 +11,8 @@ by Jeija
 - Textures:
   - Snow cover: WTFPL
   - Rain / Snow: CC-BY-SA 3.0, credit goes to TeddyDesTodes, from his weather branch at https://github.com/TeddyDesTodes/minetest/tree/weather
+- Sound Effects:
+  - mymonths_rain & mymonths_rain1: CC0 by Q.K.
   
 This mod adds months, weeks and days to Minetest.
 A Minetest year has 12 months with 2 weeks per month. Each week has 7 days. 
