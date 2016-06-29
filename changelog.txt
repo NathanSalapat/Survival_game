@@ -1,3 +1,9 @@
+2016-06-29:
+Fixed issue with 3d_armor and not having leather armor.
+
+2016-06-22:
+Updated Mobs API, Goblins, and 3D_armor
+
 2016-02-15:
 Updated the HUD/Hunger mod.
 
