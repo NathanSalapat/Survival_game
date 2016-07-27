@@ -11,7 +11,7 @@ plantlife_bushes.after_dig_node = function(pos, oldnode, oldmetadata, digger)
 	-- find out which bush type we are dealing with
 	local bush_name   = ""
 	local can_harvest = false
-	
+
 	if oldnode.name == "bushes:fruitless_bush" then
 		-- this bush has not grown fruits yet (but will eventually)
 		bush_name = oldmetadata.fields.bush_type
@@ -53,7 +53,7 @@ plantlife_bushes.after_dig_node = function(pos, oldnode, oldmetadata, digger)
 		-- construct the stack of fruits the player will get
 		-- only bushes that have grown fruits can actually give fruits
 		if can_harvest then
-			local amount = "4"
+			local amount = "10"
 			harvested = "food:" .. bush_name .. " " .. amount
 		end
 
@@ -123,10 +123,10 @@ end
 minetest.register_abm({
 	nodenames = {"bushes:fruitless_bush"},
 	neighbors = {"group:soil", "group:potting_soil"},
-	interval = 500,
-	chance = 5,
+	interval = 100,
+	chance = 4,
 	action = function(pos, node, active_object_count, active_object_count_wider)
-		
+
 		local meta = minetest.get_meta(pos)
 		local bush_name = meta:get_string("bush_type")
 
@@ -213,5 +213,3 @@ minetest.register_node(":bushes:basket_empty", {
 	paramtype2 = "facedir",
     groups = { dig_immediate = 3 },
 })
-
-

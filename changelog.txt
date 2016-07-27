@@ -1,3 +1,10 @@
+2016-07-27:
+Added variations of poultry.
+Added some missing textures.
+Fixed issue with traps not working properly.
+Increased hunger rate, so food is more important.
+Changed the berry bushes to grow fruit more often in the summer.
+
 2016-06-29:
 Fixed issue with 3d_armor and not having leather armor.
 

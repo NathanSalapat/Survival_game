@@ -278,7 +278,6 @@ function default.register_fence(name, def)
 	minetest.register_node(name, def)
 end
 
-
 --
 -- Leafdecay
 --

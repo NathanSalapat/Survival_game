@@ -34,12 +34,16 @@ for i, berry in ipairs(bushes_classic.bushes) do
 		inventory_image = "bushes_"..berry.."_pie_raw.png",
 		on_use = minetest.item_eat(4),
 	})
-	
+
 	minetest.register_craftitem(":bushes:"..berry, {
 		description = desc,
 		inventory_image = "bushes_"..berry..".png",
 		groups = {berry = 1, [berry] = 1},
-		on_use = minetest.item_eat(1),
+		on_use = function(itemstack, user, pointed_thing)
+         local eat_func = minetest.item_eat(.25)
+		      thirsty.drink(user, .5, 20) --controls the hydration gain
+		      return eat_func(itemstack, user, pointed_thing) --controls the fullness gain
+		   end
 	})
 
 	minetest.register_craft({
@@ -100,5 +104,3 @@ minetest.register_craft({
 	{ "group:berry", "group:berry", "group:berry" },
 	},
 })
-
-

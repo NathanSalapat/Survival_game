@@ -1,7 +1,7 @@
 local meats = {
 {'steak'},
 {'pork'},
-{'fowl'},
+{'poultry'},
 }
 
 for i in ipairs (meats) do
@@ -17,7 +17,7 @@ end
 
 minetest.register_craft({
 		type = 'cooking',
-		output = 'food:hearty_stew_cooked',
-		recipe = 'food:hearty_stew_raw',
+		output = 'food:meaty_stew_cooked',
+		recipe = 'food:meaty_stew_raw',
 		cooktime = 30,
 })
