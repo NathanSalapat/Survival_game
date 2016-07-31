@@ -11,7 +11,7 @@ ARMOR_MATERIALS = {
 	steel = "default:steel_ingot",
 	bronze = "default:bronze_ingot",
 	gold = "default:gold_ingot",
-	leather = "mobs:leather",
+	leather = "animals:leather",
 }
 ARMOR_FIRE_PROTECT = minetest.get_modpath("ethereal") ~= nil
 ARMOR_FIRE_NODES = {
@@ -229,7 +229,7 @@ end
 
 armor.update_armor = function(self, player)
 	-- Legacy support: Called when armor levels are changed
-	-- Other mods can hook on to this function, see hud mod for example 
+	-- Other mods can hook on to this function, see hud mod for example
 end
 
 armor.get_player_skin = function(self, name)
@@ -402,7 +402,7 @@ minetest.register_on_joinplayer(function(player)
 	for i=1, 6 do
 		local stack = player_inv:get_stack("armor", i)
 		armor_inv:set_stack("armor", i, stack)
-	end	
+	end
 	armor.def[name] = {
 		state = 0,
 		count = 0,

@@ -1,3 +1,10 @@
+2016-07-30:
+Tons of changes, updated several mods.
+Added Farming Plus.
+Made some updates to the food systems. New textures.
+Moved animals into a new Animals mod, with all customized drops.
+Updated doors, so now there are the gates from default.
+
 2016-07-27:
 Added variations of poultry.
 Added some missing textures.

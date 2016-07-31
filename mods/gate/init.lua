@@ -43,7 +43,7 @@ local function gate_rightclick(pos, node)
 	else
 		minetest.sound_play("door_close", {gain = 0.3, max_hear_distance = 10})
 		minetest.set_node(pos, {name="gate:fencegate", param2=node.param2})
-	end	
+	end
 end
 
 local wood_rotated = "default_wood.png^[transformR90"
@@ -111,13 +111,6 @@ minetest.register_node("gate:fencegate", {
 	},
 	on_rightclick = gate_rightclick,
 })
-
-minetest.override_item("default:fence_wood", {node_box = {
-		type = "fixed",
-		fixed = {
-			{-0.2, -0.5, -0.2, 0.2, 1.0, 0.2},
-		},
-	}})
 
 minetest.register_on_placenode(can_place)
 

@@ -5,6 +5,7 @@ local smoked_meat = {meat=1, meat_smoked=1}
 local spoiled_meat = {meat_spoiled=1}
 local salted_meat = {meat=1, meat_salted=1}
 local dried_meat = {meat=1, meat_cooked=1, meat_dried=1}
+local egg = {egg=1,}
 
 --Foods Table
 local food_table = { --craft, desc, health, hydration, groups, chance(of getting food poisoning x/10)
@@ -23,6 +24,8 @@ local food_table = { --craft, desc, health, hydration, groups, chance(of getting
 {'poultry_raw', 'Raw Poultry', .5, .2, raw_meat, 9},
 {'poultry_cooked', 'Cooked Poultry', .5, .1, cooked_meat, 0},
 {'poultry_spoiled', 'Spoiled Poultry', .5, .2, spoiled_meat, 10},
+{'egg_raw', 'Raw Egg', .2, .2, egg, 6},
+{'egg_fried', 'Cooked Egg', .3, .1, egg, 0}
 }
 
 

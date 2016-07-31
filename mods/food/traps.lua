@@ -81,24 +81,25 @@ minetest.register_node('food:snare_game', { --trap with game
 		for i=1, inv:get_size('game') do
 			local stack = inv:get_stack('game', i)
 			local captured_item = stack:get_name()
-			print ('this is what was captured')
-			print (captured_item)
 			if fields ['butcher'] then
 				meta:set_string('formspec', trap_empty)
 				meta:set_string('infotext', 'Simple Snare')
 				minetest.swap_node(pos, {name = 'food:snare'})
 				inv:set_stack('bait', 1,'')
 				inv:set_stack('game', 1,'')
-				if captured_item == 'mobs_animal:bunny' then
-					sender:get_inventory():add_item('main', 'food:steak_raw 2', 'mobs_animal:leather 2')
-				elseif captured_item == 'mobs_animal:rat' then
+				if captured_item == 'animals:bunny' then
+					sender:get_inventory():add_item('main', 'food:steak_raw 2')
+               sender:get_inventory():add_item('main', 'animals:leather 1')
+				elseif captured_item == 'animals:rat' then
 					sender:get_inventory():add_item('main', 'food:steak_raw 1')
-				elseif captured_item == 'mobs_animal:chicken' then
+				elseif captured_item == 'animals:chicken' then
 					sender:get_inventory():add_item('main', 'food:poultry_raw 2')
+               sender:get_inventory():add_item('main', 'animals:feather 6')
 				elseif captured_item == 'goblins:goblin_king' then
 					minetest.add_entity(pos, captured_item)
-				elseif captured_item == 'mobs_animal:pumba' then
-					sender:get_inventory():add_item('main', 'food:pork_raw 6', 'mobs:leather 4')
+				elseif captured_item == 'animals:pumba' then
+					sender:get_inventory():add_item('main', 'food:pork_raw 6')
+               sender:get_inventory():add_item('main', 'animals:leather 3')
 				end
 			end
 			if fields ['free_catch'] then
@@ -146,5 +147,3 @@ minetest.register_craft({
 			{'group:stick', 'group:stick', 'default:stick'},
 			}
 })
-
-minetest.register_alias("more_fire:flintstone", "default:flint")

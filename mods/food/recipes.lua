@@ -1,7 +1,7 @@
 local meats = {
 {'steak'},
 {'pork'},
-{'fowl'},
+{'poultry'},
 }
 
 for i in ipairs (meats) do
@@ -25,5 +25,3 @@ minetest.register_craft({
 			{'', 'thirst:wooden_bowl', ''},
 			}
 })
-
-

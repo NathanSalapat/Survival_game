@@ -11,21 +11,25 @@ minetest.register_abm({ --Brings animals into traps
 		for i=1, inv:get_size('bait') do
 			local stack = inv:get_stack('bait', i)
 			local bait = stack:get_name()
-			if minetest.get_node_group(bait, 'flora') > 0 then
+			if minetest.get_node_group(bait, 'seed') > 0 then
+            -- There must be a better way of doing these changes than calling them each time.
 				meta:set_string('formspec', trap_game)
 				meta:set_string('infotext', 'Simple Snare with Game')
 				minetest.swap_node(pos, {name = 'food:snare_game'})
 				--Randomly select something to populate the trap with.
-				local critter = math.random(0,2)
+				local critter = math.random(0,1)
 					if critter == 0 then
-						inv:set_stack('game', 1, 'mobs:bunny')
+						inv:set_stack('game', 1, 'animals:chicken')
 					end
 					if critter == 1 then
-						inv:set_stack('game', 1, 'mobs:chicken')
+						inv:set_stack('game', 1, 'animals:rat')
 					end
-					if critter == 2 then
-						inv:set_stack('game', 1, 'mobs:rat')
-					end
+				return
+         elseif minetest.get_node_group(bait, 'flora') > 0 then
+				meta:set_string('formspec', trap_game)
+				meta:set_string('infotext', 'Simple Snare with Game')
+				minetest.swap_node(pos, {name = 'food:snare_game'})
+				inv:set_stack('game', 1, 'animals:bunny')
 				return
 			elseif bait == 'default:gold_lump' then --if trap contains gold capture Goblin.
 				meta:set_string('formspec', trap_game)
@@ -37,7 +41,7 @@ minetest.register_abm({ --Brings animals into traps
 				meta:set_string('formspec', trap_game)
 				meta:set_string('infotext', 'Simple Snare with Game')
 				minetest.swap_node(pos, {name = 'food:snare_game'})
-				inv:set_stack('game', 1, 'mobs:pumba')
+				inv:set_stack('game', 1, 'animals:pumba')
 				return
 			end
 		end

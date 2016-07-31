@@ -21,3 +21,10 @@ minetest.register_craft({
 		recipe = 'food:meaty_stew_raw',
 		cooktime = 30,
 })
+
+minetest.register_craft({
+   type = 'cooking',
+   output = 'food:egg_fried',
+   recipe = 'food:egg_raw',
+   cooktime = 3,
+})

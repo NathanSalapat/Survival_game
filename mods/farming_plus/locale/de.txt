@@ -1,0 +1,78 @@
+# Translation by Xanthin
+# Added to (hopefully correctly) by MTDad
+
+### bananas.lua ###
+Banana Tree Sapling = Bananenbaumsetzling
+Banana = Banane
+
+### carrots.lua ###
+Carrot Seeds = Karottensamen
+Carrot = Karotte
+
+### cocoa.lua ###
+Cocoa Tree Sapling = Kakaobaumsetzling
+Cocoa = Kakao
+Cocoa Bean = Kakaobohne
+
+### corn.lua ###
+Corn Seeds = Maiskorn
+Corn = Mais
+
+### cucumber.lua ###
+Cucumber Seeds = Gurkensamen
+Cucumber = Gurken
+
+### lemons.lua ###
+Lemon Seeds = Zitronensamen
+Lemon = Zitrone
+
+### melon.lua ###
+Melon Seeds = Melonensamen
+Melon Slice = Scheibe Melone
+
+### oranges.lua ###
+Orange Seeds = Orangensamen
+Orange = Orange
+
+### peaches.lua ###
+Peach Pits = Pfirsichkernen
+Peach = Pfirsich
+
+### potatoes.lua ###
+Potato Seeds = Kartoffelsamen
+Potato = Kartoffel
+
+### pumpkin.lua ###
+Pumpkin Seed = Kuerbissamen
+Pumpkin = Kuerbis
+Pumpkin Face = Kuerbislaterne
+Pumpkin Face With Light = Leuchtende Kuerbislaterne
+Big Pumpkin = Riesen-Kuerbis
+Scarecrow = Vogelscheuche
+Scarecrow With Light = Leuchtende Vogelscheuche
+Pumpkin Bread = Kuerbisbrot
+Pumpkin Flour = Kuerbismehl
+
+### raspberries.lua ###
+Raspberry Starter = Himbeeresetzling
+Raspberry = Himbeere
+
+### rhubarb.lua ###
+Rhubarb Starter = Rhabarbersetzling
+Rhubarb = Rhabarber
+
+### strawberries.lua ###
+Strawberry Starter = Erdbeeresetzling
+Strawberry = Erdbeere
+
+### tomatoes.lua ###
+Tomato Seeds = Tomatensamen
+Tomato = Tomate
+
+### walnut.lua ###
+Walnut = Walnuss
+
+### init.lua ###
+
+### weed.lua ###
+Weed = Unkraut

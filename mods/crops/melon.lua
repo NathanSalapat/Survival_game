@@ -29,7 +29,7 @@ minetest.register_node("crops:melon_seed", {
 	walkable = false,
 	paramtype = "light",
 	node_placement_prediction = "crops:melon_plant_1",
-	groups = { snappy=3,flammable=3,flora=1,attached_node=1 },
+	groups = { snappy=3,flammable=3,flora=1,attached_node=1,seed=1 },
 
 	on_place = function(itemstack, placer, pointed_thing)
 		local under = minetest.get_node(pointed_thing.under)

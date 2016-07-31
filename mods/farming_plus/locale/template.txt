@@ -1,0 +1,78 @@
+# Template
+
+### bananas.lua ###
+Banana Tree Sapling = 
+Banana = 
+
+### carrots.lua ###
+Carrot Seeds = 
+Carrot = 
+
+### cocoa.lua ###
+Cocoa Tree Sapling = 
+Cocoa = 
+Cocoa Bean =
+
+### corn.lua ###
+Corn Seeds =
+Corn =
+
+### cucumber.lua ###
+Cucumber Seeds =
+Cucumber =
+
+### lemons.lua ###
+Lemon Seeds =
+Lemon =
+
+### melon.lua ###
+Melon Seeds =
+Melon Slice =
+
+### oranges.lua ###
+Orange Seeds = 
+Orange = 
+
+### peaches.lua ###
+Peach Pits =
+Peach =
+
+### potatoes.lua ###
+Potato Seeds = 
+Potato = 
+
+### pumpkin.lua ###
+Pumpkin Seed = 
+Pumpkin = 
+Pumpkin Face = 
+Pumpkin Face With Light =
+Big Pumpkin = 
+Scarecrow = 
+Scarecrow With Light = 
+Pumpkin Bread = 
+Pumpkin Flour = 
+
+### raspberries.lua ###
+Raspberry Starter =
+Raspberry =
+
+### rhubarb.lua ###
+Rhubarb Starter = 
+Rhubarb = 
+
+### strawberries.lua ###
+Strawberry Starter = 
+Strawberry = 
+
+### tomatoes.lua ###
+Tomato Seeds = 
+Tomato = 
+
+### walnut.lua ###
+Walnut =
+
+### init.lua ###
+
+### weed.lua ###
+Weed = 
+
