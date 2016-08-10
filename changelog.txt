@@ -1,3 +1,6 @@
+2016-08-10:
+Tweaked food values more, should be more fair now.
+
 2016-07-30:
 Tons of changes, updated several mods.
 Added Farming Plus.

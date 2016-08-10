@@ -9,14 +9,16 @@ local g_fruit = {fleshy=3,dig_immediate=3,flammable=2,leafdecay=3,leafdecay_drop
 local g_berry = {flora=1, berry=1}
 
 --Foods Table
+-- 2 health = 1 loaf in game
+-- 2 hydration = 1 cups in game
 local food_table = { --craft, desc, health, hydration, selection box, groups
-{'apple', 'Apple', .25, .3, s_fruit, g_fruit},
-{'pear', 'Pear', .25, .3, s_fruit, g_fruit},
-{'banana', 'Banana', .2, .15, s_fruit, g_fruit},
-{'blackberry', 'Blackberry', .1, .1, s_fruit, g_berry},
-{'blueberry', 'Blueberry', .1, .1, s_fruit, g_berry},
-{'raspberry', 'Raspberry', .1, .1, s_fruit, g_berry},
-{'gooseberry', 'Gooseberry', .1, .1, s_fruit, g_berry},
+{'apple', 'Apple', 2, 1, s_fruit, g_fruit},
+{'pear', 'Pear', 2, 1, s_fruit, g_fruit},
+{'banana', 'Banana', 1.5, 1, s_fruit, g_fruit},
+{'blackberry', 'Blackberry', .5, .5, s_fruit, g_berry},
+{'blueberry', 'Blueberry', .5, .5, s_fruit, g_berry},
+{'raspberry', 'Raspberry', .5, .5, s_fruit, g_berry},
+{'gooseberry', 'Gooseberry', .5, .5, s_fruit, g_berry},
 
 }
 
