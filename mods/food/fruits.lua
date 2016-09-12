@@ -5,8 +5,8 @@ local s_fruit = {
 	}
 
 --Group groups
-local g_fruit = {fleshy=3,dig_immediate=3,flammable=2,leafdecay=3,leafdecay_drop=1,flora=1}
-local g_berry = {flora=1, berry=1}
+local g_fruit = {fleshy=3,dig_immediate=3,flammable=2,leafdecay=3,leafdecay_drop=1,flora=1,juiceable=1}
+local g_berry = {flora=1, berry=1, juiceable=1}
 
 --Foods Table
 -- 2 health = 1 loaf in game
@@ -50,7 +50,7 @@ minetest.register_node('food:'..craft, {
 		return eat_func(itemstack, user, pointed_thing)
 	end,
 	after_place_node = function(pos)
-		minetest.set_node(pos, {name = 'food_'..craft, param2=1})
+		minetest.set_node(pos, {name = 'food:'..craft, param2=1})
 	end,
 })
 end

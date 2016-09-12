@@ -95,8 +95,8 @@ minetest.register_ore({
 	clust_scarcity = 80*80*80,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -1000,
-	height_max     = -5,
+	y_min     = -1000,
+	y_max     = -5,
 })
 
 minetest.register_node("mytreasure:sunken2",{
@@ -186,8 +186,8 @@ minetest.register_ore({
 	clust_scarcity = 120*120*120,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -1000,
-	height_max     = -5,
+	y_min     = -1000,
+	y_max     = -5,
 })
 
 minetest.register_node("mytreasure:sunken3",{
@@ -276,8 +276,8 @@ minetest.register_ore({
 	clust_scarcity = 180*180*180,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -1000,
-	height_max     = -5,
+	y_min     = -1000,
+	y_max     = -5,
 })
 
 minetest.register_abm({

@@ -1,1 +1,4 @@
 thirsty
+stairs
+vessels
+hunger

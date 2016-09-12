@@ -1,16 +1,16 @@
 local function calc_velocity(pos1, pos2, old_vel, power)
-	local vel = vector.direction(pos1, pos2)
-	vel = vector.normalize(vel)
-	vel = vector.multiply(vel, power)
+	local velocity = vector.direction(pos1, pos2)
+	velocity = vector.normalize(velocity)
+	velocity = vector.multiply(velocity, power)
 
 	-- Divide by distance
 	local dist = vector.distance(pos1, pos2)
 	dist = math.max(dist, 1)
-	vel = vector.divide(vel, dist)
+	velocity = vector.divide(velocity, dist)
 
 	-- Add old velocity
-	vel = vector.add(vel, old_vel)
-	return vel
+	velocity = vector.add(velocity, old_vel)
+	return velocity
 end
 
 local radius = tonumber(minetest.setting_get("chest_radius") or 3)
@@ -186,8 +186,8 @@ minetest.register_ore({
 	clust_scarcity = 30*30*30,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -150,
+	y_min     = -31000,
+	y_max     = -150,
 })
 
 --Dungeon2 - places scheme
@@ -220,8 +220,8 @@ minetest.register_ore({
 	clust_scarcity = 30*30*30,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -50,
+	y_min     = -31000,
+	y_max     = -50,
 })
 
 --Wool - places scheme
@@ -254,8 +254,8 @@ minetest.register_ore({
 	clust_scarcity = 30*30*30,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -50,
+	y_min     = -31000,
+	y_max     = -50,
 })
 --Cavex - places scheme
 minetest.register_node("mytreasure:cavex",{
@@ -287,8 +287,8 @@ minetest.register_ore({
 	clust_scarcity = 80*80*80,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -50,
+	y_min     = -31000,
+	y_max     = -50,
 })
 --Exploding Chest
 
@@ -344,8 +344,8 @@ minetest.register_ore({
 	clust_scarcity = 60*60*60,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -150,
+	y_min     = -31000,
+	y_max     = -150,
 })
 minetest.register_ore({
 	ore_type       = "scatter",
@@ -354,8 +354,8 @@ minetest.register_ore({
 	clust_scarcity = 60*60*60,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -150,
+	y_min     = -31000,
+	y_max     = -150,
 })
 
 --Desert Treasure
@@ -436,8 +436,8 @@ minetest.register_ore({
 	clust_scarcity = 40*40*40,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -150,
-	height_max     = -15,
+	y_min     = -150,
+	y_max     = -15,
 })
 
 

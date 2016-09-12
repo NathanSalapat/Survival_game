@@ -734,7 +734,7 @@ function default.register_mgv6_decorations()
 		y_max = 1,
 		decoration = "default:papyrus",
 		height = 2,
-		height_max = 4,
+		y_max = 4,
 		spawn_by = "default:water_source",
 		num_spawn_by = 1,
 	})
@@ -757,7 +757,7 @@ function default.register_mgv6_decorations()
 		y_max = 30,
 		decoration = "default:cactus",
 		height = 3,
-	        height_max = 4,
+	        y_max = 4,
 	})
 
 	-- Long grasses
@@ -970,7 +970,7 @@ function default.register_decorations()
 		y_max = 31000,
 		decoration = "default:cactus",
 		height = 2,
-	        height_max = 5,
+	        y_max = 5,
 	})
 
 	-- Papyrus
@@ -1074,13 +1074,13 @@ function default.make_nyancat(pos, facedir, length)
 end
 
 function default.generate_nyancats(minp, maxp, seed)
-	local height_min = -31000
-	local height_max = -32
-	if maxp.y < height_min or minp.y > height_max then
+	local y_min = -31000
+	local y_max = -32
+	if maxp.y < y_min or minp.y > y_max then
 		return
 	end
-	local y_min = math.max(minp.y, height_min)
-	local y_max = math.min(maxp.y, height_max)
+	local y_min = math.max(minp.y, y_min)
+	local y_max = math.min(maxp.y, y_max)
 	local volume = (maxp.x - minp.x + 1) * (y_max - y_min + 1) * (maxp.z - minp.z + 1)
 	local pr = PseudoRandom(seed + 9324342)
 	local max_num_nyancats = math.floor(volume / (16 * 16 * 16))

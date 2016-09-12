@@ -1,3 +1,10 @@
+2016-09-11:
+Added various parts of juicing machines and juices.
+updated several mods that had depreciated code.
+
+2016-08-17:
+Added Fachwork mod.
+
 2016-08-10:
 Tweaked food values more, should be more fair now.
 

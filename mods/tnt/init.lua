@@ -115,31 +115,31 @@ local function calc_velocity(pos1, pos2, old_vel, power)
 		return old_vel
 	end
 
-	local vel = vector.direction(pos1, pos2)
-	vel = vector.normalize(vel)
-	vel = vector.multiply(vel, power)
+	local velocity = vector.direction(pos1, pos2)
+	velocity = vector.normalize(velocity)
+	velocity = vector.multiply(velocity, power)
 
 	-- Divide by distance
 	local dist = vector.distance(pos1, pos2)
 	dist = math.max(dist, 1)
-	vel = vector.divide(vel, dist)
+	velocity = vector.divide(velocity, dist)
 
 	-- Add old velocity
-	vel = vector.add(vel, old_vel)
+	velocity = vector.add(velocity, old_vel)
 
 	-- randomize it a bit
-	vel = vector.add(vel, {
+	velocity = vector.add(velocity, {
 		x = math.random() - 0.5,
 		y = math.random() - 0.5,
 		z = math.random() - 0.5,
 	})
 
 	-- Limit to terminal velocity
-	dist = vector.length(vel)
+	dist = vector.length(velocity)
 	if dist > 250 then
-		vel = vector.divide(vel, dist / 250)
+		velocity = vector.divide(velocity, dist / 250)
 	end
-	return vel
+	return velocity
 end
 
 local function entity_physics(pos, radius, drops)

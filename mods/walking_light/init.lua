@@ -106,7 +106,7 @@ minetest.register_globalstep(update_light_all)
 
 minetest.register_node("walking_light:light", {
 	drawtype = "glasslike",
-	tile_images = {"walking_light.png"},
+	tiles = {"walking_light.png"},
 	inventory_image = minetest.inventorycube("walking_light.png"),
 	paramtype = "light",
 	walkable = false,

@@ -109,6 +109,7 @@ It takes 5 parameters:
 * `data`: VoxelManip data (array of content IDs)
 * `area`: VoxelArea
 * `i`: index of the data array matching the position `pos`. In other terms, `area:indexp(pos) = i`.
+* `t`: table containing all possible conditions (the same `t` as above)
 
 ```
 grow = function(nodes, pos, data, area)
@@ -175,6 +176,8 @@ end,
 
 ### 2.2 ~> Latest
 * Added plants API to allow external mods registering plants for VMG
+* Added dry dirt
+* Transform dirt into dirt with grass, dry grass or snow according to the climate
 * Added willow tree
 * Added optional 5 leaves colors for default tree
 * Slimmer trunks for banana, cherry and birch tree
@@ -182,5 +185,6 @@ end,
 * Made ores optional
 * Included dirt thickness in humidity calculation
 * Changed `vmg.conf.example` to `settingtypes.txt` to be compatible with settings API (for recent builds)
+* Fixed function `vmg.get_noise`. Humidity calculation is now correct after mapgen.
 * Added mapgen time statistics in logs
 

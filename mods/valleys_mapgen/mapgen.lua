@@ -114,11 +114,13 @@ local altitude_chill = vmg.define("altitude_chill", 90)
 local do_caves = vmg.define("caves", true)
 local simple_caves = vmg.define("simple_caves", false)
 local do_cave_stuff = vmg.define("cave_stuff", false)
+local dry_rivers = vmg.define("dry_rivers", false)
 
 local average_stone_level = vmg.define("average_stone_level", 180)
 local dirt_reduction = math.sqrt(average_stone_level) / (vmg.noises[7].offset - 0.5) -- Calculate dirt_reduction such as v7 - sqrt(average_stone_level) / dirt_reduction = 0.5 on average. This means that, on average at y = average_stone_level, dirt_thickness = 0.5 (half of the surface is bare stone)
 local average_snow_level = vmg.define("average_snow_level", 100)
 local snow_threshold = vmg.noises[17].offset * 0.5 ^ (average_snow_level / altitude_chill)
+local dry_dirt_threshold = vmg.define("dry_dirt_threshold", 0.6)
 
 local player_max_distance = vmg.define("player_max_distance", 450)
 
@@ -141,6 +143,10 @@ if vmg.define("stone_ores", true) then
 	minetest.register_ore({ore_type="sheet", ore="default:sandstone", wherein="default:stone", clust_num_ores=250, clust_scarcity=60, clust_size=10, y_min=-1000, y_max=31000, noise_threshhold=0.1, noise_params={offset=0, scale=1, spread={x=256, y=256, z=256}, seed=4130293965, octaves=5, persist=0.60}, random_factor=1.0})
 	minetest.register_ore({ore_type="sheet", ore="default:desert_stone", wherein="default:stone", clust_num_ores=250, clust_scarcity=60, clust_size=10, y_min=-1000, y_max=31000, noise_threshhold=0.1, noise_params={offset=0, scale=1, spread={x=256, y=256, z=256}, seed=163281090, octaves=5, persist=0.60}, random_factor=1.0})
 end
+
+
+local data = {}
+
 
 -- THE MAPGEN FUNCTION
 function vmg.generate(minp, maxp, seed)
@@ -171,15 +177,19 @@ function vmg.generate(minp, maxp, seed)
 	local c_stone = minetest.get_content_id("default:stone")
 	local c_dirt = minetest.get_content_id("default:dirt")
 	local c_lawn = minetest.get_content_id("default:dirt_with_grass")
+	local c_dry = minetest.get_content_id("default:dirt_with_dry_grass")
 	local c_snow = minetest.get_content_id("default:dirt_with_snow")
 	local c_dirt_clay = minetest.get_content_id("valleys_mapgen:dirt_clayey")
 	local c_lawn_clay = minetest.get_content_id("valleys_mapgen:dirt_clayey_with_grass")
+	local c_dry_clay = minetest.get_content_id("valleys_mapgen:dirt_clayey_with_dry_grass")
 	local c_snow_clay = minetest.get_content_id("valleys_mapgen:dirt_clayey_with_snow")
 	local c_dirt_silt = minetest.get_content_id("valleys_mapgen:dirt_silty")
 	local c_lawn_silt = minetest.get_content_id("valleys_mapgen:dirt_silty_with_grass")
+	local c_dry_silt = minetest.get_content_id("valleys_mapgen:dirt_silty_with_dry_grass")
 	local c_snow_silt = minetest.get_content_id("valleys_mapgen:dirt_silty_with_snow")
 	local c_dirt_sand = minetest.get_content_id("valleys_mapgen:dirt_sandy")
 	local c_lawn_sand = minetest.get_content_id("valleys_mapgen:dirt_sandy_with_grass")
+	local c_dry_sand = minetest.get_content_id("valleys_mapgen:dirt_sandy_with_dry_grass")
 	local c_snow_sand = minetest.get_content_id("valleys_mapgen:dirt_sandy_with_snow")
 	local c_desert_sand = minetest.get_content_id("default:desert_sand")
 	local c_sand = minetest.get_content_id("default:sand")
@@ -207,7 +217,7 @@ function vmg.generate(minp, maxp, seed)
 
 	-- The VoxelManipulator, a complicated but speedy method to set many nodes at the same time
 	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
-	local data = vm:get_data() -- data is the original array of content IDs (solely or mostly air)
+	vm:get_data(data) -- data is the original array of content IDs (solely or mostly air)
 	-- Be careful: emin ≠ minp and emax ≠ maxp !
 	-- The data array is not limited by minp and maxp. It exceeds it by 16 nodes in the 6 directions.
 	-- The real limits of data array are emin and emax.
@@ -306,6 +316,7 @@ function vmg.generate(minp, maxp, seed)
 			-- Choose biome, by default normal dirt
 			local dirt = c_dirt
 			local lawn = c_lawn
+			local dry = c_dry
 			local snow = c_snow
 			local max = math.max(v13, v14, v15) -- the biome is the maximal of these 3 values.
 			if max > dirt_threshold then -- if one of these values is bigger than dirt_threshold, make clayey, silty or sandy dirt, depending on the case. If none of clay, silt or sand is predominant, make normal dirt.
@@ -313,30 +324,36 @@ function vmg.generate(minp, maxp, seed)
 					if v13 > clay_threshold then
 						dirt = c_clay
 						lawn = c_clay
+						dry = c_clay
 						snow = c_clay
 					else
 						dirt = c_dirt_clay
 						lawn = c_lawn_clay
+						dry = c_dry_clay
 						snow = c_snow_clay
 					end
 				elseif v14 == max then
 					if v14 > silt_threshold then
 						dirt = c_silt
 						lawn = c_silt
+						dry = c_silt
 						snow = c_silt
 					else
 						dirt = c_dirt_silt
 						lawn = c_lawn_silt
+						dry = c_dry_silt
 						snow = c_snow_silt
 					end
 				else
 					if v15 > sand_threshold then
 						dirt = c_desert_sand
 						lawn = c_desert_sand
+						dry = c_desert_sand
 						snow = c_desert_sand
 					else
 						dirt = c_dirt_sand
 						lawn = c_lawn_sand
+						dry = c_dry_sand
 						snow = c_snow_sand
 					end
 				end
@@ -346,6 +363,12 @@ function vmg.generate(minp, maxp, seed)
 
 			-- raw humidity, see below at vmg.get_humidity
 			local hraw = 2 ^ (v13 - v15 + v18 * 2)
+
+			-- After base_ground is used for terrain, modify it by humidity
+			-- to make rivers dry up in deserts.
+			if dry_rivers and hraw < 1 then  -- average humidity?
+				base_ground = base_ground + (hraw - 1) * river_depth
+			end
 
 			for y = minp.y, maxp.y do -- for each node in vertical line
 				local ivm = a:index(x, y, z) -- index of the data array, matching the position {x, y, z}
@@ -382,7 +405,7 @@ function vmg.generate(minp, maxp, seed)
 								local sea_water = 0.5 ^ math.max((y - water_level) / 6, 0)
 								local river_water = 0.5 ^ math.max((y - base_ground) / 3, 0)
 								local water = sea_water + (1 - sea_water) * river_water
-								local humidity = soil_humidity + water
+								local humidity = soil_humidity * (1 + water)
 
 								local ivm2 = ivm + ystride -- index of the node above
 								y = y + 1
@@ -398,7 +421,11 @@ function vmg.generate(minp, maxp, seed)
 
 								if temp > snow_threshold then -- If temperature is too high for snow
 									if above > 0 then
-										data[ivm] = lawn
+										if humidity <= dry_dirt_threshold then
+											data[ivm] = dry
+										else
+											data[ivm] = lawn
+										end
 									else
 										data[ivm] = c_stone
 									end
@@ -659,7 +686,11 @@ function vmg.get_humidity(pos)
 	local sea_water = 0.5 ^ math.max((y - water_level) / 6, 0) -- At the sea level, sea_water is 1. Every 6 nodes height divide it by 2.
 	local river_water = 0.5 ^ math.max((y - base_ground) / 3, 0) -- At the river level, river_water is 1. Every 3 nodes height divide it by 2.
 	local water = sea_water + (1 - sea_water) * river_water -- A simple sum is not satisfactory, because it may be bigger than 1.
-	return soil_humidity + water
+	return soil_humidity * (1 + water)
+end
+
+function vmg.test_dry(pos)
+	return vmg.get_humidity(pos) <= dry_dirt_threshold
 end
 
 function vmg.get_temperature(pos)
@@ -673,13 +704,17 @@ function vmg.get_temperature(pos)
 	end
 end
 
+function vmg.test_snow(pos)
+	return vmg.get_temperature(pos) <= snow_threshold
+end
+
 function vmg.get_noise(pos, i)
 	local n = vmg.noises[i]
-	local noise = minetest.get_perlin(n.seed, n.octaves, n.persist, 1)
+	local noise = minetest.get_perlin(n)
 	if not pos.z then -- 2D noise
-		return noise:get2d({x = pos.x / n.spread.x, y = pos.y / n.spread.y}) * n.scale + n.offset
+		return noise:get2d(pos)
 	else -- 3D noise
-		return noise:get3d({x = pos.x / n.spread.x, y = pos.y / n.spread.y, z = pos.z / n.spread.z}) * n.scale + n.offset
+		return noise:get3d(pos)
 	end
 end
 

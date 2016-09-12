@@ -41,6 +41,7 @@ local function register_dirts(readname)
 	local name = readname:lower()
 	local itemstr_dirt = "valleys_mapgen:dirt_" .. name
 	local itemstr_lawn = itemstr_dirt .. "_with_grass"
+	local itemstr_dry = itemstr_dirt .. "_with_dry_grass"
 	local itemstr_snow = itemstr_dirt .. "_with_snow"
 	local tilestr = "vmg_dirt_" .. name .. ".png"
 
@@ -49,11 +50,6 @@ local function register_dirts(readname)
 		tiles = {tilestr},
 		is_ground_content = true,
 		groups = {crumbly=3,soil=1},
-		soil = {
-			base = "default:dirt",
-			dry = "farming:soil",
-			wet = "farming:soil_wet"
-		},
 		sounds = default.node_sound_dirt_defaults(),
 	})
 
@@ -62,14 +58,19 @@ local function register_dirts(readname)
 		tiles = {"default_grass.png", tilestr, tilestr .. "^default_grass_side.png"},
 		is_ground_content = true,
 		groups = {crumbly=3,soil=1},
-		soil = {
-			base = "default:dirt_with_grass",
-			dry = "farming:soil",
-			wet = "farming:soil_wet"
-		},
 		drop = itemstr_dirt,
 		sounds = default.node_sound_dirt_defaults({
 			footstep = {name="default_grass_footstep", gain=0.25},
+		}),
+	})
+
+	minetest.register_node(itemstr_dry, {
+		description = readname .. " Dirt with Dry Grass",
+		tiles = {"default_dry_grass.png", tilestr, tilestr .. "^default_dry_grass_side.png"},
+		groups = {crumbly=3, soil=1},
+		drop = itemstr_dirt,
+		sounds = default.node_sound_dirt_defaults({
+			footstep = {name = "default_grass_footstep", gain=0.4},
 		}),
 	})
 
@@ -84,6 +85,8 @@ local function register_dirts(readname)
 		}),
 	})
 
+
+
 	minetest.register_abm({
 		nodenames = {itemstr_dirt},
 		interval = 2,
@@ -95,8 +98,10 @@ local function register_dirts(readname)
 			if nodedef and (nodedef.sunlight_propagates or nodedef.paramtype == "light")
 					and nodedef.liquidtype == "none"
 					and (minetest.get_node_light(above) or 0) >= 13 then
-				if name == "default:snow" or name == "default:snowblock" then
+				if name == "default:snow" or name == "default:snowblock" or (vmg.test_snow and vmg.test_snow({x=pos.x, y=pos.y+1, z=pos.z})) then
 					minetest.set_node(pos, {name = itemstr_snow})
+				elseif vmg.test_dry and vmg.test_dry(pos) then
+					minetest.set_node(pos, {name = itemstr_dry})
 				else
 					minetest.set_node(pos, {name = itemstr_lawn})
 				end
@@ -105,7 +110,7 @@ local function register_dirts(readname)
 	})
 
 	minetest.register_abm({
-		nodenames = {itemstr_lawn},
+		nodenames = {itemstr_lawn, itemstr_dry},
 		interval = 2,
 		chance = 20,
 		action = function(pos, node)
@@ -262,7 +267,7 @@ for _, tree in ipairs(vmg.treelist) do
 		tiles = { "vmg_"..tree.leaf_tile..".png"},
 		paramtype = "light",
 		is_ground_content = false,
-		groups = {snappy=3, leafdecay=7, flammable=2, leaves=1, flora=1},
+		groups = {snappy=3, leafdecay=7, flammable=2, leaves=1},
 		drop = {
 			max_items = 1,
 			items = {

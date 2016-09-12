@@ -50,8 +50,8 @@ mobs:register_mob("animals:goat", {
 	-- follows wheat
 	follow = "farming:wheat", view_range = 7,
 	-- replace grass/wheat with air (eat)
-	replace_rate = 50,
-	replace_what = {"group:flora"},
+	replace_rate = 5,
+	replace_what = {"group:flora", "group:plant"},
 	replace_with = "air",
 })
 -- spawn on default;green;prairie grass between 0 and 20 light, 1 in 20000 chance, 1 goat in area up to 31000 in height

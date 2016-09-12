@@ -89,8 +89,8 @@
         --wax flying all over the place
         minetest.add_particle({
           pos = {x=pos.x, y=pos.y, z=pos.z},
-          vel = {x=math.random(-4,4),y=math.random(8),z=math.random(-4,4)},
-          acc = {x=0,y=-6,z=0},
+          velocity = {x=math.random(-4,4),y=math.random(8),z=math.random(-4,4)},
+          acceleration = {x=0,y=-6,z=0},
           expirationtime = 2,
           size = math.random(1,3),
           collisiondetection = false,
@@ -177,7 +177,7 @@
 
   minetest.register_node('bees:hive_wild', {
     description = 'wild bee hive',
-    tile_images = {'bees_hive_wild.png','bees_hive_wild.png','bees_hive_wild.png', 'bees_hive_wild.png', 'bees_hive_wild_bottom.png'}, --Neuromancer's base texture
+    tiles = {'bees_hive_wild.png','bees_hive_wild.png','bees_hive_wild.png', 'bees_hive_wild.png', 'bees_hive_wild_bottom.png'}, --Neuromancer's base texture
     drawtype = 'nodebox',
     paramtype = 'light',
     paramtype2 = 'wallmounted',
@@ -436,8 +436,8 @@
     action = function(pos)
       minetest.add_particle({
         pos = {x=pos.x, y=pos.y, z=pos.z},
-        vel = {x=(math.random()-0.5)*5,y=(math.random()-0.5)*5,z=(math.random()-0.5)*5},
-        acc = {x=math.random()-0.5,y=math.random()-0.5,z=math.random()-0.5},
+        velocity = {x=(math.random()-0.5)*5,y=(math.random()-0.5)*5,z=(math.random()-0.5)*5},
+        acceleration = {x=math.random()-0.5,y=math.random()-0.5,z=math.random()-0.5},
         expirationtime = math.random(2.5),
         size = math.random(3),
         collisiondetection = true,
@@ -583,8 +583,8 @@
           for i=1,6 do
             minetest.add_particle({
               pos = {x=pos.x+math.random()-0.5, y=pos.y, z=pos.z+math.random()-0.5},
-              vel = {x=0,y=0.5+math.random(),z=0},
-              acc = {x=0,y=0,z=0},
+              velocity = {x=0,y=0.5+math.random(),z=0},
+              acceleration = {x=0,y=0,z=0},
               expirationtime = 2+math.random(2.5),
               size = math.random(3),
               collisiondetection = false,

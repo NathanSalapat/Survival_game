@@ -97,8 +97,8 @@ minetest.register_ore({
 	clust_scarcity = 20*20*20,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -150,
+	y_min     = -31000,
+	y_max     = -150,
 })
 
 minetest.register_node("mytreasure:buried2",{
@@ -189,8 +189,8 @@ minetest.register_ore({
 	clust_scarcity = 40*40*40,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -150,
+	y_min     = -31000,
+	y_max     = -150,
 })
 
 minetest.register_node("mytreasure:buried3",{
@@ -281,6 +281,6 @@ minetest.register_ore({
 	clust_scarcity = 80*80*80,
 	clust_num_ores = 1,
 	clust_size     = 1,
-	height_min     = -31000,
-	height_max     = -150,
+	y_min     = -31000,
+	y_max     = -150,
 })

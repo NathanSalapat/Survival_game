@@ -121,7 +121,7 @@ function vmg.grow_banana_tree(pos)
 	vm:update_map()
 end
 
-function vmg.grow_birch(pos)
+function vmg.grow_birch_tree(pos)
 	local rand = math.random()
 	local height = math.floor(6 + 2.5 * rand)
 	local radius = 2 + rand

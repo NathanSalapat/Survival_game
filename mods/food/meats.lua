@@ -46,7 +46,7 @@ minetest.register_craftitem('food:'..craft, {
 	groups = grup,
 	on_use = function(itemstack, user, pointed_thing)
 		local eat_func = minetest.item_eat(health)
-		local chance_level = math.random(0,10)
+--		local chance_level = math.random(0,10)
 --[[		if chance_level < chance then
 			local influencia = pathogen.get_pathogen('influencia')
 			pathogen.infect = function(influencia, user)

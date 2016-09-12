@@ -8,6 +8,8 @@ dofile(minetest.get_modpath('food')..'/meats.lua') --Again, I think it's obvious
 dofile(minetest.get_modpath('food')..'/recipes.lua') --Multi ingredient foods.
 --dofile(minetest.get_modpath('food')..'/spoils.lua') --Mechanics for food to spoil
 dofile(minetest.get_modpath('food')..'/traps.lua') --capture and eat yummy animals.
+dofile(minetest.get_modpath('food')..'/drinks.lua') --Fresh drinks for everyone.
+dofile(minetest.get_modpath('food')..'/drink_machines.lua') --there has to be a way to make the drinks.
 
 
 food = {}
