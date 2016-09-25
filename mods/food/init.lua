@@ -1,3 +1,5 @@
+food = {}
+
 dofile(minetest.get_modpath('food')..'/abms.lua') --Active Block Modifiers that do different things.
 dofile(minetest.get_modpath('food')..'/cooking.lua') --Cook all the things
 dofile(minetest.get_modpath('food')..'/cooking_machines.lua') --Stoves, Smokers, things to cook the food.
@@ -10,6 +12,3 @@ dofile(minetest.get_modpath('food')..'/recipes.lua') --Multi ingredient foods.
 dofile(minetest.get_modpath('food')..'/traps.lua') --capture and eat yummy animals.
 dofile(minetest.get_modpath('food')..'/drinks.lua') --Fresh drinks for everyone.
 dofile(minetest.get_modpath('food')..'/drink_machines.lua') --there has to be a way to make the drinks.
-
-
-food = {}

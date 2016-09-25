@@ -9,7 +9,6 @@ local food_table = { --craft, desc
 {'blueberry', 'Blueberry'},
 {'raspberry', 'Raspberry'},
 {'gooseberry', 'Gooseberry'},
-
 }
 
 --Parse Table
@@ -22,9 +21,8 @@ for i in ipairs (food_table) do
 --local register_food = hunger.register_food
 --register_food('food:jc_'..craft, .5, 'vessels:drinking_glass')
 
-
 --Actual Node registration
-minetest.register_craftitem('food:jc_'..craft, {
+minetest.register_craftitem('food:jcu_'..craft, {
    description = 'Cup of '..desc..' Juice',
    groups = {drink=1},
    inventory_image = 'food_jc_'..craft..'.png',
@@ -49,6 +47,7 @@ minetest.register_craftitem('food:jbo_'..craft, {
 minetest.register_craftitem('food:jbu_'..craft, {
    description = 'Bucket of '..desc..' Juice',
    inventory_image = 'food_jbu_'..craft..'.png',
+   stack_max = 1,
 })
 
 end

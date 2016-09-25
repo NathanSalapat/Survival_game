@@ -1,3 +1,6 @@
+2016-09-25:
+Juicing machine and juice storage are complete.
+
 2016-09-11:
 Added various parts of juicing machines and juices.
 updated several mods that had depreciated code.
