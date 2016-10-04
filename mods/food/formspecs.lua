@@ -32,7 +32,7 @@ function food.barrel_formspec(fullness)
       'label[0,0;Fill the barrel with the drink of your choice,]'..
       'label[0,.4;you can only add more of the same type of drink.]'..
       'label[4.5,1.2;Add liquid ->]'..
-      'label[.75,1.75;This barrel is '..((fullness/64)*100)..'% full]'..
+      'label[.75,1.75;This barrel is '..((fullness/128)*100)..'% full]'..
       'label[4.5,2.25;Take liquid ->]'..
       'label[2,3.2;(This empties the barrel completely)]'..
       'button[0,3;2,1;purge;Purge]'..

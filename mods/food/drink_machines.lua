@@ -5,7 +5,7 @@ minetest.register_craft({
       recipe = {
          {'default:stick', 'default:steel_ingot', 'default:stick'},
          {'default:stick', 'bucket:bucket_empty', 'default:stick'},
-         {'stairs:slab_wood', 'stairs:slab_wood', 'vessels:drinking_glass'},
+         {'stairs:slab_wood', 'stairs:slab_wood', 'food:drinking_glass'},
          }
 })
 
@@ -59,24 +59,34 @@ minetest.register_node('food:juice_press', {
          local instack = inv:get_stack("src", 1)
          local fruitstack = instack:get_name()
          if minetest.get_node_group(fruitstack, 'juiceable') > 0 then
-            local fruit = string.sub(fruitstack, 6, -1)
+            local mod, fruit = fruitstack:match("([^:]+):([^:]+)")
             meta:set_string('fruit', fruit)
             local outstack = inv:get_stack("dst", 1)
             local vessel = outstack:get_name()
-            if vessel == 'vessels:drinking_glass' then
-               if instack:get_count() >= 2 then
+            if vessel == 'food:drinking_glass' then
+               if instack:get_count() >= 4 then
                   meta:set_string('container', 'jcu_')
-                  meta:set_string('fruitnumber', 2)
+                  meta:set_string('fruitnumber', 4)
                   meta:set_string('infotext', 'Juicing...')
                   timer:start(4)
                else
                   meta:set_string('infotext', 'You need more fruit.')
                end
             end
-            if vessel == 'bucket:bucket_empty' then
-               if instack:get_count() >= 8 then
-                  meta:set_string('container', 'jbu_')
+            if vessel == 'food:bottle' then
+               if instack:get_count() >= 4 then
+                  meta:set_string('container', 'jbo_')
                   meta:set_string('fruitnumber', 8)
+                  meta:set_string('infotext', 'Juicing...')
+                  timer:start(8)
+               else
+                  meta:set_string('infotext', 'You need more fruit.')
+               end
+            end
+            if vessel == 'bucket:bucket_empty' then
+               if instack:get_count() >= 16 then
+                  meta:set_string('container', 'jbu_')
+                  meta:set_string('fruitnumber', 16)
                   meta:set_string('infotext', 'Juicing...')
                   timer:start(16)
                else
@@ -131,7 +141,7 @@ function food.drinks_barrel_sub(liq_vol, ves_typ, pos)
    local inv = meta:get_inventory()
    local fullness = fullness - liq_vol
    meta:set_string('fullness', fullness)
-   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/64)*100))..' % full.')
+   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
    meta:set_string('formspec', food.barrel_formspec(fullness))
    if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jbu' then
       inv:set_stack('dst', 1, 'food:'..ves_typ..'_'..fruit)
@@ -148,7 +158,7 @@ end
 function food.drinks_barrel_add(liq_vol, ves_typ, pos)
    local meta = minetest.env:get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
-   if fullness + liq_vol >= 64 then
+   if fullness + liq_vol >= 128 then
       return
    else
    local fruit = meta:get_string('fruit')
@@ -156,7 +166,7 @@ function food.drinks_barrel_add(liq_vol, ves_typ, pos)
    local fullness = fullness + liq_vol
    meta:set_string('fullness', fullness)
    inv:set_stack('src', 1, ves_typ)
-   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/64)*100))..' % full.')
+   meta:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
    meta:set_string('formspec', food.barrel_formspec(fullness))
    end
 end
@@ -165,17 +175,17 @@ function food.drinks_barrel(pos, inputstack)
    local meta = minetest.env:get_meta(pos)
    local vessel = string.sub(inputstack, 6, 8)
    if vessel == 'jcu' then
-      local liq_vol = 1
-      local ves_typ = 'vessels:drinking_glass'
+      local liq_vol = 2
+      local ves_typ = 'food:drinking_glass'
       food.drinks_barrel_add(liq_vol, ves_typ, pos)
    end
    if vessel == 'jbo' then
-      local liq_vol = 2
-      local ves_typ = '' -- When we figure out what we're calling the bottle...
+      local liq_vol = 4
+      local ves_typ = 'food:bottle' -- When we figure out what we're calling the bottle...
       food.drinks_barrel_add(liq_vol, ves_typ, pos)
    end
    if vessel == 'jbu' then
-      local liq_vol = 8
+      local liq_vol = 16
       local ves_typ = 'bucket:bucket_empty'
       food.drinks_barrel_add(liq_vol, ves_typ, pos)
    end
@@ -200,7 +210,6 @@ minetest.register_node('food:liquid_barrel', {
    on_construct = function(pos)
       local meta = minetest.env:get_meta(pos)
       local inv = meta:get_inventory()
-      local fullness = 0
       inv:set_size('main', 8*4)
       inv:set_size('src', 1)
       inv:set_size('dst', 1)
@@ -237,17 +246,20 @@ minetest.register_node('food:liquid_barrel', {
          local vessel = string.sub(inputstack, 6, 8)
          food.drinks_barrel(pos, inputstack)
       end
-      if outputstack == 'vessels:drinking_glass' then
-         food.drinks_barrel_sub(1, 'jcu', pos)
+      if outputstack == 'food:drinking_glass' then
+         food.drinks_barrel_sub(2, 'jcu', pos)
+      end
+      if outputstack == 'food:bottle' then
+         food.drinks_barrel_sub(4, 'jbo', pos)
       end
       if outputstack == 'bucket:bucket_empty' then
-         food.drinks_barrel_sub(8, 'jbu', pos)
-      end
-      if outputstack == 'thirsty:bronze_canteen' then
-         food.drinks_barrel_sub(30, 'thirsty:bronze_canteen', pos)
+         food.drinks_barrel_sub(16, 'jbu', pos)
       end
       if outputstack == 'thirsty:steel_canteen' then
          food.drinks_barrel_sub(20, 'thirsty:steel_canteen', pos)
+      end
+      if outputstack == 'thirsty:bronze_canteen' then
+         food.drinks_barrel_sub(30, 'thirsty:bronze_canteen', pos)
       end
    end,
    on_receive_fields = function(pos, formname, fields, sender)

@@ -23,3 +23,13 @@ minetest.register_craftitem('food:meaty_stew_raw', {
 		return eat_func(itemstack, user, pointed_thing) --controls the fullness gain
 		end
 })
+
+minetest.register_craftitem('food:drinking_glass', {
+   description = 'Drinking glass',
+   inventory_image = 'food_drinking_glass.png',
+})
+
+minetest.register_craftitem('food:bottle', {
+   description = 'Empty bottle',
+   inventory_image = 'food_drinking_bottle.png',
+})

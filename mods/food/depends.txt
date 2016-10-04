@@ -1,4 +1,3 @@
 thirsty
 stairs
-vessels
 hunger

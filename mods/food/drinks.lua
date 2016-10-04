@@ -27,8 +27,8 @@ minetest.register_craftitem('food:jcu_'..craft, {
    groups = {drink=1},
    inventory_image = 'food_jc_'..craft..'.png',
    on_use = function(itemstack, user, pointed_thing)
-      thirsty.drink(user, 2, 20)
-      local eat_func = minetest.item_eat(.5, 'vessels:drinking_glass')
+      thirsty.drink(user, 4, 20)
+      local eat_func = minetest.item_eat(.5, 'food:drinking_glass')
       return eat_func(itemstack, user, pointed_thing)
    end,
 })
@@ -38,8 +38,8 @@ minetest.register_craftitem('food:jbo_'..craft, {
    groups = {drink=1},
    inventory_image = 'food_jbo_'..craft..'.png',
    on_use = function(itemstack, user, pointed_thing)
-      thirsty.drink(user, 4, 20)
-      local eat_func = minetest.item_eat(.5, 'vessels:drinking_glass')
+      thirsty.drink(user, 8, 20)
+      local eat_func = minetest.item_eat(.5, 'food:bottle')
       return eat_func(itemstack, user, pointed_thing)
    end,
 })

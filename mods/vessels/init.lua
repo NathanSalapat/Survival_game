@@ -109,15 +109,6 @@ minetest.register_node("vessels:drinking_glass", {
 	sounds = default.node_sound_glass_defaults(),
 })
 
-minetest.register_craft( {
-	output = "vessels:drinking_glass 14",
-	recipe = {
-		{ "default:glass", "", "default:glass" },
-		{ "default:glass", "", "default:glass" },
-		{ "default:glass", "default:glass", "default:glass" }
-	}
-})
-
 minetest.register_node("vessels:steel_bottle", {
 	description = "Heavy Steel Bottle (empty)",
 	drawtype = "plantlike",

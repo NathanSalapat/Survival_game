@@ -1,3 +1,6 @@
+2016-10-04:
+Some small tweaks to the drink machines.
+
 2016-09-25:
 Juicing machine and juice storage are complete.
 
