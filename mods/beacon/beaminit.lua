@@ -17,7 +17,7 @@ minetest.register_node("beacon:bluebeam", {
 	paramtype = "light",
 	walkable = false,
 	diggable = false,
-	light_source = 50,
+	light_source = 13,
 	groups = {not_in_creative_inventory=1}
 })
 
@@ -64,7 +64,7 @@ minetest.register_node("beacon:redbeam", {
 	paramtype = "light",
 	walkable = false,
 	diggable = false,
-	light_source = 50,
+	light_source = 13,
 	groups = {not_in_creative_inventory=1}
 })
 
@@ -111,7 +111,7 @@ minetest.register_node("beacon:greenbeam", {
 	paramtype = "light",
 	walkable = false,
 	diggable = false,
-	light_source = 50,
+	light_source = 13,
 	groups = {not_in_creative_inventory=1}
 })
 
@@ -158,7 +158,7 @@ minetest.register_node("beacon:purplebeam", {
 	paramtype = "light",
 	walkable = false,
 	diggable = false,
-	light_source = 50,
+	light_source = 13,
 	groups = {not_in_creative_inventory=1}
 })
 

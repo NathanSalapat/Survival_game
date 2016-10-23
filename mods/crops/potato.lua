@@ -10,12 +10,16 @@ of the license, or (at your option) any later version.
 
 --]]
 
+-- Intllib
+local S = crops.intllib
+
 minetest.register_node("crops:potato_eyes", {
-	description = "potato eyes",
+	description = S("Potato eyes"),
 	inventory_image = "crops_potato_eyes.png",
 	wield_image = "crops_potato_eyes.png",
 	tiles = { "crops_potato_plant_1.png" },
 	drawtype = "plantlike",
+	paramtype2 = "meshoptions",
 	waving = 1,
 	sunlight_propagates = false,
 	use_texture_alpha = true,
@@ -33,7 +37,7 @@ minetest.register_node("crops:potato_eyes", {
 		if minetest.get_item_group(under.name, "soil") <= 1 then
 			return
 		end
-		crops.plant(pointed_thing.above, {name="crops:potato_plant_1"})
+		crops.plant(pointed_thing.above, {name="crops:potato_plant_1", param2 = 3})
 		if not minetest.setting_getbool("creative_mode") then
 			itemstack:take_item()
 		end
@@ -43,9 +47,10 @@ minetest.register_node("crops:potato_eyes", {
 
 for stage = 1, 5 do
 minetest.register_node("crops:potato_plant_" .. stage , {
-	description = "potato plant",
+	description = S("Potato plant"),
 	tiles = { "crops_potato_plant_" .. stage .. ".png" },
 	drawtype = "plantlike",
+	paramtype2 = "meshoptions",
 	waving = 1,
 	sunlight_propagates = true,
 	use_texture_alpha = true,
@@ -62,7 +67,7 @@ minetest.register_node("crops:potato_plant_" .. stage , {
 end
 
 minetest.register_craftitem("crops:potato", {
-	description = "potato",
+	description = S("Potato"),
 	inventory_image = "crops_potato.png",
 	on_use = minetest.item_eat(1)
 })
@@ -77,7 +82,7 @@ minetest.register_craft({
 -- the potatoes "block"
 --
 minetest.register_node("crops:soil_with_potatoes", {
-	description = "Soil with potatoes",
+	description = S("Soil with potatoes"),
 	tiles = { "default_dirt.png^crops_potato_soil.png", "default_dirt.png" },
 	sunlight_propagates = false,
 	use_texture_alpha = false,
@@ -136,7 +141,7 @@ minetest.register_abm({
 		local n = string.gsub(node.name, "3", "4")
 		n = string.gsub(n, "2", "3")
 		n = string.gsub(n, "1", "2")
-		minetest.swap_node(pos, { name = n })
+		minetest.swap_node(pos, { name = n, param2 = 3 })
 	end
 })
 
@@ -157,17 +162,15 @@ minetest.register_abm({
 			return
 		end
 		local meta = minetest.get_meta(pos)
-		local water = meta:get_int("crops_water")
 		local damage = meta:get_int("crops_damage")
-		local below = { x = pos.x, y = pos.y - 1, z = pos.z}
 		minetest.set_node(below, { name = "crops:soil_with_potatoes" })
-		local meta = minetest.get_meta(below)
+		meta = minetest.get_meta(below)
 		meta:set_int("crops_damage", damage)
 	end
 })
 
 crops.potato_die = function(pos)
-	minetest.set_node(pos, { name = "crops:potato_plant_5" })
+	minetest.set_node(pos, { name = "crops:potato_plant_5", param2 = 3 })
 	local below = { x = pos.x, y = pos.y - 1, z = pos.z }
 	local node = minetest.get_node(below)
 	if node.name == "crops:soil_with_potatoes" then

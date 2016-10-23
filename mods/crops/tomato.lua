@@ -10,14 +10,16 @@ of the license, or (at your option) any later version.
 
 --]]
 
-local wateruse = 1
+-- Intllib
+local S = crops.intllib
 
 minetest.register_node("crops:tomato_seed", {
-	description = "tomato seed",
+	description = S("Tomato seed"),
 	inventory_image = "crops_tomato_seed.png",
 	wield_image = "crops_tomato_seed.png",
 	tiles = { "crops_tomato_plant_1.png" },
 	drawtype = "plantlike",
+	paramtype2 = "meshoptions",
 	waving = 1,
 	sunlight_propagates = true,
 	use_texture_alpha = true,
@@ -33,7 +35,7 @@ minetest.register_node("crops:tomato_seed", {
 		if minetest.get_item_group(under.name, "soil") <= 1 then
 			return
 		end
-		crops.plant(pointed_thing.above, {name="crops:tomato_plant_1"})
+		crops.plant(pointed_thing.above, {name="crops:tomato_plant_1", param2 = 1})
 		if not minetest.setting_getbool("creative_mode") then
 			itemstack:take_item()
 		end
@@ -43,9 +45,10 @@ minetest.register_node("crops:tomato_seed", {
 
 for stage = 1, 4 do
 minetest.register_node("crops:tomato_plant_" .. stage , {
-	description = "tomato plant",
+	description = S("Tomato plant"),
 	tiles = { "crops_tomato_plant_" .. stage .. ".png" },
 	drawtype = "plantlike",
+	paramtype2 = "meshoptions",
 	waving = 1,
 	sunlight_propagates = true,
 	use_texture_alpha = true,
@@ -62,9 +65,10 @@ minetest.register_node("crops:tomato_plant_" .. stage , {
 end
 
 minetest.register_node("crops:tomato_plant_5" , {
-	description = "tomato plant",
+	description = S("Tomato plant"),
 	tiles = { "crops_tomato_plant_5.png" },
 	drawtype = "plantlike",
+	paramtype2 = "meshoptions",
 	waving = 1,
 	sunlight_propagates = true,
 	use_texture_alpha = true,
@@ -87,7 +91,7 @@ minetest.register_node("crops:tomato_plant_5" , {
 		local meta = minetest.get_meta(pos)
 		local ttl = meta:get_int("crops_tomato_ttl")
 		if ttl > 1 then
-			minetest.swap_node(pos, { name = "crops:tomato_plant_4"})
+			minetest.swap_node(pos, { name = "crops:tomato_plant_4", param2 = 1})
 			meta:set_int("crops_tomato_ttl", ttl - 1)
 		else
 			crops.die(pos)
@@ -96,9 +100,10 @@ minetest.register_node("crops:tomato_plant_5" , {
 })
 
 minetest.register_node("crops:tomato_plant_6", {
-	description = "tomato plant",
+	description = S("Tomato plant"),
 	tiles = { "crops_tomato_plant_6.png" },
 	drawtype = "plantlike",
+	paramtype2 = "meshoptions",
 	waving = 1,
 	sunlight_propagates = true,
 	use_texture_alpha = true,
@@ -114,7 +119,7 @@ minetest.register_node("crops:tomato_plant_6", {
 })
 
 minetest.register_craftitem("crops:tomato", {
-	description = "Tomato",
+	description = S("Tomato"),
 	inventory_image = "crops_tomato.png",
 	on_use = minetest.item_eat(1)
 })
@@ -141,7 +146,7 @@ minetest.register_abm({
 		n = string.gsub(n, "3", "4")
 		n = string.gsub(n, "2", "3")
 		n = string.gsub(n, "1", "2")
-		minetest.swap_node(pos, { name = n })
+		minetest.swap_node(pos, { name = n, param2 = 1 })
 	end
 })
 
@@ -167,7 +172,7 @@ minetest.register_abm({
 			ttl = math.random(4 - (4 * (damage / 100)), 6 - (5 * (damage / 100)))
 		end
 		if ttl > 1 then
-			minetest.swap_node(pos, { name = "crops:tomato_plant_5" })
+			minetest.swap_node(pos, { name = "crops:tomato_plant_5", param2 = 1 })
 			meta:set_int("crops_tomato_ttl", ttl)
 		else
 			crops.die(pos)
@@ -176,7 +181,7 @@ minetest.register_abm({
 })
 
 crops.tomato_die = function(pos)
-	minetest.set_node(pos, { name = "crops:tomato_plant_6" })
+	minetest.set_node(pos, { name = "crops:tomato_plant_6", param2 = 1 })
 end
 
 local properties = {
@@ -194,4 +199,3 @@ crops.register({ name = "crops:tomato_plant_2", properties = properties })
 crops.register({ name = "crops:tomato_plant_3", properties = properties })
 crops.register({ name = "crops:tomato_plant_4", properties = properties })
 crops.register({ name = "crops:tomato_plant_5", properties = properties })
-

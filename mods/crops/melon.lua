@@ -10,6 +10,9 @@ of the license, or (at your option) any later version.
 
 --]]
 
+-- Intllib
+local S = crops.intllib
+
 local faces = {
 	[1] = { x = -1, z = 0, r = 3, o = 1, m = 14 },
 	[2] = { x = 1, z = 0, r = 1, o = 3,  m = 16 },
@@ -18,7 +21,7 @@ local faces = {
 }
 
 minetest.register_node("crops:melon_seed", {
-	description = "melon seed",
+	description = S("Melon seed"),
 	inventory_image = "crops_melon_seed.png",
 	wield_image = "crops_melon_seed.png",
 	tiles = { "crops_melon_plant_1.png" },
@@ -29,7 +32,7 @@ minetest.register_node("crops:melon_seed", {
 	walkable = false,
 	paramtype = "light",
 	node_placement_prediction = "crops:melon_plant_1",
-	groups = { snappy=3,flammable=3,flora=1,attached_node=1,seed=1 },
+	groups = { snappy=3,flammable=3,flora=1,attached_node=1 },
 
 	on_place = function(itemstack, placer, pointed_thing)
 		local under = minetest.get_node(pointed_thing.under)
@@ -46,7 +49,7 @@ minetest.register_node("crops:melon_seed", {
 
 for stage = 1, 6 do
 minetest.register_node("crops:melon_plant_" .. stage , {
-	description = "melon plant",
+	description = S("Melon plant"),
 	tiles = { "crops_melon_plant_" .. stage .. ".png" },
 	drawtype = "plantlike",
 	waving = 1,
@@ -67,7 +70,7 @@ end
 minetest.register_node("crops:melon_plant_5_attached", {
 	visual = "mesh",
 	mesh = "crops_plant_extra_face.obj",
-	description = "melon plant",
+	description = S("Melon plant"),
 	tiles = { "crops_melon_stem.png", "crops_melon_plant_4.png" },
 	drawtype = "mesh",
 	paramtype2 = "facedir",
@@ -82,7 +85,7 @@ minetest.register_node("crops:melon_plant_5_attached", {
 
 
 minetest.register_craftitem("crops:melon_slice", {
-	description = "Melon slice",
+	description = S("Melon slice"),
 	inventory_image = "crops_melon_slice.png",
 	on_use = minetest.item_eat(1)
 })
@@ -97,7 +100,7 @@ minetest.register_craft({
 -- the melon "block"
 --
 minetest.register_node("crops:melon", {
-	description = "Melon",
+	description = S("Melon"),
 	tiles = { "crops_melon_top.png", "crops_melon_bottom.png", "crops_melon.png", "crops_melon.png", "crops_melon.png", "crops_melon.png" },
 	sunlight_propagates = false,
 	use_texture_alpha = false,
@@ -146,7 +149,6 @@ minetest.register_abm({
 		if not crops.can_grow(pos) then
 			return
 		end
-		local meta = minetest.get_meta(pos)
 		local n = string.gsub(node.name, "4", "5")
 		n = string.gsub(n, "3", "4")
 		n = string.gsub(n, "2", "3")

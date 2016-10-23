@@ -5,15 +5,16 @@ local player_inventory = {}
 local creative_mode = minetest.setting_getbool("creative_mode")
 
 -- Create detached creative inventory after loading all mods
-creative.init_creative_inventory = function(player)
-	local player_name = player:get_player_name()
-	player_inventory[player_name] = {}
-	player_inventory[player_name].size = 0
-	player_inventory[player_name].filter = ""
-	player_inventory[player_name].start_i = 1
-	player_inventory[player_name].tab_id = 2
+creative.init_creative_inventory = function(owner)
+	local owner_name = owner:get_player_name()
+	player_inventory[owner_name] = {
+		size = 0,
+		filter = "",
+		start_i = 1,
+		tab_id = 2,
+	}
 
-	minetest.create_detached_inventory("creative_" .. player_name, {
+	minetest.create_detached_inventory("creative_" .. owner_name, {
 		allow_move = function(inv, from_list, from_index, to_list, to_index, count, player)
 			if creative_mode and not to_list == "main" then
 				return count
@@ -45,7 +46,7 @@ creative.init_creative_inventory = function(player)
 		end,
 	})
 
-	creative.update_creative_inventory(player_name)
+	creative.update_creative_inventory(owner_name)
 	--print("creative inventory size: " .. player_inventory[player_name].size)
 end
 
@@ -124,7 +125,8 @@ creative.set_creative_formspec = function(player, start_i)
 		tooltip[creative_clear;Reset]
 		listring[current_player;main]
 		]] ..
-		"field[0.3,3.5;2.2,1;creative_filter;;" .. inv.filter .. "]" ..
+		"field[0.3,3.5;2.2,1;creative_filter;;" .. minetest.formspec_escape(inv.filter) .. "]" ..
+		"field_close_on_enter[creative_filter;false]" ..
 		"listring[detached:creative_" .. player_name .. ";main]" ..
 		"tabheader[0,0;creative_tabs;Crafting,All,Nodes,Tools,Items;" .. tostring(inv.tab_id) .. ";true;false]" ..
 		"list[detached:creative_" .. player_name .. ";main;0,0;8,3;" .. tostring(start_i) .. "]" ..
@@ -178,6 +180,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	elseif fields.creative_tabs then
 		local tab = tonumber(fields.creative_tabs)
 		inv.tab_id = tab
+		player_inventory[player_name].start_i = 1
 
 		if tab == 1 then
 			creative.set_crafting_formspec(player)
@@ -186,15 +189,17 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			creative.set_creative_formspec(player, 0)
 		end
 	elseif fields.creative_clear then
+		player_inventory[player_name].start_i = 1
 		inv.filter = ""
 		creative.update_creative_inventory(player_name)
 		creative.set_creative_formspec(player, 0)
-	elseif fields.creative_search then
+	elseif fields.creative_search or
+			fields.key_enter_field == "creative_filter" then
+		player_inventory[player_name].start_i = 1
 		inv.filter = fields.creative_filter:lower()
 		creative.update_creative_inventory(player_name)
 		creative.set_creative_formspec(player, 0)
 	else
-		local formspec = player:get_inventory_formspec()
 		local start_i = player_inventory[player_name].start_i or 0
 
 		if fields.creative_prev then
@@ -218,8 +223,8 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 end)
 
 if creative_mode then
-	local digtime = 0.5
-	local caps = {times = {digtime, digtime, digtime}, uses = 0, maxlevel = 3}
+	local digtime = 42
+	local caps = {times = {digtime, digtime, digtime}, uses = 0, maxlevel = 256}
 
 	minetest.register_item(":", {
 		type = "none",

@@ -58,7 +58,7 @@ minetest.register_node('food:juice_press', {
          local timer = minetest.get_node_timer(pos)
          local instack = inv:get_stack("src", 1)
          local fruitstack = instack:get_name()
-         if minetest.get_node_group(fruitstack, 'juiceable') > 0 then
+         if minetest.get_item_group(fruitstack, 'juiceable') > 0 then
             local mod, fruit = fruitstack:match("([^:]+):([^:]+)")
             meta:set_string('fruit', fruit)
             local outstack = inv:get_stack("dst", 1)
@@ -93,25 +93,73 @@ minetest.register_node('food:juice_press', {
                   meta:set_string('infotext', 'You need more fruit.')
                end
             end
+            if vessel == 'default:papyrus' then
+               if instack:get_count() >= 2 then
+                  local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
+                  local under_node_name = minetest.get_node_or_nil(under_node)
+                  if under_node_name.name == 'food:liquid_barrel' then
+                     local meta_u = minetest.env:get_meta(under_node)
+                     local barrel_fruit = meta_u:get_string('fruit')
+                     if fruit == barrel_fruit or barrel_fruit == 'empty' then
+                        meta:set_string('container', 'tube')
+                        meta:set_string('fruitnumber', 2)
+                        meta:set_string('infotext', 'Juicing...')
+                        meta_u:set_string('fruit', fruit)
+                        timer:start(4)
+                     else
+                        meta:set_string('infotext', "You can't mix juices.")
+                     end
+                  else
+                     meta:set_string('infotext', 'You need more fruit.')
+                  end
+               end
+            end
          end
       end
    end,
    on_timer = function(pos)
       local meta = minetest.env:get_meta(pos)
       local inv = meta:get_inventory()
-      meta:set_string('infotext', 'Collect your juice.')
+      local container = meta:get_string('container')
       local instack = inv:get_stack("src", 1)
       local outstack = inv:get_stack("dst", 1)
-      local container = meta:get_string('container')
       local fruit = meta:get_string('fruit')
       local fruitnumber = tonumber(meta:get_string('fruitnumber'))
+      if container == 'tube' then --Still needs to take fruit from juice press.
+         local timer = minetest.get_node_timer(pos)
+         local under_node = {x=pos.x, y=pos.y-1, z=pos.z}
+         local under_node_name = minetest.get_node_or_nil(under_node)
+         local meta_u = minetest.env:get_meta(under_node)
+         local fullness = tonumber(meta_u:get_string('fullness'))
+         instack:take_item(tonumber(fruitnumber))
+         inv:set_stack('src', 1, instack)
+         if fullness + 2 > 128 then
+            timer:stop()
+            meta:set_string('infotext', 'Barrel is full of juice.')
+            return
+         else
+         local fullness = fullness + 2
+         meta_u:set_string('fullness', fullness)
+         meta_u:set_string('infotext', 'Barrel of '..fruit..' juice. '..(math.floor((fullness/128)*100))..' % full.')
+         meta_u:set_string('formspec', food.barrel_formspec(fullness))
+         if instack:get_count() >= 2 then
+            timer:start(4)
+         else
+            meta:set_string('infotext', 'You need more fruit.')
+         end
+      end
+      else
+      meta:set_string('infotext', 'Collect your juice.')
       instack:take_item(tonumber(fruitnumber))
       inv:set_stack('src', 1, instack)
       inv:set_stack('dst', 1 ,'food:'..container..fruit)
+   end
    end,
    on_metadata_inventory_take = function(pos, listname, index, stack, player)
+      local timer = minetest.get_node_timer(pos)
       local meta = minetest.env:get_meta(pos)
       local inv = meta:get_inventory()
+      timer:stop()
       meta:set_string('infotext', 'Ready for more juicing.')
    end,
    on_metadata_inventory_put = function(pos, listname, index, stack, player)
@@ -134,7 +182,7 @@ minetest.register_node('food:juice_press', {
 function food.drinks_barrel_sub(liq_vol, ves_typ, pos)
    local meta = minetest.env:get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
-   if fullness - liq_vol <= 0 then
+   if fullness - liq_vol < 0 then
       return
    else
    local fruit = meta:get_string('fruit')
@@ -158,7 +206,7 @@ end
 function food.drinks_barrel_add(liq_vol, ves_typ, pos)
    local meta = minetest.env:get_meta(pos)
    local fullness = tonumber(meta:get_string('fullness'))
-   if fullness + liq_vol >= 128 then
+   if fullness + liq_vol > 128 then
       return
    else
    local fruit = meta:get_string('fruit')
@@ -181,7 +229,7 @@ function food.drinks_barrel(pos, inputstack)
    end
    if vessel == 'jbo' then
       local liq_vol = 4
-      local ves_typ = 'food:bottle' -- When we figure out what we're calling the bottle...
+      local ves_typ = 'food:bottle'
       food.drinks_barrel_add(liq_vol, ves_typ, pos)
    end
    if vessel == 'jbu' then
