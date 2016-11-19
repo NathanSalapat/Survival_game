@@ -26,15 +26,16 @@ trap_raided = -- oh no, looks like something stole our catch.
 			'label[.125,.25;Looks like something stole your catch.]' ..
 			'button[1.5,1;2,1;reset;reset trap]'
 
-function food.barrel_formspec(fullness)
-	local formspec =  -- Used for the liquid storing barrels.
+function food.liquid_storage_formspec(fruit, fullness, max)
+	local formspec =
    'size[8,8]'..
-      'label[0,0;Fill the barrel with the drink of your choice,]'..
+      'label[0,0;Fill with the drink of your choice,]'..
       'label[0,.4;you can only add more of the same type of drink.]'..
       'label[4.5,1.2;Add liquid ->]'..
-      'label[.75,1.75;This barrel is '..((fullness/128)*100)..'% full]'..
+      'label[.5,1.2;Storing '..fruit..' juice.]'..
+      'label[.5,1.65;Holding '..(fullness/2)..' of '..(max/2)..' cups.]'..
       'label[4.5,2.25;Take liquid ->]'..
-      'label[2,3.2;(This empties the barrel completely)]'..
+      'label[2,3.2;(This empties the container completely)]'..
       'button[0,3;2,1;purge;Purge]'..
       'list[current_name;src;6.5,1;1,1;]'..
       'list[current_name;dst;6.5,2;1,1;]'..
