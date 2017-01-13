@@ -2,27 +2,27 @@ ARMOR_MOD_NAME = minetest.get_current_modname()
 dofile(minetest.get_modpath(ARMOR_MOD_NAME).."/armor.lua")
 dofile(minetest.get_modpath(ARMOR_MOD_NAME).."/admin.lua")
 
-if ARMOR_MATERIALS.leather then
-	minetest.register_tool("3d_armor:helmet_leather", {
-		description = "Leather Helmet",
+if ARMOR_MATERIALS.wood then
+	minetest.register_tool("3d_armor:helmet_wood", {
+		description = "Wood Helmet",
 		inventory_image = "3d_armor_inv_helmet_wood.png",
 		groups = {armor_head=5, armor_heal=0, armor_use=2000},
 		wear = 0,
 	})
-	minetest.register_tool("3d_armor:chestplate_leather", {
-		description = "Leather Chestplate",
+	minetest.register_tool("3d_armor:chestplate_wood", {
+		description = "Wood Chestplate",
 		inventory_image = "3d_armor_inv_chestplate_wood.png",
 		groups = {armor_torso=10, armor_heal=0, armor_use=2000},
 		wear = 0,
 	})
-	minetest.register_tool("3d_armor:leggings_leather", {
-		description = "Leather Leggings",
+	minetest.register_tool("3d_armor:leggings_wood", {
+		description = "Wood Leggings",
 		inventory_image = "3d_armor_inv_leggings_wood.png",
 		groups = {armor_legs=5, armor_heal=0, armor_use=2000},
 		wear = 0,
 	})
-	minetest.register_tool("3d_armor:boots_leather", {
-		description = "Leather Boots",
+	minetest.register_tool("3d_armor:boots_wood", {
+		description = "Wood Boots",
 		inventory_image = "3d_armor_inv_boots_wood.png",
 		groups = {armor_feet=5, armor_heal=0, armor_use=2000},
 		wear = 0,

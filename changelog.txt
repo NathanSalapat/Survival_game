@@ -1,3 +1,9 @@
+2017-01-13:
+Added orienteering mod.
+updated mobs.
+updated 3d_armor
+updated unified_inventory.
+
 2016-10-23:
 Updated a few mods.
 juice press now can automatically fill a barrel that is below it.

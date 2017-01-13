@@ -33,7 +33,7 @@ if minetest.get_modpath("default") and thirsty.config.register_bowl then
     -- our own simple wooden bowl
     minetest.register_craftitem('thirsty:wooden_bowl', {
         description = "Wooden bowl",
-        inventory_image = "thirsty_bowl_16.png",
+        inventory_image = "thirsty_bowl_32.png",
         liquids_pointable = true,
         on_use = thirsty.on_use(nil),
     })
@@ -66,7 +66,7 @@ if minetest.get_modpath("default") and thirsty.config.register_canteens then
 
     minetest.register_tool('thirsty:steel_canteen', {
         description = 'Steel canteen',
-        inventory_image = "thirsty_steel_canteen_16.png",
+        inventory_image = "thirsty_steel_canteen_32.png",
         liquids_pointable = true,
         stack_max = 1,
         on_use = thirsty.on_use(nil),
@@ -74,7 +74,15 @@ if minetest.get_modpath("default") and thirsty.config.register_canteens then
 
     minetest.register_tool('thirsty:bronze_canteen', {
         description = 'Bronze canteen',
-        inventory_image = "thirsty_bronze_canteen_16.png",
+        inventory_image = "thirsty_bronze_canteen_32.png",
+        liquids_pointable = true,
+        stack_max = 1,
+        on_use = thirsty.on_use(nil),
+    })
+
+    minetest.register_tool('thirsty:wine_skin', {
+        description = 'Wine skin',
+        inventory_image = "thirsty_wine_skin.png",
         liquids_pointable = true,
         stack_max = 1,
         on_use = thirsty.on_use(nil),
@@ -94,6 +102,15 @@ if minetest.get_modpath("default") and thirsty.config.register_canteens then
             { "group:wood", ""},
             { "default:bronze_ingot", "default:bronze_ingot"},
             { "default:bronze_ingot", "default:bronze_ingot"}
+        }
+    })
+
+    minetest.register_craft({
+        output = "thirsty:wine_skin",
+        recipe = {
+           { "farming:cotton", "animals:leather", "farming:cotton"},
+           { "farming:cotton", "animals:leather", "farming:cotton"},
+           { "farming:cotton", "animals:leather", "farming:cotton"}
         }
     })
 

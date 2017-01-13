@@ -1,5 +1,20 @@
-Modpack - 3d Armor [0.4.5]
+Modpack - 3d Armor [0.4.7]
 ==========================
+
+### Table of Contents
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+- [[mod] Visible Player Armor [3d_armor]](#mod-visible-player-armor-3d_armor)
+- [[mod] Visible Wielded Items [wieldview]](#mod-visible-wielded-items-wieldview)
+- [[mod] Shields [shields]](#mod-shields-shields)
+- [[mod] Technic Armor [technic_armor]](#mod-technic-armor-technic_armor)
+- [[mod] Hazmat Suit [hazmat_suit]](#mod-hazmat-suit-hazmat_suit)
+- [[mod] 3d Armor Stand [3d_armor_stand]](#mod-3d-armor-stand-3d_armor_stand)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 [mod] Visible Player Armor [3d_armor]
 -------------------------------------
@@ -57,8 +72,10 @@ Requires technic (technic_worldgen at least) mod.
 
 Depends: 3d_armor, technic
 
-Adds hazmat suit to 3d_armor. It protects rather well from fire (if enabled in configuration) and radiation, and it has built-in oxygen supply.
+Adds hazmat suit to 3d_armor. It protects rather well from fire (if enabled in configuration) and radiation*, and it has built-in oxygen supply.
+
 Requires technic mod.
+*Requires patched version of [technic mod](https://github.com/minetest-technic/technic/pull/275)
 
 [mod] 3d Armor Stand [3d_armor_stand]
 -------------------------------------

@@ -16,7 +16,7 @@ minetest.register_abm({ --Brings animals into traps
 				meta:set_string('formspec', trap_game)
 				meta:set_string('infotext', 'Simple Snare with Game')
 				minetest.swap_node(pos, {name = 'food:snare_game'})
-				--Randomly select something to populate the trap with.
+				--Randomly select something to populate the trap with. Should update to use a function
 				local critter = math.random(0,1)
 					if critter == 0 then
 						inv:set_stack('game', 1, 'animals:chicken')
