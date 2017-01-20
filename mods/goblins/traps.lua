@@ -15,7 +15,7 @@ minetest.register_node("goblins:mossycobble_trap", {
 minetest.register_node("goblins:stone_with_coal_trap", {
 	description = "Coal Trap",
 	tiles = {"default_cobble.png^default_mineral_coal.png"},
-	groups = {cracky = 1, level = 2},
+	groups = {cracky = 2, level = 2},
 	drop = 'default:coal_lump',
 	is_ground_content = false,
 	sounds = default.node_sound_stone_defaults(),
@@ -35,7 +35,7 @@ minetest.register_node("goblins:stone_with_coal_trap", {
 minetest.register_node("goblins:stone_with_iron_trap", {
 	description = "Iron Gore",
 	tiles = {"default_cobble.png^default_mineral_iron.png"},
-	groups = {cracky = 1, level = 2},
+	groups = {cracky = 2, level = 2},
 	drop = 'default:iron_lump',
 	is_ground_content = false,
 	sounds = default.node_sound_stone_defaults(),
@@ -47,14 +47,14 @@ minetest.register_node("goblins:stone_with_iron_trap", {
 						minetest.sound_play("goblins_goblin_pick", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					 end
 				end
-			
+
 		end
 	end,
 })
 minetest.register_node("goblins:stone_with_copper_trap", {
 	description = "Copper Gore",
 	tiles = {"default_cobble.png^default_mineral_copper.png"},
-	groups = {cracky = 1, level = 2},
+	groups = {cracky = 2, level = 2},
 	drop = 'default:copper_lump',
 	is_ground_content = false,
 	sounds = default.node_sound_stone_defaults(),
@@ -233,7 +233,7 @@ minetest.register_abm({
 					minetest.sound_play("default_dig_crumbly", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					minetest.after(6, function() --this hell ends after a few seconds
 						minetest.set_node(pos, {name = "air"})
-					end)	
+					end)
 				end
 			end
 		end
@@ -306,7 +306,7 @@ minetest.register_abm({
 					minetest.sound_play("default_dig_crumbly", {pos = pos, gain = 0.5, max_hear_distance = 10})
 					minetest.after(6, function() --this hell ends after a few seconds
 						minetest.set_node(pos, {name = "air"})
-					end)	
+					end)
 				 end
 			end
 		end
@@ -333,7 +333,7 @@ if (not singleplayer and setting ~= true) or (singleplayer and setting == false)
 						minetest.sound_play("default_dig_crumbly", {pos = pos, gain = 0.5, max_hear_distance = 10})
 						minetest.after(6, function() --this hell ends after a few seconds
 							minetest.set_node(pos, {name = "air"})
-						end)	
+						end)
 					end
 				end
 			end

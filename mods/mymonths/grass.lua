@@ -1,13 +1,18 @@
 minetest.register_node("mymonths:fall_grass", {
 	description = "Dirt with Grass",
 	tiles = {"default_grass.png^[colorize:brown:50", "default_dirt.png",
-		{name = "default_dirt.png^default_grass_side.png^[colorize:brown:50",
+		{name = "default_dirt.png^(default_grass_side.png^[colorize:brown:50)",
 			tileable_vertical = false}},
-	groups = {crumbly = 3, soil = 1},
+	groups = {crumbly = 3, soil = 1, spreading_dirt_type = 1},
 	drop = 'default:dirt',
 	sounds = default.node_sound_dirt_defaults({
 		footstep = {name = "default_grass_footstep", gain = 0.25},
 	}),
+   soil = {
+		base = "default:dirt_with_dry_grass",
+		dry = "farming:soil",
+		wet = "farming:soil_wet"
+	}
 })
 
 minetest.register_abm({
@@ -23,11 +28,11 @@ end
 })
 
 minetest.register_abm({
-	nodename = {'mymonths:fall_grass'},
+	nodenames = {'mymonths:fall_grass'},
 	interval = 60,
 	chance = 40,
 	action = function (pos, node, active_object_count, active_object_count_wider)
-		if mymonths.month_counter == 4 then
+		if mymonths.month_counter == 3 then
 			minetest.set_node(pos, {name = 'default:dirt_with_grass'})
 	end
 end
@@ -35,7 +40,7 @@ end
 
 minetest.register_lbm({
 	name = "mymonths:change_grass",
-	nodenames = {'default:dirt_with_grass', 'mymonths:fall_dirt'},
+	nodenames = {'default:dirt_with_grass', 'mymonths:fall_grass'},
 	run_at_every_load = true,
 	action = function (pos, node)
 		local n = node.name
