@@ -19,7 +19,7 @@ minetest.register_abm({
 	nodenames = {'default:dirt_with_grass'},
 	interval = 60,
 	chance = 40,
-	action = function (pos, node, active_object_count, active_object_count_wider)
+	action = function (pos, node)
 		if mymonths.month_counter == 9
 		or mymonths.month_counter == 10 then
 				minetest.set_node(pos, {name = 'mymonths:fall_grass'})
@@ -28,10 +28,41 @@ end
 })
 
 minetest.register_abm({
+	nodenames = {'group:grass'},
+	interval = 60,
+	chance = 40,
+	action = function (pos, node)
+		if mymonths.month_counter == 10 then
+         if node.name == 'default:junglegrass' then
+            minetest.set_node(pos, {name = 'default:dry_shrub'})
+         else
+			minetest.set_node(pos, {name = 'air'})
+      end
+	end
+end
+})
+
+minetest.register_abm({
+	nodenames = {'default:dry_shrub'},
+	interval = 60,
+	chance = 40,
+	action = function (pos, node)
+		if mymonths.month_counter == 12 then
+         local below = minetest.get_node({x = pos.x, y = pos.y - 1, z = pos.z})
+         if below.name == 'default:desert_sand' then
+            return
+         else
+			minetest.set_node(pos, {name = 'air'})
+      end
+	end
+end
+})
+
+minetest.register_abm({
 	nodenames = {'mymonths:fall_grass'},
 	interval = 60,
 	chance = 40,
-	action = function (pos, node, active_object_count, active_object_count_wider)
+	action = function (pos, node)
 		if mymonths.month_counter == 3 then
 			minetest.set_node(pos, {name = 'default:dirt_with_grass'})
 	end
