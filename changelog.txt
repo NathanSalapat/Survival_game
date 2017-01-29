@@ -1,3 +1,8 @@
+2017-01-28:
+Many changes to armor.
+Added NSSPF by NPX team.
+Added the ability to fill a wineskin from the well, and drink machines.
+
 2017-01-13:
 Added orienteering mod.
 updated mobs.

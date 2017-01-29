@@ -413,22 +413,6 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:copperblock',
-	recipe = {
-		{'default:copper_ingot', 'default:copper_ingot', 'default:copper_ingot'},
-		{'default:copper_ingot', 'default:copper_ingot', 'default:copper_ingot'},
-		{'default:copper_ingot', 'default:copper_ingot', 'default:copper_ingot'},
-	}
-})
-
-minetest.register_craft({
-	output = 'default:copper_ingot 9',
-	recipe = {
-		{'default:copperblock'},
-	}
-})
-
-minetest.register_craft({
 	output = 'default:bronzeblock',
 	recipe = {
 		{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
@@ -709,12 +693,6 @@ minetest.register_craft({
 
 minetest.register_craft({
 	type = "cooking",
-	output = "default:copper_ingot",
-	recipe = "default:copper_lump",
-})
-
-minetest.register_craft({
-	type = "cooking",
 	output = "default:gold_ingot",
 	recipe = "default:gold_lump",
 })
@@ -884,4 +862,3 @@ minetest.register_craft({
 	recipe = "default:dry_grass_1",
 	burntime = 2,
 })
-

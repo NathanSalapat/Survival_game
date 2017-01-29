@@ -90,7 +90,18 @@ minetest.register_node("denseores:large_copper_ore", {	--copper
 	description = "Heavy Copper Ore",
 	tiles ={"default_stone.png^large_copper_ore.png"},
 	groups = {cracky=2},
-	drop = 'denseores:large_copper_ore',
+   drop = {
+		max_items = 4,
+		items = {
+			{
+			items = {'ores:copper_lump 2'},
+			rarity = 6,
+         },
+         {
+			items = {'ores:copper_lump 2'},
+         },
+		},
+	},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -140,7 +151,18 @@ minetest.register_node("denseores:small_copper_ore", {	--copper
 	description = "Light Copper Ore",
 	tiles ={"default_stone.png^small_copper_ore.png"},
 	groups = {cracky=2},
-	drop = 'denseores:small_copper_lump',
+   drop = {
+		max_items = 2,
+		items = {
+			{
+			items = {'ores:copper_lump'},
+			rarity = 5,
+         },
+         {
+			items = {'default:cobble'},
+         },
+		},
+	},
 	sounds = default.node_sound_stone_defaults(),
 })
 
@@ -195,7 +217,7 @@ minetest.register_ore({
 minetest.register_ore({
 	ore_type       = "scatter",
 	ore            = "denseores:large_copper_ore",
-	wherein        = "default:stone_with_copper",
+	wherein        = "ores:stone_with_copper",
 	clust_scarcity = 14,
 	clust_num_ores = 2,
 	clust_size     = 2,
@@ -263,7 +285,7 @@ minetest.register_ore({
 minetest.register_ore({
 	ore_type       = "scatter",
 	ore            = "denseores:small_copper_ore",
-	wherein        = "default:stone_with_copper",
+	wherein        = "ores:stone_with_copper",
 	clust_scarcity = 14,
 	clust_num_ores = 2,
 	clust_size     = 2,
@@ -320,14 +342,6 @@ minetest.register_craft( {
 	output = "default:iron_lump 2", --iron
 	recipe = {
 		"denseores:large_iron_ore",
-	}
-})
-
-minetest.register_craft( {
-	type = "shapeless",
-	output = "default:copper_lump 2", --copper
-	recipe = {
-		"denseores:large_copper_ore",
 	}
 })
 
@@ -430,5 +444,3 @@ end
 if minetest.get_modpath("technic") then
 	dofile(denseores_modpath .. "/tn.lua")
 end
-
-

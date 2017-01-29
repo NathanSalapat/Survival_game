@@ -7,12 +7,6 @@ ARMOR_DESTROY = false
 ARMOR_LEVEL_MULTIPLIER = 1
 ARMOR_HEAL_MULTIPLIER = 1
 ARMOR_RADIATION_MULTIPLIER = 1
-ARMOR_MATERIALS = {
-	steel = "default:steel_ingot",
-	bronze = "default:bronze_ingot",
-	gold = "default:gold_ingot",
-	leather = "animals:leather",
-}
 ARMOR_FIRE_PROTECT = minetest.get_modpath("ethereal") ~= nil
 ARMOR_FIRE_NODES = {
 	{"default:lava_source",     5, 8},
@@ -40,12 +34,6 @@ if input then
 	dofile(worldpath.."/armor.conf")
 	input:close()
 	input = nil
-end
-if not minetest.get_modpath("moreores") then
-	ARMOR_MATERIALS.mithril = nil
-end
-if not minetest.get_modpath("ethereal") then
-	ARMOR_MATERIALS.crystal = nil
 end
 
 armor = {
@@ -611,15 +599,3 @@ minetest.register_globalstep(function(dtime)
 	end
 	armor.timer = 0
 end)
-
--- kill player when command issued
-minetest.register_chatcommand("kill", {
-	params = "<name>",
-	description = "Kills player instantly",
-	func = function(name, param)
-		local player = minetest.get_player_by_name(name)
-		if player then
-			player:set_hp(-1001)
-		end
-	end,
-})

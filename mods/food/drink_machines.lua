@@ -214,6 +214,9 @@ function food.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
    if ves_typ == 'thirsty:steel_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:steel_canteen", count=1, wear=40, metadata=""})
    end
+   if ves_typ == 'thirsty:wine_skin' then
+      inv:set_stack('dst', 1, {name="thirsty:wine_skin", count=1, wear=30, metadata=""})
+   end
    end
 end
 
@@ -333,6 +336,9 @@ minetest.register_node('food:liquid_barrel', {
       if outputstack == 'thirsty:steel_canteen' then
          food.drinks_liquid_sub(20, 'thirsty:steel_canteen', 128, pos)
       end
+      if outputstack == 'thirsty:wine_skin' then
+         food.drinks_liquid_sub(15, 'thirsty:wine_skin', 128, pos)
+      end
       if outputstack == 'thirsty:bronze_canteen' then
          food.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 128, pos)
       end
@@ -427,6 +433,9 @@ minetest.register_node('food:liquid_silo', {
       end
       if outputstack == 'thirsty:steel_canteen' then
          food.drinks_liquid_sub(20, 'thirsty:steel_canteen', 256, pos)
+      end
+      if outputstack == 'thirsty:wine_skin' then
+         food.drinks_liquid_sub(15, 'thirsty:wine_skin', 256, pos)
       end
       if outputstack == 'thirsty:bronze_canteen' then
          food.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 256, pos)

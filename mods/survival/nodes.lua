@@ -367,7 +367,11 @@ minetest.register_node('survival:well_top', {
 		elseif inv:contains_item('pail', 'thirsty:bronze_canteen') then
 			inv:set_stack('pail', 1,({name='thirsty:bronze_canteen', wear=1,}))
 			timer:stop()
-		end
+		   return
+      elseif inv:contains_item('pail', 'thirsty:wine_skin') then
+         inv:set_stack('pail', 1,({name='thirsty:wine_skin', wear=1,}))
+         timer:stop()
+      end
 	end,
 	on_metadata_inventory_put = function(pos, listname, index, stack, player)
 		local meta = minetest.env:get_meta(pos)
@@ -375,6 +379,8 @@ minetest.register_node('survival:well_top', {
 		local timer = minetest.get_node_timer(pos)
 		if inv:contains_item('pail', 'bucket:bucket_empty') then
 			timer:start(7)
+      elseif inv:contains_item('pail', 'thirsty:wine_skin') then
+         timer:start(6)
 		elseif inv:contains_item('pail', 'thirsty:steel_canteen') then
 			timer:start(6)
 		elseif inv:contains_item('pail', 'thirsty:bronze_canteen') then
@@ -408,6 +414,8 @@ minetest.register_node('survival:well_top', {
 				return 1
 			elseif stack:get_name() == ('thirsty:bronze_canteen') then
 				return 1
+         elseif stack:get_name() == ('thirsty:wine_skin') then
+            return 1
 			else
 				return 0
 			end
