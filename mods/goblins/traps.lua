@@ -55,7 +55,7 @@ minetest.register_node("goblins:stone_with_copper_trap", {
 	description = "Copper Gore",
 	tiles = {"default_cobble.png^default_mineral_copper.png"},
 	groups = {cracky = 2, level = 2},
-	drop = 'default:copper_lump',
+	drop = 'ores:copper_lump',
 	is_ground_content = false,
 	sounds = default.node_sound_stone_defaults(),
 	on_punch = function(pos, node, puncher)

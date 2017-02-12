@@ -71,7 +71,7 @@ local search_replace2 = function(
 				print(#nodelist.." nodes found by " .. self.name:split(":")[2]..":")
 				for k,v in pairs(nodelist) do print(minetest.get_node(v).name:split(":")[2].. " found.") end
 			end
-			for key,value in pairs(nodelist) do 
+			for key,value in pairs(nodelist) do
 				-- ok we see some nodes around us, are we going to replace them?
 				if math.random(1, replace_rate) == 1 then
 					if replace_rate_secondary and
@@ -113,7 +113,7 @@ mobs:register_mob("goblins:goblin_cobble", {
 		textures = {
 			{"goblins_goblin_cobble1.png"},
 			{"goblins_goblin_cobble2.png"},
-			
+
 		},
 	makes_footstep_sound = true,
 	sounds = goblin_sounds,
@@ -128,8 +128,8 @@ mobs:register_mob("goblins:goblin_cobble", {
 		{name = "default:torch",
 		chance = 3, min = 1, max = 10},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	lifetimer = 360,
 	follow = {"default:diamond", "default:apple", "farming:bread"},
@@ -175,17 +175,17 @@ mobs:register_mob("goblins:goblin_cobble", {
 		search_replace2(
 		self,
 		10, --search_rate
-		1, --search_rate_above
-		1, --search_rate_below
-		1, --search_offset
-		2, --search_offset_above
-		1, --search_offset_below
-		5, --replace_rate
+		5, --search_rate_above
+		5, --search_rate_below
+		5, --search_offset
+		10, --search_offset_above
+		5, --search_offset_below
+		50, --replace_rate
 		{	"default:stone",
 			"default:desert_stone",
 			"default:torch"}, --replace_what
 		"default:mossycobble", --replace_with
-		3, --replace_rate_secondary
+		100, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
 		)
 	end,
@@ -223,8 +223,8 @@ mobs:register_mob("goblins:goblin_digger", {
 		{name = "default:torch",
 		chance = 3, min = 1, max = 10},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	lifetimer = 360,
 	follow = {"default:diamond", "default:apple", "default:bread"},
@@ -269,7 +269,7 @@ mobs:register_mob("goblins:goblin_digger", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		4, --search_rate
+		8, --search_rate
 		20, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
@@ -321,8 +321,8 @@ mobs:register_mob("goblins:goblin_coal", {
 		{name = "default:torch",
 		chance = 3, min = 1, max = 10},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	follow = {"default:diamond", "default:apple", "farming:bread"},
 	view_range = 10,
@@ -372,12 +372,12 @@ mobs:register_mob("goblins:goblin_coal", {
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
+		25, --replace_rate
 		{	"default:stone",
 			"default:stone_with_coal",
 			"default:torch"}, --replace_what
 		"air", --replace_with
-		3, --replace_rate_secondary
+		50, --replace_rate_secondary
 		"goblins:stone_with_coal_trap" --replace_with_secondary
 		)
 	end,
@@ -416,8 +416,8 @@ mobs:register_mob("goblins:goblin_iron", {
 		{name = "default:pick_steel",
 		chance = 5, min = 1, max = 1},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	follow = {"default:diamond", "default:apple", "default:bread"},
 	view_range = 10,
@@ -461,19 +461,19 @@ mobs:register_mob("goblins:goblin_iron", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		10, --search_rate
+		20, --search_rate
 		1, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
+		30, --replace_rate
 		{	"default:stone",
 			"default:desert_stone",
 			"default:stone_with_iron",
 			"default:torch"}, --replace_what
 		"air", --replace_with
-		3, --replace_rate_secondary
+		60, --replace_rate_secondary
 		"goblins:stone_with_iron_trap" --replace_with_secondary
 		)
 	end,
@@ -504,15 +504,15 @@ mobs:register_mob("goblins:goblin_copper", {
 	run_velocity = 3,
 	jump = true,
 	drops = {
-		{name = "default:copper_lump",
+		{name = "ores:copper_lump",
 		chance = 1, min = 1, max = 3},
 		{name = "default:apple",
 		chance = 2, min = 1, max = 2},
 		{name = "default:pick_steel",
 		chance = 5, min = 1, max = 1},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	follow = {"default:diamond", "default:apple", "default:bread"},
 	view_range = 10,
@@ -562,13 +562,13 @@ mobs:register_mob("goblins:goblin_copper", {
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
+		35, --replace_rate
 		{	"default:stone",
 			"default:desert_stone",
 			"default:stone_with_copper",
 			"default:torch"}, --replace_what
 		"air", --replace_with
-		3, --replace_rate_secondary
+		70, --replace_rate_secondary
 		"goblins:stone_with_copper_trap" --replace_with_secondary
 		)
 	end,
@@ -606,8 +606,8 @@ mobs:register_mob("goblins:goblin_gold", {
 		{name = "default:gold_ingot",
 		chance = 5, min = 1, max = 1},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	follow = {"default:diamond", "default:apple", "farming:bread"},
 	view_range = 10,
@@ -651,19 +651,19 @@ mobs:register_mob("goblins:goblin_gold", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		10, --search_rate
+		20, --search_rate
 		1, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
+		40, --replace_rate
 		{	"default:stone",
 			"default:desert_stone",
 			"default:stone_with_gold",
 			"default:torch"}, --replace_what
 		"air", --replace_with
-		3, --replace_rate_secondary
+		80, --replace_rate_secondary
 		"goblins:stone_with_gold_trap" --replace_with_secondary
 		)
 	end,
@@ -701,8 +701,8 @@ mobs:register_mob("goblins:goblin_diamond", {
 		{name = "default:diamond",
 		chance = 5, min = 1, max = 1},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	follow = {"default:diamond", "default:apple", "farming:bread"},
 	view_range = 10,
@@ -746,19 +746,19 @@ mobs:register_mob("goblins:goblin_diamond", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		10, --search_rate
+		50, --search_rate
 		1, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
+		45, --replace_rate
 		{	"default:stone",
 			"default:desert_stone",
 			"default:stone_with_diamond",
 			"default:torch"}, --replace_what
 		"air", --replace_with
-		3, --replace_rate_secondary
+		90, --replace_rate_secondary
 		"goblins:stone_with_diamond_trap" --replace_with_secondary
 		)
 	end,
@@ -796,8 +796,8 @@ mobs:register_mob("goblins:goblin_king", {
 		{name = "default:mese_crystal",
 		chance = 5, min = 1, max = 1},
 	},
-	water_damage = 0,
-	lava_damage = 2,
+	water_damage = 2,
+	lava_damage = 4,
 	light_damage = 0,
 	follow = {"default:diamond", "default:apple", "farming:bread"},
 	view_range = 10,
@@ -841,17 +841,17 @@ mobs:register_mob("goblins:goblin_king", {
 	do_custom = function(self)
 		search_replace2(
 		self,
-		10, --search_rate
+		19, --search_rate
 		1, --search_rate_above
 		20, --search_rate_below
 		1, --search_offset
 		2, --search_offset_above
 		1, --search_offset_below
-		5, --replace_rate
+		30, --replace_rate
 		{	"group:stone",
 			"default:torch"}, --replace_what
 		"default:mossycobble", --replace_with
-		3, --replace_rate_secondary
+		10, --replace_rate_secondary
 		"goblins:mossycobble_trap" --replace_with_secondary
 		)
 	end,
@@ -872,23 +872,23 @@ mobs:register_spawn("goblins:goblin_king", {"default:stone_with_mese","default:m
 ]]
 --[[ function mobs_goblins:spawn_specific(
 name,
-nodes, 
-neighbors, 
-min_light, 
-max_light, 
-interval, 
-chance, 
-active_object_count, 
-min_height, 
+nodes,
+neighbors,
+min_light,
+max_light,
+interval,
+chance,
+active_object_count,
+min_height,
 max_height)
 ]]
-mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air", 0, 50, 1, 10, 3, -30000 , 0)
-mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air", 0, 50, 1, 10, 3, -30000 , 0)
-mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",0, 50, 1, 2, 3, -30000, 0)
-mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air", 0, 50, 1, 2, 3, -30000, -20)
-mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air", 0, 50, 1, 2, 3, -30000, -20)
-mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",0, 50, 1, 2, 3, -30000, -40)
-mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air", 0, 50, 1,2, 3, -30000, -80)
-mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air", 0, 50, 1, 10, 3, -30000, -100)
+mobs:spawn_specific("goblins:goblin_cobble", {"group:stone"}, "air", 0, 50, 15, 10, 3, -30000 , 0)
+mobs:spawn_specific("goblins:goblin_digger", {"group:stone"},  "air", 0, 50, 15, 10, 3, -30000 , 0)
+mobs:spawn_specific("goblins:goblin_coal", {"default:stone_with_coal", "default:mossycobble"}, "air",0, 50, 15, 2, 3, -30000, 0)
+mobs:spawn_specific("goblins:goblin_iron", {"default:stone_with_iron", "default:mossycobble"}, "air", 0, 50, 15, 2, 3, -30000, -20)
+mobs:spawn_specific("goblins:goblin_copper", {"default:stone_with_copper", "default:mossycobble"}, "air", 0, 50, 15, 2, 3, -30000, -20)
+mobs:spawn_specific("goblins:goblin_gold", {"default:stone_with_gold", "default:mossycobble"}, "air",0, 50, 4, 20, 3, -30000, -40)
+mobs:spawn_specific("goblins:goblin_diamond", {"default:stone_with_diamond", "default:mossycobble" }, "air", 0, 50, 30 ,2, 3, -30000, -80)
+mobs:spawn_specific("goblins:goblin_king", {"default:mossycobble",},"air", 0, 50, 15, 10, 3, -30000, -100)
 
 print ("[MOD] Goblins loaded")

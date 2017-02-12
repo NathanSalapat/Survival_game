@@ -8,12 +8,9 @@ minetest.register_craft({
 	},
 })
 
-end
-
-
-
 minetest.register_craft({
-	type = "cooking",
-	output = "ores:copper_ingot",
-	recipe = "ores:copper_lump",
+	type = 'cooking',
+	output = 'ores:'..metal..'_ingot',
+	recipe = 'ores:'..metal..'_lump',
 })
+end

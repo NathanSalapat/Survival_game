@@ -5,7 +5,7 @@
 
 helper_table = {  --  base material, bonus
    {'leather', 2},
---   {'cloth', 1}
+   {'cloth', 1}
 }
 
 for i in ipairs (helper_table) do
@@ -46,7 +46,7 @@ end
 
 material_table = {
    {'leather', 'copper'},
---   {'cloth', 'copper'}
+   {'cloth', 'copper'}
 }
 
 for i in ipairs (material_table) do
