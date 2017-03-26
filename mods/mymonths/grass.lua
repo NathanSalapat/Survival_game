@@ -16,6 +16,7 @@ minetest.register_node("mymonths:fall_grass", {
 })
 
 minetest.register_abm({
+   label = 'change to fall grass',
 	nodenames = {'default:dirt_with_grass'},
 	interval = 60,
 	chance = 40,
@@ -28,6 +29,7 @@ end
 })
 
 minetest.register_abm({
+   label = 'killing grass',
 	nodenames = {'group:grass'},
 	interval = 60,
 	chance = 40,
