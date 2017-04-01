@@ -226,14 +226,11 @@ function food.drinks_liquid_sub(liq_vol, ves_typ, ves_vol, pos)
    end
    if ves_typ == 'jcu' or ves_typ == 'jbo' or ves_typ == 'jbu' then
       inv:set_stack('dst', 1, 'food:'..ves_typ..'_'..fruit)
-   end
-   if ves_typ == 'thirsty:bronze_canteen' then
+   elseif ves_typ == 'thirsty:bronze_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:bronze_canteen", count=1, wear=60, metadata=""})
-   end
-   if ves_typ == 'thirsty:steel_canteen' then
+   elseif ves_typ == 'thirsty:steel_canteen' then
       inv:set_stack('dst', 1, {name="thirsty:steel_canteen", count=1, wear=40, metadata=""})
-   end
-   if ves_typ == 'thirsty:wine_skin' then
+   elseif ves_typ == 'thirsty:wine_skin' then
       inv:set_stack('dst', 1, {name="thirsty:wine_skin", count=1, wear=30, metadata=""})
    end
    end
@@ -265,11 +262,9 @@ function food.drinks_barrel(pos, inputstack)
    local vessel = string.sub(inputstack, 6, 8)
    if vessel == 'jcu' then
       food.drinks_liquid_add(2, 'food:drinking_glass', 128, pos)
-   end
-   if vessel == 'jbo' then
+   elseif vessel == 'jbo' then
       food.drinks_liquid_add(4, 'food:bottle', 128, pos)
-   end
-   if vessel == 'jbu' then
+   elseif vessel == 'jbu' then
       food.drinks_liquid_add(16, 'bucket:bucket_empty', 128, pos)
    end
 end
@@ -279,11 +274,9 @@ function food.drinks_silo(pos, inputstack)
    local vessel = string.sub(inputstack, 6, 8)
    if vessel == 'jcu' then
       food.drinks_liquid_add(2, 'food:drinking_glass', 256, pos)
-   end
-   if vessel == 'jbo' then
+   elseif vessel == 'jbo' then
       food.drinks_liquid_add(4, 'food:bottle', 256, pos)
-   end
-   if vessel == 'jbu' then
+   elseif vessel == 'jbu' then
       food.drinks_liquid_add(16, 'bucket:bucket_empty', 256, pos)
    end
 end
@@ -343,20 +336,15 @@ minetest.register_node('food:liquid_barrel', {
       end
       if outputstack == 'food:drinking_glass' then
          food.drinks_liquid_sub(2, 'jcu', 128, pos)
-      end
-      if outputstack == 'food:bottle' then
+      elseif outputstack == 'food:bottle' then
          food.drinks_liquid_sub(4, 'jbo', 128, pos)
-      end
-      if outputstack == 'bucket:bucket_empty' then
+      elseif outputstack == 'bucket:bucket_empty' then
          food.drinks_liquid_sub(16, 'jbu', 128, pos)
-      end
-      if outputstack == 'thirsty:steel_canteen' then
+      elseif outputstack == 'thirsty:steel_canteen' then
          food.drinks_liquid_sub(20, 'thirsty:steel_canteen', 128, pos)
-      end
-      if outputstack == 'thirsty:wine_skin' then
+      elseif outputstack == 'thirsty:wine_skin' then
          food.drinks_liquid_sub(15, 'thirsty:wine_skin', 128, pos)
-      end
-      if outputstack == 'thirsty:bronze_canteen' then
+      elseif outputstack == 'thirsty:bronze_canteen' then
          food.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 128, pos)
       end
    end,
@@ -442,20 +430,15 @@ minetest.register_node('food:liquid_silo', {
       end
       if outputstack == 'food:drinking_glass' then
          food.drinks_liquid_sub(2, 'jcu', 256, pos)
-      end
-      if outputstack == 'food:bottle' then
+      elseif outputstack == 'food:bottle' then
          food.drinks_liquid_sub(4, 'jbo', 256, pos)
-      end
-      if outputstack == 'bucket:bucket_empty' then
+      elseif outputstack == 'bucket:bucket_empty' then
          food.drinks_liquid_sub(16, 'jbu', 256, pos)
-      end
-      if outputstack == 'thirsty:steel_canteen' then
+      elseif outputstack == 'thirsty:steel_canteen' then
          food.drinks_liquid_sub(20, 'thirsty:steel_canteen', 256, pos)
-      end
-      if outputstack == 'thirsty:wine_skin' then
+      elseif outputstack == 'thirsty:wine_skin' then
          food.drinks_liquid_sub(15, 'thirsty:wine_skin', 256, pos)
-      end
-      if outputstack == 'thirsty:bronze_canteen' then
+      elseif outputstack == 'thirsty:bronze_canteen' then
          food.drinks_liquid_sub(30, 'thirsty:bronze_canteen', 256, pos)
       end
    end,
