@@ -14,4 +14,6 @@ Survive!
 ~                                                        ~  
 ==========================================================  
 
-Please Note, this game is heavily under development and has many bugs and unfinished parts of code. Play at your own risk. Also there could be some game breaking changes in the future, though I'll try and use ABMs to change things so if you keep up to date and update regularly problems should take care of themselves.
+This game is no longer under active development. I'll be devoting my time to creating an entirely new sub game, though it will have much the same feel as this. Doing a complete rewrite allows me to do a better job of creating exactly what I want.
+
+
